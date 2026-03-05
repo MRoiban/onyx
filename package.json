@@ -1,0 +1,51 @@
+{
+  "name": "@onyx/ui",
+  "version": "0.1.0",
+  "description": "Source-owned React workbench primitives with a semantic Onyx theme contract.",
+  "type": "module",
+  "sideEffects": [
+    "./src/styles.css",
+    "./src/styles/globals.css"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css",
+    "./button": "./src/button.ts",
+    "./input": "./src/input.ts",
+    "./select": "./src/select.ts",
+    "./dialog": "./src/dialog.ts",
+    "./context-menu": "./src/context-menu.ts",
+    "./command": "./src/command.ts",
+    "./table": "./src/table.ts",
+    "./kbd": "./src/kbd.ts",
+    "./sidebar": "./src/sidebar.ts",
+    "./panel": "./src/panel.ts",
+    "./tabs": "./src/tabs.ts",
+    "./toolbar": "./src/toolbar.ts",
+    "./status-bar": "./src/status-bar.ts",
+    "./empty-state": "./src/empty-state.ts",
+    "./text": "./src/text.ts",
+    "./icon": "./src/icon.ts",
+    "./theme": "./src/theme.ts",
+    "./registry.json": "./registry.json",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@vscode/codicons": "^0.0.38",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "tailwind-merge": "^3.3.1"
+  }
+}
