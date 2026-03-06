@@ -27,12 +27,12 @@ const CommandDialog = ({
   ...props
 }: React.ComponentProps<typeof Dialog>) => (
   <Dialog modal={modal} {...props}>
-    <DialogContent className="max-w-xl overflow-hidden border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-0 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] backdrop-blur [&_[cmdk-root]]:outline-none">
+    <DialogContent className="max-w-xl border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-0 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] backdrop-blur [&_[cmdk-root]]:outline-none">
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
       </DialogDescription>
-      <Command className="border-b border-[var(--onyx-shell-tabs-border)]">{children}</Command>
+      <Command className="h-auto overflow-visible">{children}</Command>
     </DialogContent>
   </Dialog>
 );
