@@ -10,6 +10,6 @@ describe('statusBarItemVariants', () => {
   });
 
   it('renders active state variants with the active shell treatment', () => {
-    expect(statusBarItemVariants({ variant: 'active' })).toContain('bg-white/14');
+    expect(statusBarItemVariants({ variant: 'active' })).toContain('bg-[var(--onyx-state-active)]');
   });
 });

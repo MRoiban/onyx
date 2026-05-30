@@ -8,11 +8,11 @@ export const statusBarItemVariants = cva(
   {
     variants: {
       variant: {
-        default: 'text-[var(--onyx-shell-status-bar-fg)] hover:bg-white/10',
-        active: 'bg-white/14 text-[var(--onyx-shell-status-bar-fg)]',
-        warning: 'text-[var(--onyx-state-warning)] hover:bg-black/10',
-        error: 'text-[var(--onyx-state-error)] hover:bg-black/10',
-        success: 'text-[var(--onyx-state-success)] hover:bg-black/10'
+        default: 'text-[var(--onyx-shell-status-bar-fg)] hover:bg-[var(--onyx-state-hover)]',
+        active: 'bg-[var(--onyx-state-active)] text-[var(--onyx-shell-status-bar-fg)]',
+        warning: 'text-[var(--onyx-state-warning)] hover:bg-[var(--onyx-state-hover)]',
+        error: 'text-[var(--onyx-state-error)] hover:bg-[var(--onyx-state-hover)]',
+        success: 'text-[var(--onyx-state-success)] hover:bg-[var(--onyx-state-hover)]'
       }
     },
     defaultVariants: {

@@ -490,6 +490,9 @@ export interface WorkbenchSidebarProps {
   footer?: React.ReactNode;
   children: React.ReactNode;
   sidebarWidth?: number;
+  onSidebarWidthChange?: (width: number) => void;
+  sidebarMinWidth?: number;
+  sidebarMaxWidth?: number;
   className?: string;
   headerClassName?: string;
   contentClassName?: string;
@@ -507,11 +510,63 @@ export function WorkbenchSidebar({
   footer,
   children,
   sidebarWidth = 320,
+  onSidebarWidthChange,
+  sidebarMinWidth = 200,
+  sidebarMaxWidth = 2000,
   className,
   contentClassName,
   footerClassName,
   headerClassName
 }: WorkbenchSidebarProps): React.ReactElement | null {
+  const sidebarRef = React.useRef<HTMLDivElement | null>(null);
+  const resizeCleanupRef = React.useRef<(() => void) | null>(null);
+
+  const handleSidebarRailPointerDown = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0 || !onSidebarWidthChange) {
+      return;
+    }
+
+    resizeCleanupRef.current?.();
+
+    const startX = event.clientX;
+    const startWidth = sidebarRef.current?.getBoundingClientRect().width ?? sidebarWidth;
+    const previousBodyCursor = document.body.style.cursor;
+    const previousBodyUserSelect = document.body.style.userSelect;
+
+    const cleanup = (): void => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      document.body.style.cursor = previousBodyCursor;
+      document.body.style.userSelect = previousBodyUserSelect;
+      resizeCleanupRef.current = null;
+    };
+
+    const onMove = (moveEvent: PointerEvent): void => {
+      const rawWidth = startWidth + (moveEvent.clientX - startX);
+      const nextWidth = Math.max(sidebarMinWidth, Math.min(Math.round(rawWidth), sidebarMaxWidth));
+      onSidebarWidthChange(nextWidth);
+    };
+
+    const onUp = (): void => {
+      cleanup();
+    };
+
+    resizeCleanupRef.current = cleanup;
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    event.preventDefault();
+    event.stopPropagation();
+  }, [onSidebarWidthChange, sidebarMaxWidth, sidebarMinWidth, sidebarWidth]);
+
+  React.useEffect(() => () => {
+    resizeCleanupRef.current?.();
+  }, []);
+
   if (!activityBarVisible && !open) {
     return null;
   }
@@ -551,6 +606,7 @@ export function WorkbenchSidebar({
       {open ? (
         <SidebarProvider className="h-full" collapsible="none" onOpenChange={() => {}} open={true} side="left" variant="sidebar">
           <Sidebar
+            ref={sidebarRef}
             className={cn(
               'relative h-full border-r border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-sidebar)]',
               className
@@ -560,7 +616,13 @@ export function WorkbenchSidebar({
             {header ? <SidebarHeader className={headerClassName}>{header}</SidebarHeader> : null}
             <SidebarContent className={contentClassName}>{children}</SidebarContent>
             {footer ? <SidebarFooter className={footerClassName}>{footer}</SidebarFooter> : null}
-            <SidebarRail className="right-0 translate-x-1/2" />
+            <SidebarRail
+              aria-label="Resize sidebar"
+              aria-orientation="vertical"
+              className="right-0 translate-x-1/2 touch-none"
+              role="separator"
+              onPointerDown={handleSidebarRailPointerDown}
+            />
           </Sidebar>
         </SidebarProvider>
       ) : null}
