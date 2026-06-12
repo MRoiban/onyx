@@ -59,8 +59,14 @@ Onyx styles import `@vscode/codicons/dist/codicon.css`, and the exported `Icon` 
 
 - `@onyx/ui/styles.css`
 - `@onyx/ui/button`
+- `@onyx/ui/checkbox`
 - `@onyx/ui/input`
+- `@onyx/ui/textarea`
+- `@onyx/ui/switch`
+- `@onyx/ui/progress`
+- `@onyx/ui/number-effect`
 - `@onyx/ui/select`
+- `@onyx/ui/section-select`
 - `@onyx/ui/dialog`
 - `@onyx/ui/context-menu`
 - `@onyx/ui/command`
@@ -73,5 +79,6 @@ Onyx styles import `@vscode/codicons/dist/codicon.css`, and the exported `Icon` 
 - `@onyx/ui/status-bar`
 - `@onyx/ui/empty-state`
 - `@onyx/ui/text`
+- `@onyx/ui/toast`
 - `@onyx/ui/icon`
 - `@onyx/ui/theme`

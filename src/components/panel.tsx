@@ -65,7 +65,7 @@ export const ListRow = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
       ref={ref}
       data-slot="list-row"
       className={cn(
-        'flex min-h-9 items-center gap-2 rounded-[var(--onyx-radius-sm)] px-3 text-sm text-[var(--onyx-text-foreground)] transition-colors hover:bg-[var(--onyx-state-hover)] data-[state=active]:bg-[var(--onyx-state-selected)] data-[state=active]:text-[var(--onyx-text-inverse)]',
+        'flex min-h-9 items-center gap-2 rounded-[var(--onyx-radius-sm)] px-3 text-sm text-[var(--onyx-text-foreground)] transition-colors hover:bg-[var(--onyx-state-hover)] data-[state=active]:bg-[var(--onyx-state-selected)] data-[state=active]:text-[var(--onyx-state-selected-fg)]',
         className
       )}
       {...props}

@@ -35,6 +35,7 @@
   --onyx-state-hover: #282726;
   --onyx-state-active: #403E3C;
   --onyx-state-selected: #343331;
+  --onyx-state-selected-fg: #FFFCF0;
   --onyx-state-disabled: rgba(183, 181, 172, 0.38);
   --onyx-state-warning: #D0A215;
   --onyx-state-error: #D14D41;
@@ -88,8 +89,165 @@
   font-size: inherit;
 }
 
+.onyx-theme-root [data-slot='command-list'],
+[data-onyx-theme-root] [data-slot='command-list'],
+body.react-island-bridge [data-slot='command-list'],
+body.react-island-standalone [data-slot='command-list'] {
+  scrollbar-width: thin;
+  scrollbar-color: var(--onyx-shell-scrollbar-thumb) transparent;
+}
+
+.onyx-theme-root [data-slot='command-list']::-webkit-scrollbar,
+[data-onyx-theme-root] [data-slot='command-list']::-webkit-scrollbar,
+body.react-island-bridge [data-slot='command-list']::-webkit-scrollbar,
+body.react-island-standalone [data-slot='command-list']::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.onyx-theme-root [data-slot='command-list']::-webkit-scrollbar-track,
+[data-onyx-theme-root] [data-slot='command-list']::-webkit-scrollbar-track,
+body.react-island-bridge [data-slot='command-list']::-webkit-scrollbar-track,
+body.react-island-standalone [data-slot='command-list']::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.onyx-theme-root [data-slot='command-list']::-webkit-scrollbar-thumb,
+[data-onyx-theme-root] [data-slot='command-list']::-webkit-scrollbar-thumb,
+body.react-island-bridge [data-slot='command-list']::-webkit-scrollbar-thumb,
+body.react-island-standalone [data-slot='command-list']::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: var(--onyx-shell-scrollbar-thumb);
+}
+
 .onyx-theme-root ::selection,
 [data-onyx-theme-root] ::selection {
-  color: var(--onyx-text-inverse);
+  color: var(--onyx-state-selected-fg);
   background-color: var(--onyx-state-selected);
+}
+
+body.onyx-section-select-open,
+body.onyx-section-select-open * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.onyx-number-effect {
+  display: inline-grid;
+  grid-template-areas: 'stack';
+  align-items: center;
+  justify-items: center;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+.onyx-number-effect__sizer,
+.onyx-number-effect__viewport {
+  grid-area: stack;
+}
+
+.onyx-number-effect__sizer {
+  visibility: hidden;
+  white-space: pre;
+}
+
+.onyx-number-effect__viewport {
+  position: relative;
+  display: inline-block;
+  min-width: 100%;
+  height: 1em;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.onyx-number-effect__value {
+  display: block;
+  min-width: 100%;
+  text-align: center;
+  white-space: pre;
+  will-change: transform, opacity;
+}
+
+.onyx-number-effect__value--static {
+  position: relative;
+}
+
+.onyx-number-effect__value--enter,
+.onyx-number-effect__value--exit {
+  animation-duration: var(--onyx-number-effect-duration, 180ms);
+  animation-timing-function: cubic-bezier(0.2, 0, 0.16, 1);
+  animation-fill-mode: both;
+}
+
+.onyx-number-effect__value--exit {
+  position: absolute;
+  inset: 0;
+}
+
+.onyx-number-effect[data-direction='up'] .onyx-number-effect__value--enter {
+  animation-name: onyx-number-effect-enter-up;
+}
+
+.onyx-number-effect[data-direction='up'] .onyx-number-effect__value--exit {
+  animation-name: onyx-number-effect-exit-up;
+}
+
+.onyx-number-effect[data-direction='down'] .onyx-number-effect__value--enter {
+  animation-name: onyx-number-effect-enter-down;
+}
+
+.onyx-number-effect[data-direction='down'] .onyx-number-effect__value--exit {
+  animation-name: onyx-number-effect-exit-down;
+}
+
+@keyframes onyx-number-effect-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.85em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onyx-number-effect-exit-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.85em);
+  }
+}
+
+@keyframes onyx-number-effect-enter-down {
+  from {
+    opacity: 0;
+    transform: translateY(-0.85em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onyx-number-effect-exit-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.85em);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onyx-number-effect__value--enter,
+  .onyx-number-effect__value--exit {
+    animation-duration: 1ms;
+  }
 }

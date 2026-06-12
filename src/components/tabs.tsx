@@ -91,35 +91,57 @@ export const TabsList = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HT
 TabsList.displayName = 'TabsList';
 
 export interface TabsTriggerProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'value'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'value'>,
     VariantProps<typeof tabTriggerVariants> {
   value: string;
+  disabled?: boolean;
 }
 
-export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, children, onClick, type = 'button', value, ...props }, ref) => {
+export const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
+  ({ className, children, disabled = false, onClick, onKeyDown, value, ...props }, ref) => {
     const context = useTabsContext();
     const active = context.value === value;
 
+    const selectTab = React.useCallback(() => {
+      if (!disabled) {
+        context.setValue(value);
+      }
+    }, [context, disabled, value]);
+
     return (
-      <button
+      <div
         ref={ref}
         data-slot="tabs-trigger"
         data-state={active ? 'active' : 'inactive'}
         role="tab"
-        type={type}
         aria-selected={active}
-        className={cn(tabTriggerVariants({ active }), className)}
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : 0}
+        className={cn(
+          tabTriggerVariants({ active }),
+          disabled && 'pointer-events-none opacity-50',
+          className
+        )}
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented) {
-            context.setValue(value);
+            selectTab();
+          }
+        }}
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+          if (event.defaultPrevented) {
+            return;
+          }
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectTab();
           }
         }}
         {...props}
       >
         {children}
-      </button>
+      </div>
     );
   }
 );

@@ -21,7 +21,7 @@ export const ContextMenuSubTrigger = forwardRef<
     ref={ref}
     data-slot="context-menu-sub-trigger"
     className={cn(
-      'group flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] px-2 py-1.5 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-text-inverse)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-text-inverse)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group flex cursor-default select-none items-center rounded-[4px] px-3 py-[5px] text-[13px] leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       inset && 'pl-8',
       className
     )}
@@ -31,7 +31,7 @@ export const ContextMenuSubTrigger = forwardRef<
     <Icon
       name="chevron-right"
       size="sm"
-      className="ml-auto text-[var(--onyx-text-muted)] group-focus:text-[var(--onyx-text-inverse)] group-data-[state=open]:text-[var(--onyx-text-inverse)]"
+      className="ml-6 text-[var(--onyx-text-muted)] group-focus:text-[var(--onyx-state-selected-fg)] group-data-[state=open]:text-[var(--onyx-state-selected-fg)]"
     />
   </ContextMenuPrimitive.SubTrigger>
 ));
@@ -46,7 +46,7 @@ export const ContextMenuSubContent = forwardRef<
       ref={ref}
       data-slot="context-menu-sub-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[220px] overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] backdrop-blur data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         className
       )}
       {...props}
@@ -64,7 +64,7 @@ export const ContextMenuContent = forwardRef<
       ref={ref}
       data-slot="context-menu-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[220px] overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] backdrop-blur data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         className
       )}
       {...props}
@@ -83,7 +83,7 @@ export const ContextMenuItem = forwardRef<
     ref={ref}
     data-slot="context-menu-item"
     className={cn(
-      'group relative flex cursor-default select-none items-center gap-2 rounded-[var(--onyx-radius-sm)] px-2 py-1.5 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-text-inverse)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex cursor-default select-none items-center gap-0 rounded-[4px] px-3 py-[5px] text-[13px] leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       inset && 'pl-8',
       className
     )}
@@ -101,14 +101,14 @@ export const ContextMenuCheckboxItem = forwardRef<
     data-slot="context-menu-checkbox-item"
     checked={checked}
     className={cn(
-      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-text-inverse)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <Icon name="check" size="sm" className="text-[var(--onyx-text-inverse)]" />
+        <Icon name="check" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -124,14 +124,14 @@ export const ContextMenuRadioItem = forwardRef<
     ref={ref}
     data-slot="context-menu-radio-item"
     className={cn(
-      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-text-inverse)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <Icon name="primitive-dot" size="sm" className="text-[var(--onyx-text-inverse)]" />
+        <Icon name="primitive-dot" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -149,7 +149,7 @@ export const ContextMenuLabel = forwardRef<
     ref={ref}
     data-slot="context-menu-label"
     className={cn(
-      'px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--onyx-text-description)]',
+      'px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--onyx-text-description)]',
       inset && 'pl-8',
       className
     )}
@@ -165,7 +165,7 @@ export const ContextMenuSeparator = forwardRef<
   <ContextMenuPrimitive.Separator
     ref={ref}
     data-slot="context-menu-separator"
-    className={cn('my-1 h-px bg-[var(--onyx-shell-tabs-border)]', className)}
+    className={cn('mx-3 my-1 h-px bg-[var(--onyx-shell-tabs-border)]', className)}
     {...props}
   />
 ));

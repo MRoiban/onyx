@@ -119,7 +119,7 @@ const CommandItem = React.forwardRef<
     ref={ref}
     data-slot="command-item"
     className={cn(
-      'group flex w-full cursor-default select-none items-center gap-3 rounded-[var(--onyx-radius-sm)] px-4 py-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-text-inverse)]',
+      'group flex w-full cursor-default select-none items-center gap-3 rounded-[var(--onyx-radius-sm)] px-4 py-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-state-selected-fg)]',
       className
     )}
     {...props}

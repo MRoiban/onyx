@@ -50,7 +50,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           'p-1',
           position === 'popper' &&
-            'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
+            'max-h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)] overflow-y-auto'
         )}
       >
         {children}
@@ -78,23 +78,36 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & {
+    leading?: React.ReactNode;
+    trailing?: React.ReactNode;
+  }
+>(({ className, children, leading, trailing, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
     data-slot="select-item"
     className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-text-inverse)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'relative flex w-full cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Icon name="check" size="sm" className="text-[var(--onyx-text-inverse)]" />
+        <Icon name="check" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </SelectPrimitive.ItemIndicator>
     </span>
+    {leading ? (
+      <span data-slot="select-item-leading" className="flex h-4 w-4 shrink-0 items-center justify-center">
+        {leading}
+      </span>
+    ) : null}
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    {trailing ? (
+      <span data-slot="select-item-trailing" className="ml-auto flex shrink-0 items-center">
+        {trailing}
+      </span>
+    ) : null}
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;

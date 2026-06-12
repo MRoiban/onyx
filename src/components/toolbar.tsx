@@ -9,7 +9,7 @@ export const toolbarButtonVariants = cva('', {
     tone: {
       default: '',
       active:
-        'bg-[var(--onyx-state-selected)] text-[var(--onyx-text-inverse)] hover:bg-[var(--onyx-state-selected)]',
+        'bg-[var(--onyx-state-selected)] text-[var(--onyx-state-selected-fg)] hover:bg-[var(--onyx-state-selected)]',
       subtle:
         'text-[var(--onyx-text-muted)] hover:text-[var(--onyx-text-foreground)] hover:bg-[var(--onyx-state-hover)]'
     }

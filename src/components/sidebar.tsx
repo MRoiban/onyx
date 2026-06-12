@@ -3,10 +3,18 @@ import * as React from 'react';
 import { Button } from './button';
 import { Icon } from './icon';
 import { cn } from '../lib/cn';
+import {
+  browserSidebarEnvironment,
+  createSidebarEnvironment,
+  type SidebarEnvironment,
+  type SidebarResolvedEnvironment
+} from './sidebar-environment';
 
 export type SidebarVariant = 'sidebar' | 'floating' | 'inset';
 export type SidebarSide = 'left' | 'right';
 export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none';
+export { createSidebarEnvironment };
+export type { SidebarEnvironment, SidebarResolvedEnvironment } from './sidebar-environment';
 
 export interface SidebarContextValue {
   state: 'expanded' | 'collapsed';
@@ -41,6 +49,7 @@ export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElemen
   side?: SidebarSide;
   variant?: SidebarVariant;
   collapsible?: SidebarCollapsible;
+  environment?: SidebarEnvironment;
 }
 
 export function SidebarProvider({
@@ -55,6 +64,7 @@ export function SidebarProvider({
   openMobile: openMobileProp,
   side = 'left',
   variant = 'sidebar',
+  environment,
   ...props
 }: SidebarProviderProps): React.ReactElement {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
@@ -62,8 +72,11 @@ export function SidebarProvider({
 
   const open = openProp ?? uncontrolledOpen;
   const openMobile = openMobileProp ?? uncontrolledOpenMobile;
-  const isMobile =
-    typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false;
+  const sidebarEnvironment = React.useMemo(
+    () => environment ? createSidebarEnvironment(environment) : browserSidebarEnvironment,
+    [environment]
+  );
+  const isMobile = sidebarEnvironment.isMobile();
 
   const setOpen = React.useCallback(
     (nextOpen: boolean) => {
@@ -295,7 +308,7 @@ export const SidebarMenuButton = React.forwardRef<
     className={cn(
       'w-full justify-start gap-2 rounded-[var(--onyx-radius-md)] px-2 py-1.5 text-left font-normal text-[var(--onyx-text-foreground)] hover:bg-[var(--onyx-state-hover)] hover:text-[var(--onyx-text-foreground)] focus-visible:ring-[var(--onyx-control-focus-ring)]',
       isActive &&
-        'bg-[var(--onyx-state-selected)] text-[var(--onyx-text-inverse)] shadow-[var(--onyx-shadow-sm)] hover:bg-[var(--onyx-state-selected)]',
+        'bg-[var(--onyx-state-selected)] text-[var(--onyx-state-selected-fg)] shadow-[var(--onyx-shadow-sm)] hover:bg-[var(--onyx-state-selected)]',
       className
     )}
     data-active={isActive ? 'true' : 'false'}
@@ -497,6 +510,7 @@ export interface WorkbenchSidebarProps {
   headerClassName?: string;
   contentClassName?: string;
   footerClassName?: string;
+  environment?: SidebarEnvironment;
 }
 
 export function WorkbenchSidebar({
@@ -515,11 +529,16 @@ export function WorkbenchSidebar({
   sidebarMaxWidth = 2000,
   className,
   contentClassName,
+  environment,
   footerClassName,
   headerClassName
 }: WorkbenchSidebarProps): React.ReactElement | null {
   const sidebarRef = React.useRef<HTMLDivElement | null>(null);
   const resizeCleanupRef = React.useRef<(() => void) | null>(null);
+  const sidebarEnvironment = React.useMemo(
+    () => environment ? createSidebarEnvironment(environment) : browserSidebarEnvironment,
+    [environment]
+  );
 
   const handleSidebarRailPointerDown = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 || !onSidebarWidthChange) {
@@ -528,40 +547,27 @@ export function WorkbenchSidebar({
 
     resizeCleanupRef.current?.();
 
-    const startX = event.clientX;
-    const startWidth = sidebarRef.current?.getBoundingClientRect().width ?? sidebarWidth;
-    const previousBodyCursor = document.body.style.cursor;
-    const previousBodyUserSelect = document.body.style.userSelect;
-
-    const cleanup = (): void => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onUp);
-      document.body.style.cursor = previousBodyCursor;
-      document.body.style.userSelect = previousBodyUserSelect;
+    const cleanup = sidebarEnvironment.beginResize({
+      fallbackWidth: sidebarWidth,
+      maxWidth: sidebarMaxWidth,
+      minWidth: sidebarMinWidth,
+      onWidthChange: onSidebarWidthChange,
+      sidebarElement: sidebarRef.current,
+      startX: event.clientX
+    });
+    resizeCleanupRef.current = () => {
+      cleanup();
       resizeCleanupRef.current = null;
     };
-
-    const onMove = (moveEvent: PointerEvent): void => {
-      const rawWidth = startWidth + (moveEvent.clientX - startX);
-      const nextWidth = Math.max(sidebarMinWidth, Math.min(Math.round(rawWidth), sidebarMaxWidth));
-      onSidebarWidthChange(nextWidth);
-    };
-
-    const onUp = (): void => {
-      cleanup();
-    };
-
-    resizeCleanupRef.current = cleanup;
-
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onUp);
     event.preventDefault();
     event.stopPropagation();
-  }, [onSidebarWidthChange, sidebarMaxWidth, sidebarMinWidth, sidebarWidth]);
+  }, [
+    onSidebarWidthChange,
+    sidebarEnvironment,
+    sidebarMaxWidth,
+    sidebarMinWidth,
+    sidebarWidth
+  ]);
 
   React.useEffect(() => () => {
     resizeCleanupRef.current?.();
@@ -604,7 +610,15 @@ export function WorkbenchSidebar({
       ) : null}
 
       {open ? (
-        <SidebarProvider className="h-full" collapsible="none" onOpenChange={() => {}} open={true} side="left" variant="sidebar">
+        <SidebarProvider
+          className="h-full"
+          collapsible="none"
+          environment={environment}
+          onOpenChange={() => {}}
+          open={true}
+          side="left"
+          variant="sidebar"
+        >
           <Sidebar
             ref={sidebarRef}
             className={cn(

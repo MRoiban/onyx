@@ -63,6 +63,77 @@
       "registryDependencies": ["theme"]
     },
     {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Semantic checkbox primitive.",
+      "files": [
+        { "path": "src/components/checkbox.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "Semantic multiline text input primitive.",
+      "files": [
+        { "path": "src/components/textarea.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Semantic boolean switch primitive.",
+      "files": [
+        { "path": "src/components/switch.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "Semantic progress indicator primitive.",
+      "files": [
+        { "path": "src/components/progress.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
+      "name": "number-effect",
+      "type": "registry:ui",
+      "title": "Number Effect",
+      "description": "Animated tabular number transition primitive for counters and badges.",
+      "files": [
+        { "path": "src/components/number-effect.tsx", "type": "registry:ui" },
+        { "path": "src/styles/globals.css", "type": "registry:style" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -72,6 +143,20 @@
       ],
       "dependencies": [
         "@radix-ui/react-select",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme", "icon"]
+    },
+    {
+      "name": "section-select",
+      "type": "registry:ui",
+      "title": "Section Select",
+      "description": "Non-modal workbench section selector for shell headers.",
+      "files": [
+        { "path": "src/components/section-select.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
         "clsx",
         "tailwind-merge"
       ],
@@ -222,6 +307,20 @@
         "tailwind-merge"
       ],
       "registryDependencies": ["theme"]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "Workbench notification viewport and toast parts.",
+      "files": [
+        { "path": "src/components/toast.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme", "button", "icon"]
     },
     {
       "name": "empty-state",
