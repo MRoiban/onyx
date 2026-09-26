@@ -21,7 +21,7 @@ export const ContextMenuSubTrigger = forwardRef<
     ref={ref}
     data-slot="context-menu-sub-trigger"
     className={cn(
-      'group flex cursor-default select-none items-center rounded-[4px] px-3 py-[5px] text-[13px] leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group flex cursor-default select-none items-center rounded-[4px] px-3 py-[5px] text-sm leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       inset && 'pl-8',
       className
     )}
@@ -46,7 +46,7 @@ export const ContextMenuSubContent = forwardRef<
       ref={ref}
       data-slot="context-menu-sub-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         className
       )}
       {...props}
@@ -64,7 +64,7 @@ export const ContextMenuContent = forwardRef<
       ref={ref}
       data-slot="context-menu-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         className
       )}
       {...props}
@@ -83,7 +83,7 @@ export const ContextMenuItem = forwardRef<
     ref={ref}
     data-slot="context-menu-item"
     className={cn(
-      'group relative flex cursor-default select-none items-center gap-0 rounded-[4px] px-3 py-[5px] text-[13px] leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex cursor-default select-none items-center gap-0 rounded-[4px] px-3 py-[5px] text-sm leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       inset && 'pl-8',
       className
     )}
@@ -149,7 +149,7 @@ export const ContextMenuLabel = forwardRef<
     ref={ref}
     data-slot="context-menu-label"
     className={cn(
-      'px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--onyx-text-description)]',
+      'px-3 pb-1 pt-2 text-xs font-semibold text-[var(--onyx-text-description)]',
       inset && 'pl-8',
       className
     )}
@@ -177,7 +177,7 @@ export const ContextMenuShortcut = ({
 }: ComponentPropsWithoutRef<'span'>) => (
   <span
     data-slot="context-menu-shortcut"
-    className={cn('ml-auto text-xs tracking-wide text-[var(--onyx-text-description)]', className)}
+    className={cn('ml-auto text-xs text-[var(--onyx-text-description)]', className)}
     {...props}
   />
 );

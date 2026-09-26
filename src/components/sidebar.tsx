@@ -235,7 +235,7 @@ export const SidebarGroupLabel = React.forwardRef<
     ref={ref}
     data-slot="sidebar-group-label"
     className={cn(
-      'text-xs font-semibold uppercase tracking-wide text-[var(--onyx-text-description)]',
+      'text-xs font-semibold text-[var(--onyx-text-description)]',
       className
     )}
     {...props}
@@ -449,7 +449,7 @@ export const ActivityBarItem = React.forwardRef<HTMLButtonElement, ActivityBarIt
       {children}
       {badge !== undefined && badge > 0 ? (
         <span
-          className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--onyx-shell-badge-bg)] px-1 text-[9px] font-medium tabular-nums text-[var(--onyx-shell-badge-fg)]"
+          className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--onyx-shell-badge-bg)] px-1 text-[10px] font-medium tabular-nums text-[var(--onyx-shell-badge-fg)]"
           aria-label={`${badge} notifications`}
         >
           {badge > 99 ? '99+' : badge}

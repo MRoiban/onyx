@@ -38,7 +38,7 @@ export const Heading = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes
     <h2
       ref={ref}
       data-slot="heading"
-      className={cn('text-lg font-semibold tracking-tight text-[var(--onyx-text-foreground)]', className)}
+      className={cn('text-lg font-semibold text-[var(--onyx-text-foreground)]', className)}
       {...props}
     />
   )
@@ -53,7 +53,7 @@ export const SectionLabel = React.forwardRef<
     ref={ref}
     data-slot="section-label"
     className={cn(
-      'text-xs font-semibold uppercase tracking-[0.14em] text-[var(--onyx-text-description)]',
+      'text-xs font-semibold text-[var(--onyx-text-description)]',
       className
     )}
     {...props}

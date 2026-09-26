@@ -76,7 +76,7 @@ ListRow.displayName = 'ListRow';
 
 export const TreeRow = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <ListRow ref={ref} data-slot="tree-row" className={cn('font-medium', className)} {...props} />
+    <ListRow ref={ref} data-slot="tree-row" className={cn('font-normal', className)} {...props} />
   )
 );
 TreeRow.displayName = 'TreeRow';

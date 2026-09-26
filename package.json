@@ -19,6 +19,7 @@
     "./textarea": "./src/textarea.ts",
     "./switch": "./src/switch.ts",
     "./progress": "./src/progress.ts",
+    "./prompt": "./src/prompt.ts",
     "./number-effect": "./src/number-effect.ts",
     "./select": "./src/select.ts",
     "./section-select": "./src/section-select.ts",

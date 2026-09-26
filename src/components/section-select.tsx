@@ -299,7 +299,7 @@ export function SectionSelect<TValue extends string>({
             aria-label={ariaLabel}
             data-slot="section-select-content"
             className={cn(
-              'fixed z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] backdrop-blur focus:outline-none',
+              'fixed z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
               contentClassName
             )}
             onPointerDown={(event) => {
@@ -368,8 +368,9 @@ export function SectionSelect<TValue extends string>({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
         data-slot="section-select-trigger"
+        data-state={isOpen ? 'open' : 'closed'}
         className={cn(
-          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-2 border-0 bg-transparent px-0 py-0 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--onyx-text-description)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0',
+          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-2 border-0 bg-transparent px-0 py-0 text-sm font-medium text-[var(--onyx-text-foreground)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0',
           triggerClassName
         )}
         onPointerDown={(event) => {
@@ -384,7 +385,14 @@ export function SectionSelect<TValue extends string>({
         <span id={valueId} className="leading-none">
           {selectedItem?.label ?? value}
         </span>
-        <Icon name="chevron-down" size="sm" className="text-[var(--onyx-text-muted)]" />
+        <Icon
+          name="chevron-right"
+          size="sm"
+          className={cn(
+            'text-[var(--onyx-text-muted)] transition-transform duration-150 ease-out motion-reduce:transition-none',
+            isOpen && 'rotate-90'
+          )}
+        />
       </button>
       {content}
     </>

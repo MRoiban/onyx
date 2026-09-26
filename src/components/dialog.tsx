@@ -39,10 +39,18 @@ export const DialogContent = forwardRef<
       ref={ref}
       data-slot="dialog-content"
       className={cn(
-        'fixed left-1/2 top-1/2 z-[var(--onyx-z-dialog)] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[var(--onyx-radius-lg)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-6 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] outline-none backdrop-blur focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 sm:max-w-xl',
+        'fixed inset-0 m-auto h-fit max-h-[85vh] z-[var(--onyx-z-dialog)] w-full max-w-lg rounded-[var(--onyx-radius-lg)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-6 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] outline-none focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 sm:max-w-xl',
         className
       )}
       {...props}
+      onFocusOutside={(event) => {
+        // Dialogs close on Escape or an outside click, never because focus
+        // moved: a context menu that closes as the dialog opens returns focus
+        // to its trigger, which would otherwise cancel the dialog instantly
+        // (e.g. Delete / Clean Folder confirmations from the Explorer menu).
+        props.onFocusOutside?.(event);
+        event.preventDefault();
+      }}
     >
       {children}
     </DialogPrimitive.Content>
@@ -73,7 +81,7 @@ export const DialogTitle = forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     data-slot="dialog-title"
-    className={cn('text-base font-semibold leading-none tracking-tight', className)}
+    className={cn('text-base font-semibold leading-none', className)}
     {...props}
   />
 ));

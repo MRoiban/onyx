@@ -38,7 +38,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       data-slot="select-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[8rem] overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] backdrop-blur focus:outline-none',
+        'z-[var(--onyx-z-popover)] min-w-[8rem] overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
         position === 'popper' && 'translate-y-1',
         className
       )}
@@ -68,7 +68,7 @@ const SelectLabel = React.forwardRef<
     ref={ref}
     data-slot="select-label"
     className={cn(
-      'py-1.5 pl-8 pr-2 text-xs font-semibold uppercase tracking-wide text-[var(--onyx-text-description)]',
+      'py-1.5 pl-8 pr-2 text-xs font-semibold text-[var(--onyx-text-description)]',
       className
     )}
     {...props}

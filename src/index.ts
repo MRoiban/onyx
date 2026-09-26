@@ -10,6 +10,7 @@ export * from './kbd';
 export * from './number-effect';
 export * from './panel';
 export * from './progress';
+export * from './prompt';
 export * from './select';
 export * from './section-select';
 export * from './sidebar';

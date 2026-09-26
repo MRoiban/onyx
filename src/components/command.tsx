@@ -21,18 +21,23 @@ const Command = React.forwardRef<
 ));
 Command.displayName = CommandPrimitive.displayName;
 
+interface CommandDialogProps extends React.ComponentProps<typeof Dialog> {
+  shouldFilter?: React.ComponentProps<typeof CommandPrimitive>['shouldFilter'];
+}
+
 const CommandDialog = ({
   children,
   modal = false,
+  shouldFilter,
   ...props
-}: React.ComponentProps<typeof Dialog>) => (
+}: CommandDialogProps) => (
   <Dialog modal={modal} {...props}>
-    <DialogContent className="max-w-xl border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-0 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] backdrop-blur [&_[cmdk-root]]:outline-none">
+    <DialogContent className="mb-auto mt-[12vh] max-w-[640px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-0 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
       </DialogDescription>
-      <Command className="h-auto overflow-visible">{children}</Command>
+      <Command className="h-auto overflow-visible" shouldFilter={shouldFilter}>{children}</Command>
     </DialogContent>
   </Dialog>
 );
@@ -47,7 +52,7 @@ const CommandInput = React.forwardRef<
       ref={ref}
       data-slot="command-input"
       className={cn(
-        'flex h-12 w-full items-center bg-transparent py-3 pl-3 text-base text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
+        'flex h-10 w-full items-center bg-transparent py-2 pl-3 text-sm text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
         className
       )}
       {...props}
@@ -90,7 +95,7 @@ const CommandGroup = React.forwardRef<
     ref={ref}
     data-slot="command-group"
     className={cn(
-      'overflow-hidden py-2 text-[var(--onyx-text-muted)] [&_[cmdk-group-heading]]:px-4 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
+      'overflow-hidden py-2 text-[var(--onyx-text-muted)] [&_[cmdk-group-heading]]:px-4 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold',
       className
     )}
     {...props}
@@ -119,7 +124,7 @@ const CommandItem = React.forwardRef<
     ref={ref}
     data-slot="command-item"
     className={cn(
-      'group flex w-full cursor-default select-none items-center gap-3 rounded-[var(--onyx-radius-sm)] px-4 py-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-state-selected-fg)]',
+      'group flex w-full cursor-default select-none items-center gap-2 rounded-[var(--onyx-radius-sm)] px-3 py-1 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-state-selected-fg)]',
       className
     )}
     {...props}
@@ -133,7 +138,7 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
   <span
     data-slot="command-shortcut"
     className={cn(
-      'ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-[11px] font-medium uppercase text-[var(--onyx-text-description)]',
+      'ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-medium text-[var(--onyx-text-description)]',
       className
     )}
     {...props}

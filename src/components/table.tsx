@@ -21,7 +21,7 @@ const TableHeader = React.forwardRef<
   <thead
     ref={ref}
     data-slot="table-header"
-    className={cn('text-xs uppercase tracking-wide text-[var(--onyx-text-description)]', className)}
+    className={cn('text-xs text-[var(--onyx-text-description)]', className)}
     {...props}
   />
 ));

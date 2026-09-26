@@ -222,6 +222,21 @@
       "registryDependencies": ["theme"]
     },
     {
+      "name": "prompt",
+      "type": "registry:ui",
+      "title": "Prompt",
+      "description": "Zed-style confirmation prompt with message, detail, and stacked keyboard-navigable actions.",
+      "files": [
+        { "path": "src/components/prompt.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": [
+        "react",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": ["theme"]
+    },
+    {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
