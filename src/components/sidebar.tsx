@@ -205,6 +205,41 @@ export const SidebarHeader = React.forwardRef<HTMLDivElement, React.HTMLAttribut
 );
 SidebarHeader.displayName = 'SidebarHeader';
 
+/**
+ * Title row of a sidebar view (VS Code's view title bar): a label on the left
+ * and a toolbar of view actions on the right. Height comes from
+ * `--onyx-sidebar-view-header-height` so hosts can align it with their tab row.
+ */
+export const SidebarViewHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="sidebar-view-header"
+      className={cn(
+        'flex h-[var(--onyx-sidebar-view-header-height,35px)] min-h-[var(--onyx-sidebar-view-header-height,35px)] shrink-0 items-center justify-between gap-2 border-b border-[var(--onyx-shell-tabs-border)] pl-3 pr-1.5',
+        className
+      )}
+      {...props}
+    />
+  )
+);
+SidebarViewHeader.displayName = 'SidebarViewHeader';
+
+export const SidebarViewTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h2
+      ref={ref}
+      data-slot="sidebar-view-title"
+      className={cn(
+        'min-w-0 truncate text-xs font-semibold text-[var(--onyx-text-description)]',
+        className
+      )}
+      {...props}
+    />
+  )
+);
+SidebarViewTitle.displayName = 'SidebarViewTitle';
+
 export const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
