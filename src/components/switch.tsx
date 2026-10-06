@@ -3,7 +3,7 @@ import * as React from 'react';
 import { cn } from '../lib/cn';
 
 export const switchTrackClassName = [
-  'inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-transparent',
+  'inline-flex h-[calc(20px*var(--onyx-scale-ui))] w-[calc(36px*var(--onyx-scale-ui))] shrink-0 items-center rounded-full border-0 p-[calc(2px*var(--onyx-scale-ui))]',
   'bg-[var(--onyx-control-input-border)] transition-colors',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--onyx-control-focus-ring)]',
   'disabled:cursor-not-allowed disabled:opacity-50',
@@ -11,9 +11,9 @@ export const switchTrackClassName = [
 ].join(' ');
 
 export const switchThumbClassName = [
-  'pointer-events-none block h-4 w-4 rounded-full',
+  'pointer-events-none block h-[calc(16px*var(--onyx-scale-ui))] w-[calc(16px*var(--onyx-scale-ui))] shrink-0 rounded-full',
   'bg-[var(--onyx-control-button-fg)] shadow-[var(--onyx-shadow-sm)] transition-transform',
-  'data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0'
+  'data-[state=checked]:translate-x-[calc(16px*var(--onyx-scale-ui))] data-[state=unchecked]:translate-x-0'
 ].join(' ');
 
 export interface SwitchProps
