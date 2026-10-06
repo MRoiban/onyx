@@ -84,6 +84,13 @@ describe('SectionSelect', () => {
     expect(html).not.toContain('data-slot="dialog-overlay"');
   });
 
+  it('scales menu width and gap and keeps oversized menus inside the viewport', () => {
+    expect(getSectionSelectMenuPosition({ bottom: 42, left: 740, width: 180 }, { width: 800, height: 600 }, 1.5))
+      .toEqual({ top: 48, left: 456, minWidth: 336, maxHeight: 544 });
+    expect(getSectionSelectMenuPosition({ bottom: 590, left: 740, width: 180 }, { width: 300, height: 600 }, 1.5))
+      .toEqual({ top: 592, left: 8, minWidth: 284, maxHeight: 0 });
+  });
+
   it('clamps menu placement to the viewport while preserving trigger width', () => {
     expect(
       getSectionSelectMenuPosition(

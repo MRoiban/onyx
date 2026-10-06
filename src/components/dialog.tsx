@@ -39,7 +39,7 @@ export const DialogContent = forwardRef<
       ref={ref}
       data-slot="dialog-content"
       className={cn(
-        'fixed inset-0 m-auto h-fit max-h-[85vh] z-[var(--onyx-z-dialog)] w-full max-w-lg rounded-[var(--onyx-radius-lg)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-6 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] outline-none focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 sm:max-w-xl',
+        'fixed inset-0 m-auto h-fit max-h-[85vh] overflow-y-auto z-[var(--onyx-z-dialog)] w-full max-w-[min(calc(512px*var(--onyx-scale-ui)),calc(100vw-48px))] rounded-[calc(var(--onyx-radius-lg)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(24px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] outline-none focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))]',
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 export const DialogHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
     data-slot="dialog-header"
-    className={cn('flex flex-col space-y-2 text-left', className)}
+    className={cn('flex flex-col space-y-[calc(8px*var(--onyx-scale-ui))] text-left', className)}
     {...props}
   />
 );
@@ -69,7 +69,7 @@ export const DialogHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElem
 export const DialogFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
   <div
     data-slot="dialog-footer"
-    className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
+    className={cn('flex flex-col-reverse gap-[calc(8px*var(--onyx-scale-ui))] sm:flex-row sm:justify-end', className)}
     {...props}
   />
 );
@@ -81,7 +81,7 @@ export const DialogTitle = forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     data-slot="dialog-title"
-    className={cn('text-base font-semibold leading-none', className)}
+    className={cn('text-[length:calc(16px*var(--onyx-scale-ui))] font-semibold leading-[1]', className)}
     {...props}
   />
 ));
@@ -94,7 +94,7 @@ export const DialogDescription = forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="dialog-description"
-    className={cn('text-sm text-[var(--onyx-text-description)]', className)}
+    className={cn('text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-description)]', className)}
     {...props}
   />
 ));

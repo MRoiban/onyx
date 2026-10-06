@@ -55,12 +55,14 @@ function getSelectedIndex<TValue extends string>(
 
 export function getSectionSelectMenuPosition(
   rect: Pick<DOMRect, 'bottom' | 'left' | 'width'>,
-  viewport: SectionSelectViewport
+  viewport: SectionSelectViewport,
+  scale = 1
 ): MenuPosition {
-  const minWidth = Math.max(rect.width, DEFAULT_MENU_MIN_WIDTH);
+  const gap = MENU_GAP * scale;
+  const minWidth = Math.min(Math.max(rect.width, DEFAULT_MENU_MIN_WIDTH * scale), Math.max(0, viewport.width - MENU_MARGIN * 2));
   const availableBelow = Math.max(
-    120,
-    viewport.height - rect.bottom - MENU_GAP - MENU_MARGIN
+    0,
+    viewport.height - rect.bottom - gap - MENU_MARGIN
   );
   const left = Math.min(
     Math.max(MENU_MARGIN, rect.left),
@@ -68,7 +70,7 @@ export function getSectionSelectMenuPosition(
   );
 
   return {
-    top: rect.bottom + MENU_GAP,
+    top: Math.min(rect.bottom + gap, viewport.height - MENU_MARGIN),
     left,
     minWidth,
     maxHeight: availableBelow
@@ -91,7 +93,9 @@ function getMenuPosition(
     height: rect.bottom + MENU_GAP + MENU_MARGIN + 120
   });
 
-  return getSectionSelectMenuPosition(rect, viewport);
+  const rawScale = Number(windowObject?.getComputedStyle?.(trigger).getPropertyValue('--onyx-scale-ui'));
+  const scale = Number.isFinite(rawScale) && rawScale > 0 ? rawScale : 1;
+  return getSectionSelectMenuPosition(rect, viewport, scale);
 }
 
 function preventPointerSelection(
@@ -299,7 +303,7 @@ export function SectionSelect<TValue extends string>({
             aria-label={ariaLabel}
             data-slot="section-select-content"
             className={cn(
-              'fixed z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
+              'fixed flex flex-col z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-[calc(4px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
               contentClassName
             )}
             onPointerDown={(event) => {
@@ -315,7 +319,7 @@ export function SectionSelect<TValue extends string>({
               maxHeight: position.maxHeight
             }}
           >
-            <div className="max-h-[inherit] overflow-y-auto">
+            <div className="min-h-0 overflow-y-auto">
               {items.map((item, index) => {
                 const selected = item.value === value;
                 const active = index === activeIndex;
@@ -331,18 +335,18 @@ export function SectionSelect<TValue extends string>({
                     data-slot="section-select-item"
                     data-active={active ? 'true' : undefined}
                     className={cn(
-                      'relative flex w-full cursor-default select-none items-center gap-2 rounded-[var(--onyx-radius-sm)] py-2 pl-8 pr-2 text-left text-sm font-medium text-[var(--onyx-text-foreground)] outline-none transition-colors hover:bg-[var(--onyx-state-hover)] focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[active=true]:bg-[var(--onyx-state-selected)] data-[active=true]:text-[var(--onyx-state-selected-fg)]'
+                      'relative flex min-h-[max(28px,calc(36px*var(--onyx-scale-ui)))] w-full cursor-default select-none items-center gap-[calc(8px*var(--onyx-scale-ui))] rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(32px*var(--onyx-scale-ui))] pr-[calc(8px*var(--onyx-scale-ui))] text-left text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] font-medium text-[var(--onyx-text-foreground)] outline-none transition-colors hover:bg-[var(--onyx-state-hover)] focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[active=true]:bg-[var(--onyx-state-selected)] data-[active=true]:text-[var(--onyx-state-selected-fg)]'
                     )}
                     onClick={() => selectItem(item)}
                     onFocus={() => setActiveIndex(index)}
                     onKeyDown={(event) => handleItemKeyDown(event, index)}
                   >
-                    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                    <span className="absolute left-[calc(8px*var(--onyx-scale-ui))] flex h-[calc(14px*var(--onyx-scale-ui))] w-[calc(14px*var(--onyx-scale-ui))] items-center justify-center">
                       {selected ? <Icon name="check" size="sm" /> : null}
                     </span>
                     <span
                       data-slot="section-select-item-leading"
-                      className="flex h-4 w-4 shrink-0 items-center justify-center"
+                      className="flex h-[calc(16px*var(--onyx-scale-ui))] w-[calc(16px*var(--onyx-scale-ui))] shrink-0 items-center justify-center"
                     >
                       <Icon name={item.icon} size="sm" />
                     </span>
@@ -370,7 +374,7 @@ export function SectionSelect<TValue extends string>({
         data-slot="section-select-trigger"
         data-state={isOpen ? 'open' : 'closed'}
         className={cn(
-          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-2 border-0 bg-transparent px-0 py-0 text-sm font-medium text-[var(--onyx-text-foreground)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0',
+          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-[calc(8px*var(--onyx-scale-ui))] border-0 bg-transparent px-[calc(0px*var(--onyx-scale-ui))] py-[calc(0px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] font-medium text-[var(--onyx-text-foreground)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0',
           triggerClassName
         )}
         onPointerDown={(event) => {

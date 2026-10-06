@@ -16,7 +16,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     data-slot="select-trigger"
     className={cn(
-      'flex h-9 w-full items-center justify-between gap-2 rounded-[var(--onyx-radius-md)] border border-[var(--onyx-control-input-border)] bg-[var(--onyx-control-input-bg)] px-3 py-2 text-sm text-[var(--onyx-control-input-fg)] shadow-[var(--onyx-shadow-sm)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--onyx-control-focus-ring)] disabled:cursor-not-allowed disabled:opacity-50',
+      'flex h-[max(28px,calc(36px*var(--onyx-scale-ui)))] w-full items-center justify-between gap-[calc(8px*var(--onyx-scale-ui))] rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] border border-[var(--onyx-control-input-border)] bg-[var(--onyx-control-input-bg)] px-[calc(12px*var(--onyx-scale-ui))] py-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-control-input-fg)] shadow-[var(--onyx-shadow-sm)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--onyx-control-focus-ring)] disabled:cursor-not-allowed disabled:opacity-50',
       className
     )}
     {...props}
@@ -38,8 +38,8 @@ const SelectContent = React.forwardRef<
       ref={ref}
       data-slot="select-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[8rem] overflow-hidden rounded-[var(--onyx-radius-md)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
-        position === 'popper' && 'translate-y-1',
+        'z-[var(--onyx-z-popover)] min-w-[calc(128px*var(--onyx-scale-ui))] max-w-[calc(100vw-16px)] max-h-[var(--radix-select-content-available-height,85vh)] overflow-y-auto rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
+        position === 'popper' && 'translate-y-[calc(4px*var(--onyx-scale-ui))]',
         className
       )}
       position={position}
@@ -48,7 +48,7 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Viewport
         data-slot="select-viewport"
         className={cn(
-          'p-1',
+          'p-[calc(4px*var(--onyx-scale-ui))]',
           position === 'popper' &&
             'max-h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)] overflow-y-auto'
         )}
@@ -68,7 +68,7 @@ const SelectLabel = React.forwardRef<
     ref={ref}
     data-slot="select-label"
     className={cn(
-      'py-1.5 pl-8 pr-2 text-xs font-semibold text-[var(--onyx-text-description)]',
+      'py-[calc(6px*var(--onyx-scale-ui))] pl-[calc(32px*var(--onyx-scale-ui))] pr-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(12px*var(--onyx-scale-ui))] leading-[1.333333] font-semibold text-[var(--onyx-text-description)]',
       className
     )}
     {...props}
@@ -87,18 +87,18 @@ const SelectItem = React.forwardRef<
     ref={ref}
     data-slot="select-item"
     className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'relative flex min-h-[max(24px,calc(32px*var(--onyx-scale-ui)))] w-full cursor-default select-none items-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] py-[calc(6px*var(--onyx-scale-ui))] pl-[calc(32px*var(--onyx-scale-ui))] pr-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute left-[calc(8px*var(--onyx-scale-ui))] flex h-[calc(14px*var(--onyx-scale-ui))] w-[calc(14px*var(--onyx-scale-ui))] items-center justify-center">
       <SelectPrimitive.ItemIndicator>
         <Icon name="check" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </SelectPrimitive.ItemIndicator>
     </span>
     {leading ? (
-      <span data-slot="select-item-leading" className="flex h-4 w-4 shrink-0 items-center justify-center">
+      <span data-slot="select-item-leading" className="flex h-[calc(16px*var(--onyx-scale-ui))] w-[calc(16px*var(--onyx-scale-ui))] shrink-0 items-center justify-center">
         {leading}
       </span>
     ) : null}
@@ -119,7 +119,7 @@ const SelectSeparator = React.forwardRef<
   <SelectPrimitive.Separator
     ref={ref}
     data-slot="select-separator"
-    className={cn('my-1 h-px bg-[var(--onyx-shell-tabs-border)]', className)}
+    className={cn('my-[calc(4px*var(--onyx-scale-ui))] h-px bg-[var(--onyx-shell-tabs-border)]', className)}
     {...props}
   />
 ));

@@ -9,7 +9,7 @@ export const Kbd = React.forwardRef<HTMLElement, KbdProps>(({ className, ...prop
     ref={ref}
     data-slot="kbd"
     className={cn(
-      'inline-flex min-h-[20px] items-center justify-center rounded-[var(--onyx-radius-sm)] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-panel)] px-1.5 py-0.5 text-[10px] font-semibold leading-none text-[var(--onyx-text-muted)] shadow-[inset_0_-1px_0_rgba(16,15,15,0.25)]',
+      'inline-flex min-h-[max(16px,calc(20px*var(--onyx-scale-ui)))] items-center justify-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-panel)] px-[calc(6px*var(--onyx-scale-ui))] py-[calc(2px*var(--onyx-scale-ui))] text-[length:calc(10px*var(--onyx-scale-ui))] font-semibold leading-none text-[var(--onyx-text-muted)] shadow-[inset_0_-1px_0_rgba(16,15,15,0.25)]',
       className
     )}
     {...props}

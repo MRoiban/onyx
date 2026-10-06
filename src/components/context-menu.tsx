@@ -21,8 +21,8 @@ export const ContextMenuSubTrigger = forwardRef<
     ref={ref}
     data-slot="context-menu-sub-trigger"
     className={cn(
-      'group flex cursor-default select-none items-center rounded-[4px] px-3 py-[5px] text-sm leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
-      inset && 'pl-8',
+      'group flex min-h-[max(24px,calc(30px*var(--onyx-scale-ui)))] cursor-default select-none items-center rounded-[calc(4px*var(--onyx-scale-ui))] px-[calc(12px*var(--onyx-scale-ui))] py-[calc(5px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[state=open]:bg-[var(--onyx-state-selected)] data-[state=open]:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      inset && 'pl-[calc(32px*var(--onyx-scale-ui))]',
       className
     )}
     {...props}
@@ -31,7 +31,7 @@ export const ContextMenuSubTrigger = forwardRef<
     <Icon
       name="chevron-right"
       size="sm"
-      className="ml-6 text-[var(--onyx-text-muted)] group-focus:text-[var(--onyx-state-selected-fg)] group-data-[state=open]:text-[var(--onyx-state-selected-fg)]"
+      className="ml-[calc(24px*var(--onyx-scale-ui))] text-[var(--onyx-text-muted)] group-focus:text-[var(--onyx-state-selected-fg)] group-data-[state=open]:text-[var(--onyx-state-selected-fg)]"
     />
   </ContextMenuPrimitive.SubTrigger>
 ));
@@ -46,7 +46,7 @@ export const ContextMenuSubContent = forwardRef<
       ref={ref}
       data-slot="context-menu-sub-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
+        'z-[var(--onyx-z-popover)] min-w-[calc(252px*var(--onyx-scale-ui))] max-w-[calc(100vw-16px)] max-h-[var(--radix-context-menu-content-available-height,85vh)] overflow-y-auto rounded-[calc(6px*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-[calc(4px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         className
       )}
       {...props}
@@ -64,7 +64,7 @@ export const ContextMenuContent = forwardRef<
       ref={ref}
       data-slot="context-menu-content"
       className={cn(
-        'z-[var(--onyx-z-popover)] min-w-[252px] overflow-hidden rounded-[6px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-1 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
+        'z-[var(--onyx-z-popover)] min-w-[calc(252px*var(--onyx-scale-ui))] max-w-[calc(100vw-16px)] max-h-[var(--radix-context-menu-content-available-height,85vh)] overflow-y-auto rounded-[calc(6px*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-[calc(4px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         className
       )}
       {...props}
@@ -83,8 +83,8 @@ export const ContextMenuItem = forwardRef<
     ref={ref}
     data-slot="context-menu-item"
     className={cn(
-      'group relative flex cursor-default select-none items-center gap-0 rounded-[4px] px-3 py-[5px] text-sm leading-5 text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
-      inset && 'pl-8',
+      'group relative flex min-h-[max(24px,calc(30px*var(--onyx-scale-ui)))] cursor-default select-none items-center gap-[calc(0px*var(--onyx-scale-ui))] rounded-[calc(4px*var(--onyx-scale-ui))] px-[calc(12px*var(--onyx-scale-ui))] py-[calc(5px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      inset && 'pl-[calc(32px*var(--onyx-scale-ui))]',
       className
     )}
     {...props}
@@ -101,12 +101,12 @@ export const ContextMenuCheckboxItem = forwardRef<
     data-slot="context-menu-checkbox-item"
     checked={checked}
     className={cn(
-      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex min-h-[max(24px,calc(30px*var(--onyx-scale-ui)))] cursor-default select-none items-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] py-[calc(6px*var(--onyx-scale-ui))] pl-[calc(32px*var(--onyx-scale-ui))] pr-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute left-[calc(8px*var(--onyx-scale-ui))] flex h-[calc(14px*var(--onyx-scale-ui))] w-[calc(14px*var(--onyx-scale-ui))] items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
         <Icon name="check" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </ContextMenuPrimitive.ItemIndicator>
@@ -124,12 +124,12 @@ export const ContextMenuRadioItem = forwardRef<
     ref={ref}
     data-slot="context-menu-radio-item"
     className={cn(
-      'group relative flex cursor-default select-none items-center rounded-[var(--onyx-radius-sm)] py-1.5 pl-8 pr-2 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
+      'group relative flex min-h-[max(24px,calc(30px*var(--onyx-scale-ui)))] cursor-default select-none items-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] py-[calc(6px*var(--onyx-scale-ui))] pl-[calc(32px*var(--onyx-scale-ui))] pr-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors focus:bg-[var(--onyx-state-selected)] focus:text-[var(--onyx-state-selected-fg)] data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40',
       className
     )}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute left-[calc(8px*var(--onyx-scale-ui))] flex h-[calc(14px*var(--onyx-scale-ui))] w-[calc(14px*var(--onyx-scale-ui))] items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
         <Icon name="primitive-dot" size="sm" className="text-[var(--onyx-state-selected-fg)]" />
       </ContextMenuPrimitive.ItemIndicator>
@@ -149,8 +149,8 @@ export const ContextMenuLabel = forwardRef<
     ref={ref}
     data-slot="context-menu-label"
     className={cn(
-      'px-3 pb-1 pt-2 text-xs font-semibold text-[var(--onyx-text-description)]',
-      inset && 'pl-8',
+      'px-[calc(12px*var(--onyx-scale-ui))] pb-[calc(4px*var(--onyx-scale-ui))] pt-[calc(8px*var(--onyx-scale-ui))] text-[length:calc(12px*var(--onyx-scale-ui))] leading-[1.333333] font-semibold text-[var(--onyx-text-description)]',
+      inset && 'pl-[calc(32px*var(--onyx-scale-ui))]',
       className
     )}
     {...props}
@@ -165,7 +165,7 @@ export const ContextMenuSeparator = forwardRef<
   <ContextMenuPrimitive.Separator
     ref={ref}
     data-slot="context-menu-separator"
-    className={cn('mx-3 my-1 h-px bg-[var(--onyx-shell-tabs-border)]', className)}
+    className={cn('mx-[calc(12px*var(--onyx-scale-ui))] my-[calc(4px*var(--onyx-scale-ui))] h-px bg-[var(--onyx-shell-tabs-border)]', className)}
     {...props}
   />
 ));
@@ -177,7 +177,7 @@ export const ContextMenuShortcut = ({
 }: ComponentPropsWithoutRef<'span'>) => (
   <span
     data-slot="context-menu-shortcut"
-    className={cn('ml-auto text-xs text-[var(--onyx-text-description)]', className)}
+    className={cn('ml-auto text-[length:calc(12px*var(--onyx-scale-ui))] leading-[1.333333] text-[var(--onyx-text-description)]', className)}
     {...props}
   />
 );

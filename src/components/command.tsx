@@ -13,7 +13,7 @@ const Command = React.forwardRef<
     ref={ref}
     data-slot="command"
     className={cn(
-      'flex h-full w-full flex-col overflow-hidden rounded-[var(--onyx-radius-md)] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)]',
+      'flex h-full w-full flex-col overflow-hidden rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] bg-[var(--onyx-surface-menu)] text-[var(--onyx-text-foreground)]',
       className
     )}
     {...props}
@@ -32,7 +32,7 @@ const CommandDialog = ({
   ...props
 }: CommandDialogProps) => (
   <Dialog modal={modal} {...props}>
-    <DialogContent className="mb-auto mt-[12vh] max-w-[640px] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-0 text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
+    <DialogContent className="overflow-visible mb-auto mt-[12vh] max-w-[min(calc(640px*var(--onyx-scale-ui)),calc(100vw-48px))] sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(0px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
@@ -46,13 +46,13 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div data-slot="command-input-shell" className="flex items-center border-b border-[var(--onyx-shell-tabs-border)] px-4">
+  <div data-slot="command-input-shell" className="flex items-center border-b border-[var(--onyx-shell-tabs-border)] px-[calc(16px*var(--onyx-scale-ui))]">
     <Icon name="search" size="sm" className="text-[var(--onyx-text-description)]" />
     <CommandPrimitive.Input
       ref={ref}
       data-slot="command-input"
       className={cn(
-        'flex h-10 w-full items-center bg-transparent py-2 pl-3 text-sm text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
+        'flex h-[max(32px,calc(40px*var(--onyx-scale-ui)))] w-full items-center bg-transparent py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(12px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
         className
       )}
       {...props}
@@ -68,7 +68,7 @@ const CommandList = React.forwardRef<
   <CommandPrimitive.List
     ref={ref}
     data-slot="command-list"
-    className={cn('max-h-[420px] overflow-y-auto overflow-x-hidden', className)}
+    className={cn('max-h-[min(calc(420px*var(--onyx-scale-ui)),60vh,max(0px,calc(85vh-max(32px,calc(40px*var(--onyx-scale-ui)))-3px)))] overflow-y-auto overflow-x-hidden', className)}
     {...props}
   />
 ));
@@ -81,7 +81,7 @@ const CommandEmpty = React.forwardRef<
   <CommandPrimitive.Empty
     ref={ref}
     data-slot="command-empty"
-    className={cn('py-12 text-center text-sm text-[var(--onyx-text-description)]', className)}
+    className={cn('py-[calc(48px*var(--onyx-scale-ui))] text-center text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-description)]', className)}
     {...props}
   />
 ));
@@ -95,7 +95,7 @@ const CommandGroup = React.forwardRef<
     ref={ref}
     data-slot="command-group"
     className={cn(
-      'overflow-hidden py-2 text-[var(--onyx-text-muted)] [&_[cmdk-group-heading]]:px-4 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold',
+      'overflow-hidden py-[calc(8px*var(--onyx-scale-ui))] text-[var(--onyx-text-muted)] [&_[cmdk-group-heading]]:px-[calc(16px*var(--onyx-scale-ui))] [&_[cmdk-group-heading]]:text-[length:calc(12px*var(--onyx-scale-ui))] [&_[cmdk-group-heading]]:leading-[1.333333] [&_[cmdk-group-heading]]:font-semibold',
       className
     )}
     {...props}
@@ -110,7 +110,7 @@ const CommandSeparator = React.forwardRef<
   <CommandPrimitive.Separator
     ref={ref}
     data-slot="command-separator"
-    className={cn('mx-2 h-px bg-[var(--onyx-shell-tabs-border)]', className)}
+    className={cn('mx-[calc(8px*var(--onyx-scale-ui))] h-px bg-[var(--onyx-shell-tabs-border)]', className)}
     {...props}
   />
 ));
@@ -124,7 +124,7 @@ const CommandItem = React.forwardRef<
     ref={ref}
     data-slot="command-item"
     className={cn(
-      'group flex w-full cursor-default select-none items-center gap-2 rounded-[var(--onyx-radius-sm)] px-3 py-1 text-sm text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-state-selected-fg)]',
+      'group flex min-h-[max(22px,calc(28px*var(--onyx-scale-ui)))] w-full cursor-default select-none items-center gap-[calc(8px*var(--onyx-scale-ui))] rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] px-[calc(12px*var(--onyx-scale-ui))] py-[calc(4px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-40 aria-selected:bg-[var(--onyx-state-selected)] aria-selected:text-[var(--onyx-state-selected-fg)]',
       className
     )}
     {...props}
@@ -138,7 +138,7 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
   <span
     data-slot="command-shortcut"
     className={cn(
-      'ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-medium text-[var(--onyx-text-description)]',
+      'ml-auto inline-flex shrink-0 items-center gap-[calc(4px*var(--onyx-scale-ui))] whitespace-nowrap text-[length:calc(12px*var(--onyx-scale-ui))] leading-[1.333333] font-medium text-[var(--onyx-text-description)]',
       className
     )}
     {...props}
