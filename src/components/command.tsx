@@ -32,12 +32,12 @@ const CommandDialog = ({
   ...props
 }: CommandDialogProps) => (
   <Dialog modal={modal} {...props}>
-    <DialogContent className="overflow-visible mb-auto mt-[12vh] max-w-[min(calc(640px*var(--onyx-scale-ui)),calc(100vw-48px))] sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(0px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
+    <DialogContent className="overflow-hidden mb-auto mt-[12vh] max-w-[min(calc(640px*var(--onyx-scale-ui)),calc(100vw-48px))] sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(0px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
       </DialogDescription>
-      <Command className="h-auto overflow-visible" shouldFilter={shouldFilter}>{children}</Command>
+      <Command className="h-auto rounded-none" shouldFilter={shouldFilter}>{children}</Command>
     </DialogContent>
   </Dialog>
 );
