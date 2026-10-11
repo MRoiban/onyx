@@ -8,7 +8,7 @@ A keyboard-navigable list of options for selecting one or many items, with typea
 ## Import
 
 ```tsx
-import { Listbox, ListboxGroup, useListbox, type CollectionKey } from '@onyx/ui/listbox';
+import { Listbox, ListboxGroup, useListbox, type CollectionKey } from '@mroiban/onyx/listbox';
 ```
 
 ## Example

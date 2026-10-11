@@ -8,7 +8,7 @@ A numeric input with up/down stepper buttons, limits, step snapping and locale-a
 ## Import
 
 ```tsx
-import { NumberField, useNumberField } from '@onyx/ui/number-field';
+import { NumberField, useNumberField } from '@mroiban/onyx/number-field';
 ```
 
 ## Example

@@ -12,7 +12,7 @@ import {
   ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem,
   ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub,
   ContextMenuSubTrigger, ContextMenuSubContent, ContextMenuCheckboxItem
-} from '@onyx/ui/context-menu';
+} from '@mroiban/onyx/context-menu';
 ```
 
 ## Example

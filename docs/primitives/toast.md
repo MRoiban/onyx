@@ -8,7 +8,7 @@ Short notifications that stack in a corner and disappear by themselves, such as 
 ## Import
 
 ```tsx
-import { ToastProvider, useToast } from '@onyx/ui/toast';
+import { ToastProvider, useToast } from '@mroiban/onyx/toast';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ The path to the current page or item (`Workspace / src / components / button.tsx
 ## Import
 
 ```tsx
-import { Breadcrumb, useBreadcrumb } from '@onyx/ui/breadcrumb';
+import { Breadcrumb, useBreadcrumb } from '@mroiban/onyx/breadcrumb';
 ```
 
 ## Example

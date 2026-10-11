@@ -8,7 +8,7 @@ A small button that stays pressed or unpressed, such as **Bold** or "Word wrap" 
 ## Import
 
 ```tsx
-import { Toggle } from '@onyx/ui/toggle';
+import { Toggle } from '@mroiban/onyx/toggle';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A date field with a calendar button. In single mode you can type the date (`YYYY
 ## Import
 
 ```tsx
-import { DatePicker, useDatePicker, formatRange } from '@onyx/ui/date-picker';
+import { DatePicker, useDatePicker, formatRange } from '@mroiban/onyx/date-picker';
 ```
 
 ## Example

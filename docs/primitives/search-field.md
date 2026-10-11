@@ -8,7 +8,7 @@ A search input with a magnifier icon, a clear (×) button that appears once ther
 ## Import
 
 ```tsx
-import { SearchField, useSearchField } from '@onyx/ui/search-field';
+import { SearchField, useSearchField } from '@mroiban/onyx/search-field';
 ```
 
 ## Example

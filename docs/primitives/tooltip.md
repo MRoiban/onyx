@@ -8,8 +8,8 @@ A short label that appears when the pointer hovers over a control or the control
 ## Import
 
 ```tsx
-import { Tooltip, TooltipProvider } from '@onyx/ui/tooltip';
-import { formatShortcut } from '@onyx/ui/kbd';
+import { Tooltip, TooltipProvider } from '@mroiban/onyx/tooltip';
+import { formatShortcut } from '@mroiban/onyx/kbd';
 ```
 
 ## Example

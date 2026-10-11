@@ -8,7 +8,7 @@ A thin horizontal or vertical line between groups of content, optionally with a 
 ## Import
 
 ```tsx
-import { Separator } from '@onyx/ui/separator';
+import { Separator } from '@mroiban/onyx/separator';
 ```
 
 ## Example

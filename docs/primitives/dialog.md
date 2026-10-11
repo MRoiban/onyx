@@ -11,8 +11,8 @@ A modal window centered over the page. Use it for a short task the user finishes
 import {
   Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter, DialogClose
-} from '@onyx/ui/dialog';
-import { Button } from '@onyx/ui/button';
+} from '@mroiban/onyx/dialog';
+import { Button } from '@mroiban/onyx/button';
 ```
 
 ## Example

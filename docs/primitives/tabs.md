@@ -8,7 +8,7 @@ A row of tabs, each showing its own panel. Comes in two styles: `editor` (VS Cod
 ## Import
 
 ```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent, TabClose, TabBadge } from '@onyx/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent, TabClose, TabBadge } from '@mroiban/onyx/tabs';
 ```
 
 ## Example

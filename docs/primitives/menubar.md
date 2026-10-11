@@ -12,7 +12,7 @@ import {
   Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarShortcut,
   MenubarSeparator, MenubarSub, MenubarSubTrigger, MenubarSubContent,
   MenubarCheckboxItem, MenubarRadioGroup, MenubarRadioItem, MenubarLabel, MenubarGroup
-} from '@onyx/ui/menubar';
+} from '@mroiban/onyx/menubar';
 ```
 
 ## Example

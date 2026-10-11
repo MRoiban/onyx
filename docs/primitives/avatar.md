@@ -8,7 +8,7 @@ A person's picture, falling back to their initials while the image loads or if i
 ## Import
 
 ```tsx
-import { Avatar, AvatarGroup, AvatarImage, AvatarFallback, getAvatarInitials } from '@onyx/ui/avatar';
+import { Avatar, AvatarGroup, AvatarImage, AvatarFallback, getAvatarInitials } from '@mroiban/onyx/avatar';
 ```
 
 ## Example

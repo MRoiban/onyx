@@ -8,7 +8,7 @@ A full color editor: a saturation/brightness area, a hue slider, an optional opa
 ## Import
 
 ```tsx
-import { ColorPicker, useColorPicker, hexToRgb, rgbToHex, hexToHsv, hsvToHex, rgbToHsv, hsvToRgb } from '@onyx/ui/color-picker';
+import { ColorPicker, useColorPicker, hexToRgb, rgbToHex, hexToHsv, hsvToHex, rgbToHsv, hsvToRgb } from '@mroiban/onyx/color-picker';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A hook that virtualizes fixed-height rows inside a scroll container **you alread
 ## Import
 
 ```tsx
-import { useFixedVirtualList, calculateFixedVirtualListWindow } from '@onyx/ui/fixed-virtual-list';
+import { useFixedVirtualList, calculateFixedVirtualListWindow } from '@mroiban/onyx/fixed-virtual-list';
 ```
 
 ## Example

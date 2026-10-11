@@ -14,7 +14,7 @@ import {
   SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuBadge,
   SidebarSeparator, SidebarViewHeader, SidebarViewTitle, SidebarMenuSkeleton, useSidebar,
   ActivityBar, ActivityBarItem, ActivityBarSeparator, ActivityBarSpacer, WorkbenchSidebar
-} from '@onyx/ui/sidebar';
+} from '@mroiban/onyx/sidebar';
 ```
 
 ## Example: ready-made workbench

@@ -8,7 +8,7 @@ Previous and next buttons with page numbers, collapsing long ranges into ellipse
 ## Import
 
 ```tsx
-import { Pagination, PaginationButton, usePagination, getPaginationRange } from '@onyx/ui/pagination';
+import { Pagination, PaginationButton, usePagination, getPaginationRange } from '@mroiban/onyx/pagination';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A command menu your code opens at a screen point, built from a plain array of it
 ## Import
 
 ```tsx
-import { ActionMenu, type ActionMenuItem } from '@onyx/ui/action-menu';
+import { ActionMenu, type ActionMenuItem } from '@mroiban/onyx/action-menu';
 ```
 
 ## Example

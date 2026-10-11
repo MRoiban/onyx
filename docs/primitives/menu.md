@@ -11,7 +11,7 @@ A dropdown list of commands that opens from a button. It supports checkable item
 import {
   Menu, MenuTrigger, MenuContent, MenuItem, MenuShortcut, MenuSeparator, MenuLabel,
   MenuGroup, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSub, MenuSubTrigger, MenuSubContent
-} from '@onyx/ui/menu';
+} from '@mroiban/onyx/menu';
 ```
 
 ## Example

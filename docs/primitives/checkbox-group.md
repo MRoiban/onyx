@@ -8,7 +8,7 @@ A set of checkboxes that share one `string[]` value, with an optional "select al
 ## Import
 
 ```tsx
-import { CheckboxGroup, CheckboxGroupItem, CheckboxGroupSelectAll, useCheckboxGroup } from '@onyx/ui/checkbox-group';
+import { CheckboxGroup, CheckboxGroupItem, CheckboxGroupSelectAll, useCheckboxGroup } from '@mroiban/onyx/checkbox-group';
 ```
 
 ## Example

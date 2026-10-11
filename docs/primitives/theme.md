@@ -8,8 +8,8 @@
 ## Import
 
 ```tsx
-import '@onyx/ui/styles.css';
-import { OnyxThemeRoot } from '@onyx/ui/theme';
+import '@mroiban/onyx/styles.css';
+import { OnyxThemeRoot } from '@mroiban/onyx/theme';
 ```
 
 ## Example
@@ -59,10 +59,15 @@ Because component defaults are resolved where they are used, an override on an a
 
 ## Setup
 
-1. Import `@onyx/ui/styles.css` once. It is source CSS, so compile it with your Tailwind 3 build.
-2. Add the Onyx source to Tailwind's `content` (`./node_modules/@onyx/ui/src/**/*.{ts,tsx}`).
-3. When you write your own stylesheet entry, keep `@tailwind utilities;` **and** `@tailwind variants;` inside `@layer onyx.components`. The provided stylesheet already does this.
-4. Optional: the preset `presets: [require('@onyx/ui/tailwind.preset.cjs')]` exposes Onyx's animation names to your own utilities (it requires `tailwindcss-animate`). Onyx's own animations work without it.
+1. Import `@mroiban/onyx/styles.css` once, at the app entry. It is prebuilt (all Onyx styles plus the Codicon font) and needs no Tailwind or PostCSS.
+2. Import your own app CSS after it; Onyx styles sit in cascade layers, so your rules win.
+
+**Compiling the styles yourself** (only if you want one shared Tailwind 3 build):
+
+1. Import `@mroiban/onyx/source.css` instead of `styles.css`.
+2. Add the Onyx source to Tailwind's `content` (`./node_modules/@mroiban/onyx/src/**/*.{ts,tsx}`).
+3. When you write your own stylesheet entry, keep `@tailwind utilities;` **and** `@tailwind variants;` inside `@layer onyx.components`. `source.css` already does this.
+4. Optional: the preset `presets: [require('@mroiban/onyx/tailwind.preset.cjs')]` exposes Onyx's animation names to your own utilities (it requires `tailwindcss-animate`). Onyx's own animations work without it.
 
 ## Anatomy
 

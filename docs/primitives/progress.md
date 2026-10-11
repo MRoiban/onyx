@@ -8,7 +8,7 @@ A bar that fills as a task completes. When the total isn't known it shows an ind
 ## Import
 
 ```tsx
-import { Progress, getProgressPercent } from '@onyx/ui/progress';
+import { Progress, getProgressPercent } from '@mroiban/onyx/progress';
 ```
 
 ## Example

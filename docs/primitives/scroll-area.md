@@ -8,7 +8,7 @@ A scrolling region with a themed, overlay scrollbar (it takes no layout space) a
 ## Import
 
 ```tsx
-import { ScrollArea } from '@onyx/ui/scroll-area';
+import { ScrollArea } from '@mroiban/onyx/scroll-area';
 ```
 
 ## Example

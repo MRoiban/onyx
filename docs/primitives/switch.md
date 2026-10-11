@@ -8,7 +8,7 @@ An on/off toggle drawn as a sliding track and thumb. A change takes effect immed
 ## Import
 
 ```tsx
-import { Switch } from '@onyx/ui/switch';
+import { Switch } from '@mroiban/onyx/switch';
 ```
 
 ## Example

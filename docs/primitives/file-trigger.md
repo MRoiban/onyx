@@ -8,7 +8,7 @@ A [Button](button.md) that opens the system file picker and passes back the chos
 ## Import
 
 ```tsx
-import { FileTrigger } from '@onyx/ui/file-trigger';
+import { FileTrigger } from '@mroiban/onyx/file-trigger';
 ```
 
 ## Example

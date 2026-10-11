@@ -8,7 +8,7 @@ An input with attached extras that share one border: a leading icon or text (`ht
 ## Import
 
 ```tsx
-import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton, InputGroupSeparator } from '@onyx/ui/input-group';
+import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton, InputGroupSeparator } from '@mroiban/onyx/input-group';
 ```
 
 ## Example

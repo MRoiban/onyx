@@ -8,7 +8,7 @@ A bar showing a measurement within a known range, such as disk usage, quota or b
 ## Import
 
 ```tsx
-import { Meter, useMeter } from '@onyx/ui/meter';
+import { Meter, useMeter } from '@mroiban/onyx/meter';
 ```
 
 ## Example

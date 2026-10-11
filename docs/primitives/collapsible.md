@@ -8,7 +8,7 @@ A single show/hide section. A trigger with a chevron reveals or hides the conten
 ## Import
 
 ```tsx
-import { Collapsible, CollapsibleTrigger, CollapsibleContent, useCollapsible } from '@onyx/ui/collapsible';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent, useCollapsible } from '@mroiban/onyx/collapsible';
 ```
 
 ## Example

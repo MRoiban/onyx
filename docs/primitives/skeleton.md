@@ -8,7 +8,7 @@ A shimmering gray placeholder shaped like the content that is about to load: lin
 ## Import
 
 ```tsx
-import { Skeleton } from '@onyx/ui/skeleton';
+import { Skeleton } from '@mroiban/onyx/skeleton';
 ```
 
 ## Example

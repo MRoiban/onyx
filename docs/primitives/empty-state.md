@@ -8,7 +8,7 @@ A centered placeholder for an area with nothing to show: an icon, a title, an ex
 ## Import
 
 ```tsx
-import { EmptyState, EmptyStateIcon, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from '@onyx/ui/empty-state';
+import { EmptyState, EmptyStateIcon, EmptyStateTitle, EmptyStateDescription, EmptyStateActions } from '@mroiban/onyx/empty-state';
 ```
 
 ## Example

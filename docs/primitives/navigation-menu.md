@@ -11,7 +11,7 @@ Website-style top navigation. Each item is a link, or a trigger that opens a pan
 import {
   NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger,
   NavigationMenuContent, NavigationMenuLink, NavigationMenuIndicator
-} from '@onyx/ui/navigation-menu';
+} from '@mroiban/onyx/navigation-menu';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A row of single-character cells for a short verification code, such as a 6-digit
 ## Import
 
 ```tsx
-import { OTPField, useOTPField } from '@onyx/ui/otp-field';
+import { OTPField, useOTPField } from '@mroiban/onyx/otp-field';
 ```
 
 ## Example

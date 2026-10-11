@@ -14,7 +14,7 @@ Small, non-interactive status indicators.
 ## Import
 
 ```tsx
-import { Badge, Count, StatusDot, formatCount, badgeVariants } from '@onyx/ui/badge';
+import { Badge, Count, StatusDot, formatCount, badgeVariants } from '@mroiban/onyx/badge';
 ```
 
 ## Example

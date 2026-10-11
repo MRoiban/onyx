@@ -8,7 +8,7 @@ A draggable, keyboard-accessible divider that changes the size of the region nex
 ## Import
 
 ```tsx
-import { ResizeHandle, useResizable } from '@onyx/ui/resize-handle';
+import { ResizeHandle, useResizable } from '@mroiban/onyx/resize-handle';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A small key-cap chip that shows a keyboard shortcut. `formatShortcut` turns stri
 ## Import
 
 ```tsx
-import { Kbd, formatShortcut } from '@onyx/ui/kbd';
+import { Kbd, formatShortcut } from '@mroiban/onyx/kbd';
 ```
 
 ## Example

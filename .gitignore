@@ -3,3 +3,5 @@ gallery/onyx.css
 gallery/codicon.ttf
 gallery/screenshots/
 .DS_Store
+dist/
+*.tgz

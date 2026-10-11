@@ -62,7 +62,7 @@ These do **not** follow automatically, so pass `container` yourself, or avoid us
 - [Select](select.md)
 - [SectionSelect](section-select.md)
 
-For your own modal, capture its element with a callback ref and wrap its content in `PortalContainerProvider` (from `@onyx/ui/popover`), or pass the element to each floating component's `container` prop. DatePicker takes it through `contentProps.container`. Keep the container inside the modal's focus scope.
+For your own modal, capture its element with a callback ref and wrap its content in `PortalContainerProvider` (from `@mroiban/onyx/popover`), or pass the element to each floating component's `container` prop. DatePicker takes it through `contentProps.container`. Keep the container inside the modal's focus scope.
 
 ```tsx
 <DialogContent>
@@ -179,7 +179,7 @@ For your own modal, capture its element with a callback ref and wrap its content
 
 ## Theming
 
-Import `@onyx/ui/styles.css` and include Onyx source in your Tailwind 3 content list; no extra PostCSS step is required. See [Theme](theme.md) for setup.
+Import `@mroiban/onyx/styles.css` once; it is prebuilt and needs no Tailwind setup. To compile styles with your own Tailwind 3 build, use `source.css` instead. See [Theme](theme.md#setup).
 
 Use `OnyxThemeRoot` or `data-theme="dark|light"` and `data-density="compact|comfortable"` on any ancestor. Omitted root props inherit. Body portals inherit the document root; synchronize those attributes on `<html>` when needed.
 
@@ -195,7 +195,7 @@ All library rules, including responsive/state utilities and portable animations,
 
 ## Headless utilities
 
-Import from `@onyx/ui/hooks` (also the root): `useControllableState`, `useRovingFocus`, `composeRefs`, `useComposedRefs`, `useFloatingPosition`. Radix `VisuallyHidden` and `Portal` are exported at the root and their respective subpaths.
+Import from `@mroiban/onyx/hooks` (also the root): `useControllableState`, `useRovingFocus`, `composeRefs`, `useComposedRefs`, `useFloatingPosition`. Radix `VisuallyHidden` and `Portal` are exported at the root and their respective subpaths.
 
 - `useControllableState({value, defaultValue, onChange})` returns `[value, setValue]`, with functional updates and controlled/uncontrolled behavior.
 - `useRovingFocus({orientation, loop, dir, selector})` returns `ref`, `onKeyDown`, `onFocusCapture`, `refresh`, `getItems`. Attach the ref and event handlers to your group root. It skips disabled/hidden/inert items, tracks dynamic children, supports arrows and Home/End, and preserves input editing keys. Call `refresh` for custom visibility changes.
@@ -204,6 +204,6 @@ Import from `@onyx/ui/hooks` (also the root): `useControllableState`, `useRoving
 
 ## Development
 
-`bun install`, then `bun run gallery` to serve the gallery on port 4816 with Tailwind watching the source. `bun run build:css` rebuilds the gallery CSS and assets. `bun run typecheck` and `bun test` validate the library and the registry (tests preload happy-dom). `bun run registry:sync` regenerates the registry from the actual imports.
+`bun install`, then `bun run gallery` to serve the gallery on port 4816 with Tailwind watching the source. `bun run build:css` rebuilds the gallery CSS and assets. `bun run typecheck` and `bun test` validate the library and the registry (tests preload happy-dom). `bun run registry:sync` regenerates the registry from the actual imports. `bun run build` writes the installable package to `dist/`.
 
 Component CSS lives in `@layer onyx.components`, in `src/styles/{overlays,forms,collections,display}.css`. When you add or change a primitive, update its page here in the format above and add it to the index and, if relevant, to the picker table.

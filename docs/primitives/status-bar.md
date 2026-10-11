@@ -8,7 +8,7 @@ The thin footer bar of a workbench (as in VS Code), holding small status items s
 ## Import
 
 ```tsx
-import { StatusBar, StatusBarGroup, StatusBarItem, StatusBarSpacer, statusBarItemVariants } from '@onyx/ui/status-bar';
+import { StatusBar, StatusBarGroup, StatusBarItem, StatusBarSpacer, statusBarItemVariants } from '@mroiban/onyx/status-bar';
 ```
 
 ## Example

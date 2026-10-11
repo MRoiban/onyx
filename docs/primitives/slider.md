@@ -8,7 +8,7 @@ A draggable control for choosing a number, or a range with two thumbs, within li
 ## Import
 
 ```tsx
-import { Slider, SliderTrack, SliderRange, SliderThumb } from '@onyx/ui/slider';
+import { Slider, SliderTrack, SliderRange, SliderThumb } from '@mroiban/onyx/slider';
 ```
 
 ## Example

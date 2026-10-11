@@ -8,7 +8,7 @@ A styled native checkbox (`<input type="checkbox">`) for turning one independent
 ## Import
 
 ```tsx
-import { Checkbox } from '@onyx/ui/checkbox';
+import { Checkbox } from '@mroiban/onyx/checkbox';
 ```
 
 ## Example

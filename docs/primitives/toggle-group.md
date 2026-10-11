@@ -8,7 +8,7 @@ A row of [Toggle](toggle.md) buttons that share one value: one pressed at a time
 ## Import
 
 ```tsx
-import { ToggleGroup, ToggleGroupItem } from '@onyx/ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from '@mroiban/onyx/toggle-group';
 ```
 
 ## Example

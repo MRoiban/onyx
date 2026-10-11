@@ -8,7 +8,7 @@ A text input with a filtered dropdown of options. It handles single or multiple 
 ## Import
 
 ```tsx
-import { Combobox, useCombobox, ComboboxHighlight, type ComboboxOption } from '@onyx/ui/combobox';
+import { Combobox, useCombobox, ComboboxHighlight, type ComboboxOption } from '@mroiban/onyx/combobox';
 ```
 
 ## Example

@@ -11,7 +11,7 @@
 ## Import
 
 ```tsx
-import { Panel, PanelHeader, PanelBody, PanelFooter, ListRow, TreeRow } from '@onyx/ui/panel';
+import { Panel, PanelHeader, PanelBody, PanelFooter, ListRow, TreeRow } from '@mroiban/onyx/panel';
 ```
 
 ## Example

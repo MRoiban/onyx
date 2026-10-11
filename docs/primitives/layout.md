@@ -15,7 +15,7 @@ Layout building blocks that space and align their children using Onyx's spacing 
 ## Import
 
 ```tsx
-import { Stack, Inline, Container, Grid, spaceValue } from '@onyx/ui/layout';
+import { Stack, Inline, Container, Grid, spaceValue } from '@mroiban/onyx/layout';
 ```
 
 ## Example

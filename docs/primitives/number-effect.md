@@ -8,7 +8,7 @@ Shows a number that rolls to its new value: the old value slides out as the new 
 ## Import
 
 ```tsx
-import { NumberEffect } from '@onyx/ui/number-effect';
+import { NumberEffect } from '@mroiban/onyx/number-effect';
 ```
 
 ## Example

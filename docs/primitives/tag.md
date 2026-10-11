@@ -8,7 +8,7 @@ Compact chips for selected values, usually with a remove (×) button. `TagGroup`
 ## Import
 
 ```tsx
-import { Tag, TagGroup, useTagGroup } from '@onyx/ui/tag';
+import { Tag, TagGroup, useTagGroup } from '@mroiban/onyx/tag';
 ```
 
 ## Example

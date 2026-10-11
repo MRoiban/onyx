@@ -11,7 +11,7 @@ A modal that interrupts the user to confirm a destructive or irreversible action
 import {
   AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogIcon,
   AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction
-} from '@onyx/ui/alert-dialog';
+} from '@mroiban/onyx/alert-dialog';
 ```
 
 ## Example

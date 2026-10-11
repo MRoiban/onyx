@@ -8,7 +8,7 @@ A password input with a show/hide button.
 ## Import
 
 ```tsx
-import { PasswordField, usePasswordField } from '@onyx/ui/password-field';
+import { PasswordField, usePasswordField } from '@mroiban/onyx/password-field';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ Two or more panes side by side (or stacked) with draggable handles between them.
 ## Import
 
 ```tsx
-import { SplitView, SplitViewPane, SplitViewHandle, useSplitView, normalizeSplitSizes, resizeSplitSizes } from '@onyx/ui/split-view';
+import { SplitView, SplitViewPane, SplitViewHandle, useSplitView, normalizeSplitSizes, resizeSplitSizes } from '@mroiban/onyx/split-view';
 ```
 
 ## Example

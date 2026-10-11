@@ -8,7 +8,7 @@ A styled semantic HTML table, with optional sortable column headers and selected
 ## Import
 
 ```tsx
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from '@onyx/ui/table';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from '@mroiban/onyx/table';
 ```
 
 ## Example

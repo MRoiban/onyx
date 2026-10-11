@@ -11,8 +11,8 @@ A searchable list of actions, filtered as you type. `CommandDialog` puts that li
 import {
   CommandDialog, Command, CommandInput, CommandList, CommandEmpty,
   CommandGroup, CommandItem, CommandSeparator, CommandShortcut
-} from '@onyx/ui/command';
-import { formatShortcut } from '@onyx/ui/kbd';
+} from '@mroiban/onyx/command';
+import { formatShortcut } from '@mroiban/onyx/kbd';
 ```
 
 ## Example

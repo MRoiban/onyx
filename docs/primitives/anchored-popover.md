@@ -8,7 +8,7 @@ A [Popover](popover.md) attached to an element that already exists in the page, 
 ## Import
 
 ```tsx
-import { AnchoredPopover } from '@onyx/ui/anchored-popover';
+import { AnchoredPopover } from '@mroiban/onyx/anchored-popover';
 ```
 
 ## Example

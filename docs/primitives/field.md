@@ -8,7 +8,7 @@ Wraps one form control with its label, help text and error message, and connects
 ## Import
 
 ```tsx
-import { Field, Label, FieldDescription, FieldError, Fieldset, Legend, useFieldControl } from '@onyx/ui/field';
+import { Field, Label, FieldDescription, FieldError, Fieldset, Legend, useFieldControl } from '@mroiban/onyx/field';
 ```
 
 ## Example

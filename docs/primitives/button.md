@@ -8,7 +8,7 @@ A clickable control that runs an action. It comes in several visual weights and 
 ## Import
 
 ```tsx
-import { Button } from '@onyx/ui/button';
+import { Button } from '@mroiban/onyx/button';
 ```
 
 ## Example

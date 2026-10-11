@@ -8,7 +8,7 @@ A set of options where exactly one can be chosen. It comes as classic radio butt
 ## Import
 
 ```tsx
-import { RadioGroup, RadioGroupItem, RadioGroupIndicator } from '@onyx/ui/radio-group';
+import { RadioGroup, RadioGroupItem, RadioGroupIndicator } from '@mroiban/onyx/radio-group';
 ```
 
 ## Example

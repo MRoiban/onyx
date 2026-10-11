@@ -8,7 +8,7 @@ A bordered surface that groups related content, with optional header, media, bod
 ## Import
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardBody, CardFooter, CardMedia } from '@onyx/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardBody, CardFooter, CardMedia } from '@mroiban/onyx/card';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A styled anchor for going to a page or URL. External links open in a new tab and
 ## Import
 
 ```tsx
-import { Link } from '@onyx/ui/link';
+import { Link } from '@mroiban/onyx/link';
 ```
 
 ## Example

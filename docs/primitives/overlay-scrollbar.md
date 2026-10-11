@@ -8,7 +8,7 @@ Adds Onyx's overlay scrollbar to a native vertical scroll element you already re
 ## Import
 
 ```tsx
-import { OverlayScrollbar, calculateOverlayScrollbarMetrics } from '@onyx/ui/overlay-scrollbar';
+import { OverlayScrollbar, calculateOverlayScrollbarMetrics } from '@mroiban/onyx/overlay-scrollbar';
 ```
 
 ## Example

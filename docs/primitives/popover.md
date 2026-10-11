@@ -11,7 +11,7 @@ A floating panel attached to a trigger. It holds interactive content such as set
 import {
   Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody,
   PopoverFooter, PopoverClose, PopoverArrow, PopoverAnchor
-} from '@onyx/ui/popover';
+} from '@mroiban/onyx/popover';
 ```
 
 ## Example

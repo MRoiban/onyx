@@ -56,7 +56,7 @@ Screenshots (desktop: 1280×2300; narrow: 390×3840):
 
 ## W1–W4 handoff
 
-- Import utilities from `@onyx/ui/hooks` or root: `useControllableState`, `useRovingFocus`, `composeRefs`, `useComposedRefs`, `useFloatingPosition`. Direct source files use kebab-case names under `src/lib/`.
+- Import utilities from `@mroiban/onyx/hooks` or root: `useControllableState`, `useRovingFocus`, `composeRefs`, `useComposedRefs`, `useFloatingPosition`. Direct source files use kebab-case names under `src/lib/`.
 - `useControllableState({value, defaultValue, onChange})` → `[value, setter]`; setter accepts a functional updater.
 - `useRovingFocus({orientation, loop, dir, selector})` → `{ref, onKeyDown, onFocusCapture, refresh, getItems}`. Attach all three root bindings; orientation is horizontal/vertical/both, loop defaults true. Disabled/hidden/inert items are skipped; native text editing keys are retained.
 - `useFloatingPosition({open, placement, offset, matchWidth, arrowRef})` → Floating UI refs/styles/update/middleware data. Default bottom-start, offset 4px, flip/shift/size with 8px collision padding, autoUpdate and optional arrow. Dismissal and ARIA/focus behavior are owned by the component.

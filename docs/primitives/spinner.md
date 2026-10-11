@@ -8,7 +8,7 @@ A small rotating ring that shows something is loading when you can't tell how fa
 ## Import
 
 ```tsx
-import { Spinner } from '@onyx/ui/spinner';
+import { Spinner } from '@mroiban/onyx/spinner';
 ```
 
 ## Example

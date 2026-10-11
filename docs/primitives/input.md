@@ -8,9 +8,9 @@ Text boxes. `Input` takes a single line, and `Textarea` takes multiple lines.
 ## Import
 
 ```tsx
-import { Input } from '@onyx/ui/input';
-import { Textarea } from '@onyx/ui/textarea';
-import { Field, Label, FieldDescription, FieldError } from '@onyx/ui/field';
+import { Input } from '@mroiban/onyx/input';
+import { Textarea } from '@mroiban/onyx/textarea';
+import { Field, Label, FieldDescription, FieldError } from '@mroiban/onyx/field';
 ```
 
 ## Example

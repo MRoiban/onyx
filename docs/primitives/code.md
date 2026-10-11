@@ -8,7 +8,7 @@ Inline monospaced text in a subtle chip, for identifiers, paths and short code f
 ## Import
 
 ```tsx
-import { Code } from '@onyx/ui/text';
+import { Code } from '@mroiban/onyx/text';
 ```
 
 `Code` lives in the Text module and is also exported from the package root.

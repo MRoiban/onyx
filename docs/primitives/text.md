@@ -15,7 +15,7 @@ Shared text styles, plus a helper that highlights search matches inside a string
 ## Import
 
 ```tsx
-import { Text, Heading, SectionLabel, HighlightedText } from '@onyx/ui/text';
+import { Text, Heading, SectionLabel, HighlightedText } from '@mroiban/onyx/text';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A row of action buttons that forms one keyboard stop: Tab enters the toolbar, an
 ## Import
 
 ```tsx
-import { Toolbar, ToolbarGroup, ToolbarButton, ToolbarSeparator } from '@onyx/ui/toolbar';
+import { Toolbar, ToolbarGroup, ToolbarButton, ToolbarSeparator } from '@mroiban/onyx/toolbar';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ An inline message box or a full-width banner with a tone icon, title, descriptio
 ## Import
 
 ```tsx
-import { Alert, AlertTitle, AlertDescription, AlertActions, useAlert } from '@onyx/ui/alert';
+import { Alert, AlertTitle, AlertDescription, AlertActions, useAlert } from '@mroiban/onyx/alert';
 ```
 
 ## Example

@@ -8,7 +8,7 @@ A month grid for picking one date or a date range, shown inline. For a field wit
 ## Import
 
 ```tsx
-import { Calendar, useCalendar, getWeekStartsOn, type CalendarValue, type DateRange } from '@onyx/ui/calendar';
+import { Calendar, useCalendar, getWeekStartsOn, type CalendarValue, type DateRange } from '@mroiban/onyx/calendar';
 ```
 
 ## Example

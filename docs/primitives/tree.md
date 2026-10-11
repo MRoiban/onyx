@@ -8,7 +8,7 @@ A keyboard-accessible hierarchical list with expand and collapse, selection, laz
 ## Import
 
 ```tsx
-import { Tree, useTree, flattenTree, resolveTreeNavigationAction, findTreeTypeAheadMatch } from '@onyx/ui/tree';
+import { Tree, useTree, flattenTree, resolveTreeNavigationAction, findTreeTypeAheadMatch } from '@mroiban/onyx/tree';
 ```
 
 ## Example

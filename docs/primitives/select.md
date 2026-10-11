@@ -11,8 +11,8 @@ A button that opens a list of options and shows the one currently chosen. It is 
 import {
   Select, SelectTrigger, SelectValue, SelectContent,
   SelectItem, SelectGroup, SelectLabel, SelectSeparator
-} from '@onyx/ui/select';
-import { Field, Label } from '@onyx/ui/field';
+} from '@mroiban/onyx/select';
+import { Field, Label } from '@mroiban/onyx/field';
 ```
 
 ## Example

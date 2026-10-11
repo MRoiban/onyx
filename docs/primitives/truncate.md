@@ -8,7 +8,7 @@ Shortens text that doesn't fit, with an ellipsis at the end or in the middle (`v
 ## Import
 
 ```tsx
-import { Truncate, useTruncate } from '@onyx/ui/truncate';
+import { Truncate, useTruncate } from '@mroiban/onyx/truncate';
 ```
 
 ## Example

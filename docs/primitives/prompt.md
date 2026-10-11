@@ -8,7 +8,7 @@ A compact card that asks one question and offers a stacked list of answers, oper
 ## Import
 
 ```tsx
-import { Prompt } from '@onyx/ui/prompt';
+import { Prompt } from '@mroiban/onyx/prompt';
 ```
 
 ## Example

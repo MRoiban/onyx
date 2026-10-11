@@ -8,7 +8,7 @@ A title-style switcher. The current section's name appears with a chevron, and c
 ## Import
 
 ```tsx
-import { SectionSelect, type SectionSelectItem } from '@onyx/ui/section-select';
+import { SectionSelect, type SectionSelectItem } from '@mroiban/onyx/section-select';
 ```
 
 ## Example

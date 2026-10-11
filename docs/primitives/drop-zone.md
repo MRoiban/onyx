@@ -8,7 +8,7 @@ An area that accepts files dropped onto it, and opens the file picker on click, 
 ## Import
 
 ```tsx
-import { DropZone, useDropZone, acceptsFile } from '@onyx/ui/drop-zone';
+import { DropZone, useDropZone, acceptsFile } from '@mroiban/onyx/drop-zone';
 ```
 
 ## Example

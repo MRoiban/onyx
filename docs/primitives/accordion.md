@@ -8,7 +8,7 @@ A stack of collapsible sections, configured so only one is open at a time (`sing
 ## Import
 
 ```tsx
-import { Accordion, AccordionItem, AccordionHeader, AccordionTrigger, AccordionContent, useAccordion } from '@onyx/ui/accordion';
+import { Accordion, AccordionItem, AccordionHeader, AccordionTrigger, AccordionContent, useAccordion } from '@mroiban/onyx/accordion';
 ```
 
 ## Example

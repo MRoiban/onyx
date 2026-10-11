@@ -11,7 +11,7 @@ A modal panel that slides in from an edge of the screen. It works as a drawer fo
 import {
   Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription,
   SheetBody, SheetFooter, SheetClose
-} from '@onyx/ui/sheet';
+} from '@mroiban/onyx/sheet';
 ```
 
 ## Example

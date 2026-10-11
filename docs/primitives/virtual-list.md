@@ -8,7 +8,7 @@ A scrolling viewport that renders only the rows currently visible, so lists of t
 ## Import
 
 ```tsx
-import { VirtualList, useVirtualList, calculateMeasuredVirtualWindow } from '@onyx/ui/virtual-list';
+import { VirtualList, useVirtualList, calculateMeasuredVirtualWindow } from '@mroiban/onyx/virtual-list';
 ```
 
 ## Example

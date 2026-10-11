@@ -8,7 +8,7 @@ A preview card that appears after a short delay when the pointer rests on a link
 ## Import
 
 ```tsx
-import { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardHeader, HoverCardBody, HoverCardFooter, HoverCardArrow } from '@onyx/ui/hover-card';
+import { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardHeader, HoverCardBody, HoverCardFooter, HoverCardArrow } from '@mroiban/onyx/hover-card';
 ```
 
 ## Example

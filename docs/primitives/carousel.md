@@ -8,7 +8,7 @@ A horizontally scrolling row of slides that snap into place, with previous and n
 ## Import
 
 ```tsx
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots, useCarousel } from '@onyx/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots, useCarousel } from '@mroiban/onyx/carousel';
 ```
 
 ## Example

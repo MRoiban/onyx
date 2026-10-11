@@ -8,7 +8,7 @@ Draws a [Codicon](https://microsoft.github.io/vscode-codicons/dist/codicon.html)
 ## Import
 
 ```tsx
-import { Icon } from '@onyx/ui/icon';
+import { Icon } from '@mroiban/onyx/icon';
 ```
 
 ## Example
@@ -34,7 +34,7 @@ Also exported: `normalizeCodiconName(name)`.
 
 ## Behavior contract
 
-**Onyx owns:** the Codicon font and CSS (part of `@onyx/ui/styles.css`, in the `onyx.base` layer), centering and accessible defaults.
+**Onyx owns:** the Codicon font and CSS (part of `@mroiban/onyx/styles.css`, in the `onyx.base` layer), centering and accessible defaults.
 
 **You supply:** the name, and a label when the icon alone carries meaning.
 

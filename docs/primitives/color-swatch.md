@@ -8,7 +8,7 @@ A color sample button. `ColorSwatchGroup` turns a set of swatches into a palette
 ## Import
 
 ```tsx
-import { ColorSwatch, ColorSwatchGroup } from '@onyx/ui/color-swatch';
+import { ColorSwatch, ColorSwatchGroup } from '@mroiban/onyx/color-swatch';
 ```
 
 ## Example
