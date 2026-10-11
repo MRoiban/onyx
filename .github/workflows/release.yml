@@ -14,6 +14,8 @@ jobs:
         with:
           node-version: 22
       - run: bun install --frozen-lockfile
+      - name: Install Chromium for browser tests
+        run: npx --yes playwright@1 install --with-deps --only-shell chromium
       - name: Check tag matches package version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
       - run: bun run typecheck

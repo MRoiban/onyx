@@ -29,7 +29,7 @@ const registry = JSON.parse(
 describe('onyx registry', () => {
   it('keeps package exports aligned with registry entries', () => {
     const exportedItems = Object.keys(packageJson.exports)
-      .filter((entry) => !['.', './styles.css', './package.json', './registry.json', './tailwind.preset.cjs'].includes(entry))
+      .filter((entry) => !['.', './styles.css', './source.css', './package.json', './registry.json', './tailwind.preset.cjs'].includes(entry))
       .map((entry) => entry.replace('./', ''))
       .sort();
     const registryItems = registry.items.map((item) => item.name).sort();

@@ -10,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - name: Install Chromium for browser tests
+        run: npx --yes playwright@1 install --with-deps --only-shell chromium
       - run: bun run typecheck
       - run: bun test
       - run: bun scripts/sync-registry.ts --check
