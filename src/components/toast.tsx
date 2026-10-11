@@ -340,8 +340,8 @@ export function useToastQueue({
             0,
             timer.remaining - (Date.now() - timer.started),
           );
-          timer.started = undefined;
-          timer.timer = undefined;
+          delete timer.started;
+          delete timer.timer;
         }
     };
   }, [toasts, paused, maxVisible, duration, dismiss, focusedId]);

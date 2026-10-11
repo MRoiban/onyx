@@ -88,7 +88,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
   },
 );
 Field.displayName = 'Field';
-export function useFieldControl(overrides?: { 'aria-label'?: string; 'aria-labelledby'?: string }) {
+export function useFieldControl(overrides?: Pick<React.AriaAttributes, 'aria-label' | 'aria-labelledby'>) {
   const field = React.useContext(FieldContext);
   return {
     id: field?.id,

@@ -38,7 +38,7 @@ export function useFloatingPosition({
     return () => { mounted.current = false; restoreWidth(); };
   }, [matchWidth]);
   return useFloating({
-    open,
+    ...(open === undefined ? {} : { open }),
     placement,
     whileElementsMounted: autoUpdate,
     middleware: [

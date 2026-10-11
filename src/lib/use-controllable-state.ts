@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type SetStateAction } from 'react';
 export interface UseControllableStateOptions<T> {
-  value?: T;
+  value?: T | undefined;
   defaultValue: T;
   onChange?: (value: T) => void;
 }
