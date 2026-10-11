@@ -52,7 +52,7 @@ const CommandInput = React.forwardRef<
       ref={ref}
       data-slot="command-input"
       className={cn(
-        'flex h-[max(32px,calc(40px*var(--onyx-scale-ui)))] w-full items-center bg-transparent py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(12px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--onyx-control-focus-ring)] placeholder:text-[var(--onyx-text-description)]',
+        'flex h-[max(32px,calc(40px*var(--onyx-scale-ui)))] w-full items-center bg-transparent py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(12px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
         className
       )}
       {...props}

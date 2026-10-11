@@ -110,7 +110,7 @@ browserDescribe("ActionMenu browser interaction", () => {
       const output = JSON.parse(json!);
       expect(output.error).toBeUndefined();
       expect(output.changes.length).toBeGreaterThanOrEqual(4);
-      expect(output.changes.every(value => value === false)).toBe(true);
+      expect(output.changes.every((value: boolean) => value === false)).toBe(true);
       delete output.changes;
       expect(output).toEqual({
         label: "Workspace commands", classForwarded: true, groups: ["Workspace", "Other"], collision: true,
