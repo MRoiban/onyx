@@ -18,7 +18,7 @@ export function calculateOverlayScrollbarMetrics({
   clientHeight: number;
   scrollHeight: number;
   scrollTop: number;
-  minThumbHeight?: number;
+  minThumbHeight?: number | undefined;
 }): OverlayScrollbarMetrics {
   if (clientHeight <= 0 || scrollHeight <= clientHeight) {
     return { visible: false, thumbHeight: 0, thumbOffset: 0 };

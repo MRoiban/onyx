@@ -14,7 +14,7 @@ export type ToggleGroupProps = React.ComponentPropsWithoutRef<
 export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
   ({ className, name, form, ...props }, ref) => {
     const field = useFieldControl(props);
-    props = { ...field, ...props, disabled: props.disabled ?? field.disabled };
+    props = { ...field, ...props, disabled: props.disabled ?? field.disabled ?? false };
     const [value, setInternal, reset] = useControllableState<string | string[]>({
       value: props.value,
       defaultValue: props.defaultValue ?? (props.type === 'multiple' ? [] : ''),

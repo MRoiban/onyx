@@ -8,7 +8,7 @@ export interface TreeNavigationItem<T> {
   expanded: boolean;
   label: string;
   data: T;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 export type TreeNavigationAction<T> =
@@ -32,14 +32,14 @@ export function resolveTreeNavigationAction<T>(
   const focusedIndex = available.findIndex(row => row.key === focusedKey);
   const focus = (row: TreeNavigationItem<T>, extend = shiftKey): TreeNavigationAction<T> =>
     ({ type: 'focus', key: row.key, item: row.data, extend });
-  const focusAt = (index: number) => focus(available[Math.max(0, Math.min(available.length - 1, index))]);
+  const focusAt = (index: number) => focus(available[Math.max(0, Math.min(available.length - 1, index))]!);
 
   if (focusedIndex < 0) {
     return ['ArrowDown', 'ArrowUp', 'Home', 'End', 'ArrowRight', 'ArrowLeft'].includes(key)
       ? focusAt(key === 'End' ? available.length - 1 : 0)
       : null;
   }
-  const focused = available[focusedIndex];
+  const focused = available[focusedIndex]!;
   const rowIndex = rows.indexOf(focused);
   switch (key) {
     case 'ArrowDown': return focusAt(focusedIndex + 1);
@@ -49,15 +49,15 @@ export function resolveTreeNavigationAction<T>(
     case 'ArrowRight':
       if (!focused.branch) return null;
       if (!focused.expanded) return { type: 'toggle', key: focused.key, item: focused.data };
-      for (let index = rowIndex + 1; index < rows.length && rows[index].depth > focused.depth; index++) {
-        const child = rows[index];
+      for (let index = rowIndex + 1; index < rows.length && rows[index]!.depth > focused.depth; index++) {
+        const child = rows[index]!;
         if (child.depth === focused.depth + 1 && !child.disabled) return focus(child);
       }
       return null;
     case 'ArrowLeft':
       if (focused.branch && focused.expanded) return { type: 'toggle', key: focused.key, item: focused.data };
       for (let index = rowIndex - 1; index >= 0; index--) {
-        const parent = rows[index];
+        const parent = rows[index]!;
         if (parent.depth < focused.depth) return parent.depth === focused.depth - 1 && !parent.disabled ? focus(parent, false) : null;
       }
       return null;
@@ -78,11 +78,11 @@ export function findTreeTypeAheadMatch<T>(
   if (!available.length || !prefix.length) return null;
   const needle = prefix.toLocaleLowerCase();
   const repeated = needle.length > 1 && [...needle].every(character => character === needle[0]);
-  const search = repeated ? needle[0] : needle;
+  const search = repeated ? needle[0]! : needle;
   const index = available.findIndex(row => row.key === focusedKey);
   const startOffset = search.length === 1 ? 1 : 0;
   for (let step = 0; step < available.length; step++) {
-    const row = available[(Math.max(index, -1) + startOffset + step + available.length) % available.length];
+    const row = available[(Math.max(index, -1) + startOffset + step + available.length) % available.length]!;
     if (row.label.toLocaleLowerCase().startsWith(search)) return row.data;
   }
   return null;

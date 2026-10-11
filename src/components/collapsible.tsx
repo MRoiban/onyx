@@ -10,9 +10,9 @@ export function useCollapsible({
   defaultOpen = false,
   onOpenChange,
 }: {
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
 } = {}) {
   const [value, setOpen] = useControllableState({
     value: open,
@@ -35,7 +35,7 @@ export const Collapsible = React.forwardRef<
 export const CollapsibleTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof Primitive.Trigger>
->(({ className, children, asChild, ...props }, ref) => (
+>(({ className, children, asChild = false, ...props }, ref) => (
   <Primitive.Trigger
     ref={ref}
     asChild={asChild}

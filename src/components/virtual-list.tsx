@@ -9,13 +9,13 @@ export { calculateMeasuredVirtualWindow, type MeasuredVirtualWindow } from '../l
 export const virtualListVariants = cva("onyx-virtual-list");
 export interface UseVirtualListOptions {
   count: number;
-  getKey?: (index: number) => React.Key;
+  getKey?: ((index: number) => React.Key) | undefined;
   /** Fixed height, or estimate for measured rows. Defaults to the density row token. */
-  rowHeight?: number;
-  measured?: boolean;
-  overscan?: number;
-  activeIndex?: number;
-  enabled?: boolean;
+  rowHeight?: number | undefined;
+  measured?: boolean | undefined;
+  overscan?: number | undefined;
+  activeIndex?: number | undefined;
+  enabled?: boolean | undefined;
 }
 export function useVirtualList({
   count,
@@ -65,7 +65,7 @@ export function useVirtualList({
     count,
     getScrollElement: () => ref.current,
     estimateSize: () => rowHeight ?? tokenHeight,
-    getItemKey: getKey,
+    ...(getKey ? { getItemKey: getKey } : {}),
     overscan,
     enabled,
     rangeExtractor: (range) => {

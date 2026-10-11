@@ -7,17 +7,17 @@ import { useFieldControl } from './field';
 import { Icon } from './icon';
 export const numberFieldVariants = cva('onyx-number-field');
 export interface UseNumberFieldOptions {
-  value?: number;
-  defaultValue?: number;
-  onValueChange?: (value: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  locale?: string;
-  formatOptions?: Intl.NumberFormatOptions;
-  disabled?: boolean;
-  readOnly?: boolean;
-  wheel?: boolean;
+  value?: number | undefined;
+  defaultValue?: number | undefined;
+  onValueChange?: ((value: number) => void) | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  step?: number | undefined;
+  locale?: string | undefined;
+  formatOptions?: Intl.NumberFormatOptions | undefined;
+  disabled?: boolean | undefined;
+  readOnly?: boolean | undefined;
+  wheel?: boolean | undefined;
 }
 export function useNumberField({
   value: controlled,

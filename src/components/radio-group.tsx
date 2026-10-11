@@ -45,7 +45,7 @@ RadioGroup.displayName = 'RadioGroup';
 export const RadioGroupItem = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof Primitive.Item>
->(({ className, children, asChild, ...props }, ref) => {
+>(({ className, children, asChild = false, ...props }, ref) => {
   const variant = React.useContext(VariantContext);
   return (
     <Primitive.Item

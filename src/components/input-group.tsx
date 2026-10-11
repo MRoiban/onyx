@@ -11,11 +11,11 @@ export const inputGroupInputVariants = cva('onyx-input-group-input');
 export const inputGroupButtonVariants = cva('onyx-input-group-button');
 export const inputGroupSeparatorVariants = cva('onyx-input-group-separator');
 export interface InputGroupProps extends React.ComponentPropsWithoutRef<'div'> {
-  asChild?: boolean;
-  invalid?: boolean;
-  disabled?: boolean;
-  leading?: React.ReactNode;
-  trailing?: React.ReactNode;
+  asChild?: boolean | undefined;
+  invalid?: boolean | undefined;
+  disabled?: boolean | undefined;
+  leading?: React.ReactNode | undefined;
+  trailing?: React.ReactNode | undefined;
 }
 export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
   (
@@ -61,7 +61,7 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
 InputGroup.displayName = 'InputGroup';
 export const InputGroupAddon = React.forwardRef<
   HTMLSpanElement,
-  React.ComponentPropsWithoutRef<'span'> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<'span'> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : 'span';
   return (
@@ -105,7 +105,7 @@ export const InputGroupButton = React.forwardRef<
 InputGroupButton.displayName = 'InputGroupButton';
 export const InputGroupSeparator = React.forwardRef<
   HTMLSpanElement,
-  React.ComponentPropsWithoutRef<'span'> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<'span'> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : 'span';
   return (

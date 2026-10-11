@@ -12,12 +12,12 @@ export interface SearchFieldProps extends Omit<
   InputProps,
   'value' | 'defaultValue' | 'onChange'
 > {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  toggles?: React.ReactNode;
-  clearable?: boolean;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  toggles?: React.ReactNode | undefined;
+  clearable?: boolean | undefined;
 }
 export function useSearchField({
   value,

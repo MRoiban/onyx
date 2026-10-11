@@ -8,7 +8,7 @@ export interface HSV {
   h: number;
   s: number;
   v: number;
-  a?: number;
+  a?: number | undefined;
 }
 const clamp = (v: number, max = 1) => Math.min(max, Math.max(0, v));
 export function rgbToHsv({ r, g, b, a }: RGB): HSV {

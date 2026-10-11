@@ -10,13 +10,14 @@ export const sliderVariants = cva('onyx-slider');
 export const sliderTrackVariants = cva('onyx-slider-track');
 export const sliderRangeVariants = cva('onyx-slider-range');
 export const sliderThumbVariants = cva('onyx-slider-thumb');
-export interface SliderProps extends React.ComponentPropsWithoutRef<
+export interface SliderProps extends Omit<React.ComponentPropsWithoutRef<
   typeof Primitive.Root
-> {
-  marks?: (number | { value: number; label: React.ReactNode })[];
-  showValue?: boolean;
-  formatValue?: (value: number) => string;
-  thumbLabels?: string[];
+>, 'disabled'> {
+  disabled?: boolean | undefined;
+  marks?: (number | { value: number; label: React.ReactNode })[] | undefined;
+  showValue?: boolean | undefined;
+  formatValue?: ((value: number) => string) | undefined;
+  thumbLabels?: string[] | undefined;
 }
 export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>(
   (
@@ -38,7 +39,7 @@ export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>(
   ) => {
     const thumbId = React.useId();
     const field = useFieldControl(props);
-    props = { ...field, ...props, disabled: props.disabled ?? field.disabled };
+    props = { ...field, ...props, disabled: props.disabled ?? field.disabled ?? false };
     const [values, setValues, reset] = useControllableState({
       value,
       defaultValue,
@@ -57,7 +58,6 @@ export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>(
         )}
         <Primitive.Root
           ref={composed}
-          {...field}
           data-slot="slider"
           data-invalid={props['aria-invalid'] && props['aria-invalid'] !== 'false' ? '' : undefined}
           className={cn(sliderVariants(), className)}
@@ -66,6 +66,7 @@ export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>(
           min={min}
           max={max}
           {...props}
+          disabled={props.disabled ?? false}
         >
           {children ?? (
             <>
@@ -98,7 +99,7 @@ export const Slider = React.forwardRef<HTMLSpanElement, SliderProps>(
                         : 'Maximum'
                       : undefined)
                   }
-                  aria-valuetext={formatValue(values[i])}
+                  aria-valuetext={formatValue(values[i]!)}
                 />
                 </React.Fragment>
               ))}

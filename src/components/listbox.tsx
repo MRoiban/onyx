@@ -11,15 +11,15 @@ export type CollectionKey = string | number;
 export interface UseListboxOptions<T> {
   items: readonly T[];
   getKey: (item: T) => CollectionKey;
-  getText?: (item: T) => string;
-  isDisabled?: (item: T) => boolean;
-  selectionMode?: "single" | "multiple" | "none";
-  selectedKeys?: readonly CollectionKey[];
-  defaultSelectedKeys?: readonly CollectionKey[];
-  onSelectionChange?: (keys: CollectionKey[]) => void;
-  focusedKey?: CollectionKey | null;
-  defaultFocusedKey?: CollectionKey | null;
-  onFocusChange?: (key: CollectionKey | null) => void;
+  getText?: ((item: T) => string) | undefined;
+  isDisabled?: ((item: T) => boolean) | undefined;
+  selectionMode?: "single" | "multiple" | "none" | undefined;
+  selectedKeys?: readonly CollectionKey[] | undefined;
+  defaultSelectedKeys?: readonly CollectionKey[] | undefined;
+  onSelectionChange?: ((keys: CollectionKey[]) => void) | undefined;
+  focusedKey?: CollectionKey | null | undefined;
+  defaultFocusedKey?: CollectionKey | null | undefined;
+  onFocusChange?: ((key: CollectionKey | null) => void) | undefined;
 }
 export function useListbox<T>({
   items,
@@ -75,10 +75,10 @@ export function useListbox<T>({
   const select = (
     key: CollectionKey,
     modifiers: {
-      shiftKey?: boolean;
-      ctrlKey?: boolean;
-      metaKey?: boolean;
-      toggle?: boolean;
+      shiftKey?: boolean | undefined;
+      ctrlKey?: boolean | undefined;
+      metaKey?: boolean | undefined;
+      toggle?: boolean | undefined;
     } = {},
   ) => {
     if (!enabled.some((item) => getKey(item) === key)) return;
@@ -152,10 +152,10 @@ export function useListbox<T>({
       const cycling = [...text].every((char) => char === text[0]);
       const refining = continuing && text.length > 1 && !cycling;
       const prefix = cycling
-        ? text[0]
+        ? text[0]!
         : text;
       next = [
-        ...(refining && index >= 0 ? [enabled[index]] : []),
+        ...(refining && index >= 0 ? [enabled[index]!] : []),
         ...enabled.slice(index + 1), ...enabled.slice(0, index + 1),
       ].find(
         (item) =>
@@ -294,7 +294,7 @@ function ListboxImpl<T>(
   const list = useVirtualList({
     count: virtualRows.length,
     getKey: (index) => {
-      const entry = virtualRows[index];
+      const entry = virtualRows[index]!;
       return entry.kind === "label"
         ? `group:${entry.group}`
         : `option:${typeof getKey(entry.item)}:${getKey(entry.item)}`;
@@ -333,7 +333,7 @@ function ListboxImpl<T>(
   );
   const Component = asChild ? Slot : "div";
   const virtualRow = (v: (typeof list.virtualItems)[number]) => {
-    const entry = virtualRows[v.index];
+    const entry = virtualRows[v.index]!;
     return (
       <div
         key={v.key}
@@ -366,7 +366,7 @@ function ListboxImpl<T>(
       {getGroup
         ? groups.map((group) => {
             const visible = list.virtualItems.filter(
-              (v) => virtualRows[v.index].group === group,
+              (v) => virtualRows[v.index]!.group === group,
             );
             if (!visible.length) return null;
             return (
@@ -374,7 +374,7 @@ function ListboxImpl<T>(
                 key={group}
                 data-slot="listbox-group"
                 role={
-                  visible.some((v) => virtualRows[v.index].kind === "option")
+                  visible.some((v) => virtualRows[v.index]!.kind === "option")
                     ? "group"
                     : "presentation"
                 }
@@ -420,11 +420,11 @@ export const Listbox = React.forwardRef(ListboxImpl) as <T>(
 ) => React.ReactElement;
 export const ListboxGroup = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { label: string; asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { label: string; asChild?: boolean | undefined }
 >(({ label, children, asChild, className, ...props }, ref) => {
   const id = React.useId();
   const child =
-    asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+    asChild && React.isValidElement<{ children?: React.ReactNode | undefined }>(children)
       ? children
       : null;
   const content = (

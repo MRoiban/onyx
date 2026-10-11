@@ -60,12 +60,12 @@ export function usePagination({
   siblingCount,
   boundaryCount,
 }: {
-  page?: number;
-  defaultPage?: number;
+  page?: number | undefined;
+  defaultPage?: number | undefined;
   totalPages: number;
-  onPageChange?: (page: number) => void;
-  siblingCount?: number;
-  boundaryCount?: number;
+  onPageChange?: ((page: number) => void) | undefined;
+  siblingCount?: number | undefined;
+  boundaryCount?: number | undefined;
 }) {
   const total = Number.isFinite(totalPages)
     ? Math.max(0, Math.floor(totalPages))
@@ -182,7 +182,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
 );
 export const PaginationButton = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "button";
   return (

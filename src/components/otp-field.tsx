@@ -6,13 +6,13 @@ import { useComposedRefs } from '../lib/compose-refs';
 import { useFieldControl } from './field';
 export const otpFieldVariants = cva('onyx-otp-field');
 export interface UseOTPFieldOptions {
-  length?: number;
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  onComplete?: (value: string) => void;
-  pattern?: RegExp;
-  disabled?: boolean;
+  length?: number | undefined;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  onComplete?: ((value: string) => void) | undefined;
+  pattern?: RegExp | undefined;
+  disabled?: boolean | undefined;
 }
 export function useOTPField({
   length = 6,

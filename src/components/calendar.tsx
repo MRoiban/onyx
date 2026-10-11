@@ -9,16 +9,16 @@ import { Icon } from './icon';
 export type DateRange = { from?: Date; to?: Date };
 export type CalendarValue = Date | DateRange | undefined;
 export interface UseCalendarOptions {
-  mode?: 'single' | 'range';
-  value?: CalendarValue;
-  defaultValue?: CalendarValue;
-  onValueChange?: (value: CalendarValue) => void;
-  defaultMonth?: Date;
-  min?: Date;
-  max?: Date;
-  locale?: string;
-  weekStartsOn?: number;
-  disabled?: boolean | ((date: Date) => boolean);
+  mode?: 'single' | 'range' | undefined;
+  value?: CalendarValue | undefined;
+  defaultValue?: CalendarValue | undefined;
+  onValueChange?: ((value: CalendarValue) => void) | undefined;
+  defaultMonth?: Date | undefined;
+  min?: Date | undefined;
+  max?: Date | undefined;
+  locale?: string | undefined;
+  weekStartsOn?: number | undefined;
+  disabled?: boolean | ((date: Date) => boolean) | undefined;
 }
 export const calendarVariants = cva('onyx-calendar');
 const day = (date: Date) =>
@@ -38,8 +38,8 @@ function addMonths(date: Date, n: number) {
 }
 export function getWeekStartsOn(locale = 'en-US') {
   const loc = new Intl.Locale(locale) as Intl.Locale & {
-    weekInfo?: { firstDay: number };
-    getWeekInfo?: () => { firstDay: number };
+    weekInfo?: { firstDay: number } | undefined;
+    getWeekInfo?: (() => { firstDay: number }) | undefined;
   };
   return (loc.getWeekInfo?.().firstDay ?? loc.weekInfo?.firstDay ?? 1) % 7;
 }
@@ -179,9 +179,9 @@ export interface CalendarProps
       'defaultValue' | 'onChange' | 'onKeyDown'
     >,
     UseCalendarOptions {
-  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
-  name?: string;
-  form?: string;
+  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement> | undefined;
+  name?: string | undefined;
+  form?: string | undefined;
 }
 export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
   (

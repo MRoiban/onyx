@@ -45,16 +45,16 @@ function useSidebarContext(): SidebarContextValue {
 }
 
 export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultOpen?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  defaultOpenMobile?: boolean;
-  openMobile?: boolean;
-  onOpenMobileChange?: (open: boolean) => void;
-  side?: SidebarSide;
-  variant?: SidebarVariant;
-  collapsible?: SidebarCollapsible;
-  environment?: SidebarEnvironment;
+  defaultOpen?: boolean | undefined;
+  open?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  defaultOpenMobile?: boolean | undefined;
+  openMobile?: boolean | undefined;
+  onOpenMobileChange?: ((open: boolean) => void) | undefined;
+  side?: SidebarSide | undefined;
+  variant?: SidebarVariant | undefined;
+  collapsible?: SidebarCollapsible | undefined;
+  environment?: SidebarEnvironment | undefined;
 }
 
 export function SidebarProvider({
@@ -459,13 +459,13 @@ export const SidebarSeparator = React.forwardRef<
 SidebarSeparator.displayName = "SidebarSeparator";
 
 export interface SidebarRailProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-  width?: number;
-  defaultWidth?: number;
-  minWidth?: number;
-  maxWidth?: number;
-  onWidthChange?: (width: number) => void;
-  disabled?: boolean;
+  asChild?: boolean | undefined;
+  width?: number | undefined;
+  defaultWidth?: number | undefined;
+  minWidth?: number | undefined;
+  maxWidth?: number | undefined;
+  onWidthChange?: ((width: number) => void) | undefined;
+  disabled?: boolean | undefined;
 }
 const ProviderSidebarRail = React.forwardRef<HTMLDivElement, SidebarRailProps>(
   (
@@ -618,7 +618,7 @@ SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
 
 export const ActivityBar = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : 'div';
   return <Component
@@ -635,9 +635,9 @@ export const ActivityBar = React.forwardRef<
 ActivityBar.displayName = "ActivityBar";
 
 export interface ActivityBarItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  isActive?: boolean;
-  label?: string;
-  badge?: number;
+  isActive?: boolean | undefined;
+  label?: string | undefined;
+  badge?: number | undefined;
 }
 
 export const ActivityBarItem = React.forwardRef<

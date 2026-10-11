@@ -26,19 +26,19 @@ function firstGrapheme(value: string) {
 export function getAvatarInitials(name = "") {
   const parts = name.normalize("NFC").trim().split(/\s+/).filter(Boolean);
   return parts.length
-    ? (firstGrapheme(parts[0]) + (parts.length > 1 ? firstGrapheme(parts[parts.length - 1]) : "")).toLocaleUpperCase()
+    ? (firstGrapheme(parts[0]!) + (parts.length > 1 ? firstGrapheme(parts[parts.length - 1]!) : "")).toLocaleUpperCase()
     : "?";
 }
 export interface AvatarProps extends React.ComponentPropsWithoutRef<
   typeof Primitive.Root
 > {
-  name?: string;
-  src?: string;
-  alt?: string;
-  size?: "sm" | "md" | "lg";
-  variant?: "circle" | "square";
-  status?: DisplayTone;
-  statusLabel?: string;
+  name?: string | undefined;
+  src?: string | undefined;
+  alt?: string | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
+  variant?: "circle" | "square" | undefined;
+  status?: DisplayTone | undefined;
+  statusLabel?: string | undefined;
 }
 export const Avatar = React.forwardRef<
   React.ElementRef<typeof Primitive.Root>,
@@ -54,7 +54,7 @@ export const Avatar = React.forwardRef<
       status,
       statusLabel,
       children,
-      asChild,
+      asChild = false,
       className,
       ...props
     },

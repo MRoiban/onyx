@@ -25,7 +25,7 @@ HoverCardTrigger.displayName = "HoverCardTrigger";
 export const HoverCardContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
   React.ComponentPropsWithoutRef<typeof P.Content> & {
-    container?: HTMLElement | null;
+    container?: HTMLElement | null | undefined;
   }
 >(
   (
@@ -62,7 +62,7 @@ export const HoverCardArrow = React.forwardRef<
 HoverCardArrow.displayName = "HoverCardArrow";
 export const HoverCardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -77,7 +77,7 @@ export const HoverCardHeader = React.forwardRef<
 HoverCardHeader.displayName = "HoverCardHeader";
 export const HoverCardBody = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -92,7 +92,7 @@ export const HoverCardBody = React.forwardRef<
 HoverCardBody.displayName = "HoverCardBody";
 export const HoverCardFooter = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (

@@ -11,7 +11,7 @@ export const colorSwatchGroupVariants = cva('onyx-color-swatch-group');
 const Context = React.createContext<{
   value: string;
   setValue: (value: string) => void;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 } | null>(null);
 export interface ColorSwatchProps extends React.ComponentPropsWithoutRef<'button'> {
   asChild?: boolean;

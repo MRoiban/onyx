@@ -28,7 +28,7 @@ Card.displayName = "Card";
 export const cardHeaderVariants = cva("onyx-card-header");
 export const CardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -44,7 +44,7 @@ CardHeader.displayName = "CardHeader";
 export const cardTitleVariants = cva("onyx-card-title");
 export const CardTitle = React.forwardRef<
   HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLHeadingElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "h3";
   return (
@@ -60,7 +60,7 @@ CardTitle.displayName = "CardTitle";
 export const cardDescriptionVariants = cva("onyx-card-description");
 export const CardDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLParagraphElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "p";
   return (
@@ -76,7 +76,7 @@ CardDescription.displayName = "CardDescription";
 export const cardBodyVariants = cva("onyx-card-body");
 export const CardBody = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -92,7 +92,7 @@ CardBody.displayName = "CardBody";
 export const cardFooterVariants = cva("onyx-card-footer");
 export const CardFooter = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -108,7 +108,7 @@ CardFooter.displayName = "CardFooter";
 export const cardMediaVariants = cva("onyx-card-media");
 export const CardMedia = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (

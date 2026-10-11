@@ -9,22 +9,22 @@ export const resizeHandleVariants = cva("onyx-resize-handle", {
   defaultVariants: { orientation: "vertical" },
 });
 export interface UseResizableOptions {
-  value?: number;
-  defaultValue?: number;
-  onValueChange?: (value: number) => void;
-  min?: number;
-  max?: number;
-  orientation?: "horizontal" | "vertical";
-  disabled?: boolean;
-  collapsible?: boolean;
-  collapsedSize?: number;
+  value?: number | undefined;
+  defaultValue?: number | undefined;
+  onValueChange?: ((value: number) => void) | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  orientation?: "horizontal" | "vertical" | undefined;
+  disabled?: boolean | undefined;
+  collapsible?: boolean | undefined;
+  collapsedSize?: number | undefined;
   /** Convert CSS pixels to value units (SplitView uses percentage units). */
-  unitsPerPixel?: number;
-  direction?: 1 | -1;
-  snap?: readonly number[];
-  snapThreshold?: number;
-  onResizeStart?: () => void;
-  onResizeEnd?: () => void;
+  unitsPerPixel?: number | undefined;
+  direction?: 1 | -1 | undefined;
+  snap?: readonly number[] | undefined;
+  snapThreshold?: number | undefined;
+  onResizeStart?: (() => void) | undefined;
+  onResizeEnd?: (() => void) | undefined;
 }
 export function useResizable({
   value: controlled,
@@ -180,10 +180,10 @@ export interface ResizeHandleProps
   extends
     Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange">,
     UseResizableOptions {
-  asChild?: boolean;
-  showSize?: boolean;
-  formatValue?: (value: number) => React.ReactNode;
-  grip?: boolean;
+  asChild?: boolean | undefined;
+  showSize?: boolean | undefined;
+  formatValue?: ((value: number) => React.ReactNode) | undefined;
+  grip?: boolean | undefined;
 }
 export const ResizeHandle = React.forwardRef<HTMLDivElement, ResizeHandleProps>(
   (

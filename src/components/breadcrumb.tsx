@@ -12,8 +12,8 @@ export const breadcrumbSeparatorVariants = cva("onyx-breadcrumb-separator");
 export const breadcrumbOverflowVariants = cva("onyx-breadcrumb-overflow");
 export interface BreadcrumbEntry {
   label: React.ReactNode;
-  href?: string;
-  onClick?: () => void;
+  href?: string | undefined;
+  onClick?: (() => void) | undefined;
 }
 export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
   asChild?: boolean;
@@ -29,7 +29,7 @@ export function useBreadcrumb(
   const hidden =
     items.length > max ? items.slice(1, items.length - max + 2) : [];
   const visible = hidden.length
-    ? [items[0], ...items.slice(items.length - max + 2)]
+    ? [items[0]!, ...items.slice(items.length - max + 2)]
     : items;
   return { hidden, visible };
 }
@@ -99,7 +99,7 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
 Breadcrumb.displayName = "Breadcrumb";
 export const BreadcrumbList = React.forwardRef<
   HTMLOListElement,
-  React.OlHTMLAttributes<HTMLOListElement> & { asChild?: boolean }
+  React.OlHTMLAttributes<HTMLOListElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "ol";
   return (
@@ -113,7 +113,7 @@ export const BreadcrumbList = React.forwardRef<
 });
 export const BreadcrumbItem = React.forwardRef<
   HTMLLIElement,
-  React.LiHTMLAttributes<HTMLLIElement> & { asChild?: boolean }
+  React.LiHTMLAttributes<HTMLLIElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "li";
   return (
@@ -127,7 +127,7 @@ export const BreadcrumbItem = React.forwardRef<
 });
 export const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement> & { asChild?: boolean }
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "a";
   return (
@@ -141,7 +141,7 @@ export const BreadcrumbLink = React.forwardRef<
 });
 export const BreadcrumbSeparator = React.forwardRef<
   HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, children, ...props }, ref) => {
   const Comp = asChild ? Slot : "span";
   return (
@@ -160,7 +160,7 @@ export const BreadcrumbOverflow = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     items: BreadcrumbEntry[];
-    onOverflowClick?: (items: BreadcrumbEntry[]) => void;
+    onOverflowClick?: ((items: BreadcrumbEntry[]) => void) | undefined;
   }
 >(({ items, onOverflowClick, className, ...props }, ref) => (
   <>
@@ -184,7 +184,7 @@ export const BreadcrumbOverflow = React.forwardRef<
       </MenuTrigger>
       <MenuContent>
         {items.map((item, i) => (
-          <MenuItem key={i} asChild={!!item.href} onSelect={item.onClick}>
+          <MenuItem key={i} asChild={!!item.href} {...(item.onClick ? { onSelect: item.onClick } : {})}>
             {item.href ? <a href={item.href}>{item.label}</a> : item.label}
           </MenuItem>
         ))}

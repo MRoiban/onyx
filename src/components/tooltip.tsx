@@ -27,8 +27,8 @@ TooltipTrigger.displayName = "TooltipTrigger";
 export interface TooltipContentProps extends React.ComponentPropsWithoutRef<
   typeof P.Content
 > {
-  shortcut?: React.ReactNode;
-  container?: HTMLElement | null;
+  shortcut?: React.ReactNode | undefined;
+  container?: HTMLElement | null | undefined;
 }
 export const TooltipContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
@@ -59,10 +59,10 @@ export const TooltipContent = React.forwardRef<
       >
         {props.asChild && React.isValidElement(children) ? (
           React.cloneElement(
-            children as React.ReactElement<{ children?: React.ReactNode }>,
+            children as React.ReactElement<{ children?: React.ReactNode | undefined }>,
             {},
             <>
-              {(children.props as { children?: React.ReactNode }).children}
+              {(children.props as { children?: React.ReactNode | undefined }).children}
               {shortcut && <Kbd data-slot="tooltip-shortcut">{shortcut}</Kbd>}
             </>,
           )
@@ -81,10 +81,10 @@ TooltipContent.displayName = "TooltipContent";
 export interface TooltipProps extends React.ComponentPropsWithoutRef<
   typeof P.Root
 > {
-  content?: React.ReactNode;
-  shortcut?: React.ReactNode;
-  side?: TooltipContentProps["side"];
-  contentProps?: TooltipContentProps;
+  content?: React.ReactNode | undefined;
+  shortcut?: React.ReactNode | undefined;
+  side?: TooltipContentProps["side"] | undefined;
+  contentProps?: TooltipContentProps | undefined;
 }
 export function Tooltip({
   content,
@@ -99,7 +99,7 @@ export function Tooltip({
       {content !== undefined ? (
         <>
           <TooltipTrigger asChild>{children}</TooltipTrigger>
-          <TooltipContent side={side} shortcut={shortcut} {...contentProps}>
+          <TooltipContent {...(side ? { side } : {})} shortcut={shortcut} {...contentProps}>
             {content}
           </TooltipContent>
         </>

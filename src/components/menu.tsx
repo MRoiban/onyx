@@ -28,7 +28,7 @@ function itemContent(
 ) {
   const child =
     asChild && React.isValidElement(children)
-      ? (children as React.ReactElement<{ children?: React.ReactNode }>)
+      ? (children as React.ReactElement<{ children?: React.ReactNode | undefined }>)
       : undefined;
   const label = child ? child.props.children : children;
   const content = leading ? (
@@ -89,7 +89,7 @@ MenuRadioGroup.displayName = "MenuRadioGroup";
 export const MenuContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
   React.ComponentPropsWithoutRef<typeof P.Content> & {
-    container?: HTMLElement | null;
+    container?: HTMLElement | null | undefined;
   }
 >(
   (
@@ -115,7 +115,7 @@ MenuContent.displayName = "MenuContent";
 export const MenuSubContent = React.forwardRef<
   React.ElementRef<typeof P.SubContent>,
   React.ComponentPropsWithoutRef<typeof P.SubContent> & {
-    container?: HTMLElement | null;
+    container?: HTMLElement | null | undefined;
   }
 >(
   (
@@ -141,8 +141,8 @@ MenuSubContent.displayName = "MenuSubContent";
 export const MenuItem = React.forwardRef<
   React.ElementRef<typeof P.Item>,
   React.ComponentPropsWithoutRef<typeof P.Item> & {
-    inset?: boolean;
-    tone?: "neutral" | "danger";
+    inset?: boolean | undefined;
+    tone?: "neutral" | "danger" | undefined;
   }
 >(({ className, inset, tone, children, ...props }, ref) => (
   <P.Item
@@ -159,8 +159,8 @@ MenuItem.displayName = "MenuItem";
 export const MenuSubTrigger = React.forwardRef<
   React.ElementRef<typeof P.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof P.SubTrigger> & {
-    inset?: boolean;
-    tone?: "neutral" | "danger";
+    inset?: boolean | undefined;
+    tone?: "neutral" | "danger" | undefined;
   }
 >(({ className, inset, tone, children, ...props }, ref) => (
   <P.SubTrigger
@@ -230,7 +230,7 @@ export const MenuRadioItem = React.forwardRef<
 MenuRadioItem.displayName = "MenuRadioItem";
 export const MenuLabel = React.forwardRef<
   React.ElementRef<typeof P.Label>,
-  React.ComponentPropsWithoutRef<typeof P.Label> & { inset?: boolean }
+  React.ComponentPropsWithoutRef<typeof P.Label> & { inset?: boolean | undefined }
 >(({ className, inset, ...props }, ref) => (
   <P.Label
     ref={ref}
@@ -254,7 +254,7 @@ export const MenuSeparator = React.forwardRef<
 MenuSeparator.displayName = "MenuSeparator";
 export const MenuShortcut = React.forwardRef<
   HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "span";
   return (

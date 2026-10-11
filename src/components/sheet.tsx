@@ -71,8 +71,8 @@ SheetOverlay.displayName = "SheetOverlay";
 export const SheetContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
   React.ComponentPropsWithoutRef<typeof P.Content> & {
-    side?: "left" | "right" | "top" | "bottom";
-    container?: HTMLElement | null;
+    side?: "left" | "right" | "top" | "bottom" | undefined;
+    container?: HTMLElement | null | undefined;
   }
 >(({ className, side = "right", children, container, ...props }, ref) => {
   const [host, setHost] = React.useState<HTMLDivElement | null>(null);
@@ -90,11 +90,11 @@ export const SheetContent = React.forwardRef<
     >
       {props.asChild && React.isValidElement(children) ? (
         React.cloneElement(
-          children as React.ReactElement<{ children?: React.ReactNode }>,
+          children as React.ReactElement<{ children?: React.ReactNode | undefined }>,
           {},
           <>
             {side === "bottom" && <SheetHandle />}
-            {(children.props as { children?: React.ReactNode }).children}
+            {(children.props as { children?: React.ReactNode | undefined }).children}
           </>,
         )
       ) : (
@@ -111,7 +111,7 @@ export const SheetContent = React.forwardRef<
 SheetContent.displayName = "SheetContent";
 export const SheetHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -126,7 +126,7 @@ export const SheetHeader = React.forwardRef<
 SheetHeader.displayName = "SheetHeader";
 export const SheetBody = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -141,7 +141,7 @@ export const SheetBody = React.forwardRef<
 SheetBody.displayName = "SheetBody";
 export const SheetFooter = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -156,7 +156,7 @@ export const SheetFooter = React.forwardRef<
 SheetFooter.displayName = "SheetFooter";
 export const SheetHandle = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (

@@ -111,7 +111,7 @@ export const Truncate = React.forwardRef<HTMLSpanElement, TruncateProps>(
       >
         {asChild && React.isValidElement(children)
           ? React.cloneElement(
-              children as React.ReactElement<{ children?: React.ReactNode }>,
+              children as React.ReactElement<{ children?: React.ReactNode | undefined }>,
               {},
               content,
             )
@@ -122,12 +122,12 @@ export const Truncate = React.forwardRef<HTMLSpanElement, TruncateProps>(
       <TooltipProvider>
         <TooltipRoot
           {...tooltipProps}
-          open={overflowing ? tooltipProps?.open : false}
+          {...(overflowing ? {} : { open: false })}
         >
           <TooltipTrigger asChild>{element}</TooltipTrigger>
           {overflowing && (
             <TooltipContent
-              side={tooltipProps?.side}
+              {...(tooltipProps?.side ? { side: tooltipProps.side } : {})}
               {...tooltipProps?.contentProps}
             >
               {text}

@@ -276,7 +276,7 @@ export const ComboboxHighlight = React.forwardRef<
   React.HTMLAttributes<HTMLSpanElement> & {
     text: string;
     query: string;
-    asChild?: boolean;
+    asChild?: boolean | undefined;
   }
 >(({ text, query, className, asChild, children, ...props }, ref) => {
   const index = query
@@ -304,7 +304,7 @@ export const ComboboxHighlight = React.forwardRef<
     >
       {asChild && React.isValidElement(children)
         ? React.cloneElement(
-            children as React.ReactElement<{ children?: React.ReactNode }>,
+            children as React.ReactElement<{ children?: React.ReactNode | undefined }>,
             {},
             content,
           )

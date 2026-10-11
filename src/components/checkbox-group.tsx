@@ -15,9 +15,9 @@ interface GroupState {
   value: string[];
   setValue: (value: string[]) => void;
   options: string[];
-  disabled?: boolean;
-  name?: string;
-  form?: string;
+  disabled?: boolean | undefined;
+  name?: string | undefined;
+  form?: string | undefined;
   register: (value: string, disabled: boolean) => () => void;
 }
 const Context = React.createContext<GroupState | null>(null);
@@ -26,9 +26,9 @@ export function useCheckboxGroup({
   defaultValue = [],
   onValueChange,
 }: {
-  value?: string[];
-  defaultValue?: string[];
-  onValueChange?: (value: string[]) => void;
+  value?: string[] | undefined;
+  defaultValue?: string[] | undefined;
+  onValueChange?: ((value: string[]) => void) | undefined;
 } = {}) {
   const [selected, setValue, reset] = useControllableState({
     value,

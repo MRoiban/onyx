@@ -35,7 +35,7 @@ export interface TreeCollectionOptions<T> {
   items: readonly T[];
   getKey: (item: T) => CollectionKey;
   getChildren: (item: T) => readonly T[] | undefined;
-  isExpandable?: (item: T) => boolean;
+  isExpandable?: ((item: T) => boolean) | undefined;
 }
 export function flattenTree<T>(
   { items, getKey, getChildren, isExpandable }: TreeCollectionOptions<T>,
@@ -489,7 +489,7 @@ function TreeImpl<T>(
   const list = useVirtualList({
     count: model.rows.length,
     getKey: (index) =>
-      `${typeof model.rows[index].key}:${model.rows[index].key}`,
+      `${typeof model.rows[index]!.key}:${model.rows[index]!.key}`,
     enabled: virtualized,
     rowHeight,
     overscan,
@@ -636,7 +636,7 @@ function TreeImpl<T>(
           data-slot="tree-virtual-row"
           style={{ position: "absolute", top: v.start, width: "100%" }}
         >
-          {render(model.rows[v.index])}
+          {render(model.rows[v.index]!)}
         </div>
       ))}
     </div>

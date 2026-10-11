@@ -287,7 +287,7 @@ export function SectionSelect<TValue extends string>({
       }
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        selectItem(items[index]);
+        selectItem(items[index]!);
       }
     },
     [focusItem, items, selectItem, setOpen]

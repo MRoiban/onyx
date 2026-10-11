@@ -69,7 +69,7 @@ export const Stack = React.forwardRef<HTMLDivElement, StackProps>(
 Stack.displayName = "Stack";
 export const Inline = React.forwardRef<
   HTMLDivElement,
-  Omit<StackProps, "direction"> & { wrap?: boolean }
+  Omit<StackProps, "direction"> & { wrap?: boolean | undefined }
 >(
   (
     {

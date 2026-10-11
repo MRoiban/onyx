@@ -8,7 +8,7 @@
     "./src/styles/globals.css"
   ],
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.strict.json --noEmit",
     "test": "bun test",
     "gallery": "bun run build:css && bun --hot gallery/server.ts",
     "build:css": "tailwindcss -c tailwind.config.cjs -i src/styles.css -o gallery/onyx.css && bun gallery/copy-assets.ts",

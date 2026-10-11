@@ -21,7 +21,7 @@ export const statusBarItemVariants = cva(
   }
 );
 
-export const StatusBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { size?: 'sm' | 'md' }>(
+export const StatusBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { size?: 'sm' | 'md' | undefined }>(
   ({ className, size = 'md', ...props }, ref) => (
     <footer
       ref={ref}

@@ -12,11 +12,11 @@ export function useAccordion({
   onValueChange,
   collapsible = false,
 }: {
-  type?: "single" | "multiple";
-  value?: readonly string[];
-  defaultValue?: readonly string[];
-  onValueChange?: (value: string[]) => void;
-  collapsible?: boolean;
+  type?: "single" | "multiple" | undefined;
+  value?: readonly string[] | undefined;
+  defaultValue?: readonly string[] | undefined;
+  onValueChange?: ((value: string[]) => void) | undefined;
+  collapsible?: boolean | undefined;
 } = {}) {
   const [values, setValues] = useControllableState<readonly string[]>({
     value,
@@ -76,9 +76,9 @@ export const AccordionHeader = React.forwardRef<
 export const AccordionTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof Primitive.Trigger> & {
-    meta?: React.ReactNode;
+    meta?: React.ReactNode | undefined;
   }
->(({ className, children, meta, asChild, ...props }, ref) => (
+>(({ className, children, meta, asChild = false, ...props }, ref) => (
   <Primitive.Trigger
     ref={ref}
     data-slot="accordion-trigger"

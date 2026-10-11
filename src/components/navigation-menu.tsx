@@ -69,7 +69,7 @@ export const NavigationMenuTrigger = React.forwardRef<
 NavigationMenuTrigger.displayName = "NavigationMenuTrigger";
 export const NavigationMenuContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
-  React.ComponentPropsWithoutRef<typeof P.Content> & { container?: HTMLElement | null }
+  React.ComponentPropsWithoutRef<typeof P.Content> & { container?: HTMLElement | null | undefined }
 >(({ className, style, container, ...props }, ref) => {
   const portalContainer = usePortalContainer(container);
   const trigger = React.useContext(NavigationItemContext);

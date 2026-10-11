@@ -13,11 +13,11 @@ export const tagVariants = cva("onyx-tag onyx-display-tone", {
 });
 export const tagGroupVariants = cva("onyx-tag-group");
 export interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
-  asChild?: boolean;
-  tone?: DisplayTone;
-  onRemove?: () => void;
-  removeLabel?: string;
-  disabled?: boolean;
+  asChild?: boolean | undefined;
+  tone?: DisplayTone | undefined;
+  onRemove?: (() => void) | undefined;
+  removeLabel?: string | undefined;
+  disabled?: boolean | undefined;
 }
 export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
   (
@@ -71,8 +71,8 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
 );
 Tag.displayName = "Tag";
 export interface TagGroupOptions {
-  onEmpty?: () => void;
-  fallbackRef?: React.RefObject<HTMLElement | null>;
+  onEmpty?: (() => void) | undefined;
+  fallbackRef?: React.RefObject<HTMLElement | null> | undefined;
 }
 export function useTagGroup(options: TagGroupOptions = {}) {
   const roving = useRovingFocus<HTMLDivElement>({
@@ -102,7 +102,7 @@ export function useTagGroup(options: TagGroupOptions = {}) {
 }
 export const TagGroup = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & TagGroupOptions & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & TagGroupOptions & { asChild?: boolean | undefined }
 >(
   (
     { asChild, className, onKeyDown, onFocusCapture, onEmpty, fallbackRef, ...props },

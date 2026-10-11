@@ -8,16 +8,16 @@ export const meterVariants = cva("onyx-meter onyx-display-tone", {
   defaultVariants: { tone: "neutral" },
 });
 export interface MeterProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
   value: number;
-  min?: number;
-  max?: number;
-  low?: number;
-  high?: number;
-  optimum?: number;
-  tone?: DisplayTone;
-  label?: React.ReactNode;
-  valueText?: string;
+  min?: number | undefined;
+  max?: number | undefined;
+  low?: number | undefined;
+  high?: number | undefined;
+  optimum?: number | undefined;
+  tone?: DisplayTone | undefined;
+  label?: React.ReactNode | undefined;
+  valueText?: string | undefined;
 }
 export function useMeter({
   value,

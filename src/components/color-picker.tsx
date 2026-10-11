@@ -19,11 +19,11 @@ export {
 export type { RGB, HSV } from '../lib/color';
 export const colorPickerVariants = cva('onyx-color-picker');
 export interface UseColorPickerOptions {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  alpha?: boolean;
-  disabled?: boolean;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  alpha?: boolean | undefined;
+  disabled?: boolean | undefined;
 }
 export function useColorPicker({
   value,
@@ -194,7 +194,7 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
             disabled={disabled}
             max={360}
             value={[state.hsv.h]}
-            onValueChange={([h]) => state.update({ h })}
+            onValueChange={([h]) => state.update({ h: h! })}
           />
         </div>
         {alpha && (
@@ -204,7 +204,7 @@ export const ColorPicker = React.forwardRef<HTMLDivElement, ColorPickerProps>(
             disabled={disabled}
             max={100}
             value={[(state.hsv.a ?? 1) * 100]}
-            onValueChange={([a]) => state.update({ a: a / 100 })}
+            onValueChange={([a]) => state.update({ a: a! / 100 })}
           />
         )}
         <InputGroup>

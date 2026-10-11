@@ -7,10 +7,10 @@ import { useComposedRefs } from "../lib/compose-refs";
 import { Icon } from "./icon";
 export const carouselVariants = cva("onyx-carousel");
 export interface UseCarouselOptions {
-  index?: number;
-  defaultIndex?: number;
-  onIndexChange?: (index: number) => void;
-  count?: number;
+  index?: number | undefined;
+  defaultIndex?: number | undefined;
+  onIndexChange?: ((index: number) => void) | undefined;
+  count?: number | undefined;
 }
 export function useCarousel({
   index,
@@ -161,12 +161,12 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
 );
 export const CarouselContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, children, onScroll, ...props }, forwardedRef) => {
   const model = useCarouselContext();
   const ref = useComposedRefs(forwardedRef, model.trackRef);
   const child =
-    asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+    asChild && React.isValidElement<{ children?: React.ReactNode | undefined }>(children)
       ? children
       : null;
   const count = React.Children.count(child ? child.props.children : children);
@@ -192,7 +192,7 @@ export const CarouselContent = React.forwardRef<
 });
 export const CarouselItem = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "div";
   return (
@@ -208,7 +208,7 @@ export const CarouselItem = React.forwardRef<
 });
 export const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, onClick, children, ...props }, ref) => {
   const model = useCarouselContext();
   const Component = asChild ? Slot : "button";
@@ -232,7 +232,7 @@ export const CarouselPrevious = React.forwardRef<
 });
 export const CarouselNext = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, onClick, children, ...props }, ref) => {
   const model = useCarouselContext();
   const Component = asChild ? Slot : "button";
@@ -256,7 +256,7 @@ export const CarouselNext = React.forwardRef<
 });
 export const CarouselDots = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, children, ...props }, ref) => {
   const model = useCarouselContext();
   const content = Array.from({ length: model.count }, (_, index) => (

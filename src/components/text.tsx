@@ -45,7 +45,7 @@ Text.displayName = 'Text';
 
 export const Heading = React.forwardRef<
   HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLHeadingElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : 'h2';
   return (
@@ -64,7 +64,7 @@ Heading.displayName = 'Heading';
 
 export const SectionLabel = React.forwardRef<
   HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : 'span';
   return (

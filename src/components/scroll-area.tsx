@@ -10,14 +10,14 @@ const Edges = React.createContext<
 export interface ScrollAreaRootProps extends React.ComponentPropsWithoutRef<
   typeof Primitive.Root
 > {
-  edgeShadows?: boolean;
+  edgeShadows?: boolean | undefined;
 }
 export const ScrollAreaRoot = React.forwardRef<
   HTMLDivElement,
   ScrollAreaRootProps
 >(
   (
-    { className, children, edgeShadows, type = "hover", asChild, ...props },
+    { className, children, edgeShadows, type = "hover", asChild = false, ...props },
     ref,
   ) => {
     const [edges, setEdges] = React.useState({ top: false, bottom: false });
@@ -117,7 +117,7 @@ export const ScrollAreaScrollbar = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Primitive.Scrollbar>
 >(
   (
-    { className, children, orientation = "vertical", asChild, ...props },
+    { className, children, orientation = "vertical", asChild = false, ...props },
     ref,
   ) => (
     <Primitive.Scrollbar
@@ -145,11 +145,11 @@ export const ScrollAreaCorner = React.forwardRef<
   />
 ));
 export interface ScrollAreaProps extends ScrollAreaRootProps {
-  viewportProps?: React.ComponentPropsWithRef<typeof ScrollAreaViewport>;
-  horizontal?: boolean;
+  viewportProps?: React.ComponentPropsWithRef<typeof ScrollAreaViewport> | undefined;
+  horizontal?: boolean | undefined;
 }
 export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ children, viewportProps, horizontal = false, asChild, ...props }, ref) => (
+  ({ children, viewportProps, horizontal = false, asChild = false, ...props }, ref) => (
     <ScrollAreaRoot ref={ref} asChild={asChild} {...props}>
       {asChild ? (
         children

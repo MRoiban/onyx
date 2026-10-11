@@ -94,7 +94,7 @@ export function useDatePicker({
     }
     const date = new Date(0);
     date.setHours(0, 0, 0, 0);
-    date.setFullYear(+match[1], +match[2] - 1, +match[3]);
+    date.setFullYear(+match[1]!, +match[2]! - 1, +match[3]!);
     const startOfDay = (d: Date) =>
       new Date(d.getFullYear(), d.getMonth(), d.getDate());
     if (

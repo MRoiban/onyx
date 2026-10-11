@@ -9,9 +9,9 @@ import { useComposedRefs } from '../lib/compose-refs';
 import { useFieldControl } from './field';
 export const passwordFieldVariants = cva('onyx-password-field');
 export interface PasswordFieldProps extends InputProps {
-  revealed?: boolean;
-  defaultRevealed?: boolean;
-  onRevealedChange?: (revealed: boolean) => void;
+  revealed?: boolean | undefined;
+  defaultRevealed?: boolean | undefined;
+  onRevealedChange?: ((revealed: boolean) => void) | undefined;
 }
 export function usePasswordField({
   revealed,

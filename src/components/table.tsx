@@ -8,7 +8,7 @@ import { cn } from "../lib/cn";
 export const tableVariants = cva("onyx-table");
 const Table = React.forwardRef<
   HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLTableElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "table";
   return (
@@ -28,7 +28,7 @@ Table.displayName = "Table";
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLTableSectionElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "thead";
   return (
@@ -44,7 +44,7 @@ TableHeader.displayName = "TableHeader";
 
 const TableBody = React.forwardRef<
   HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLTableSectionElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "tbody";
   return (
@@ -99,7 +99,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
   ) => {
     const Component = asChild ? Slot : "th";
     const child =
-      asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+      asChild && React.isValidElement<{ children?: React.ReactNode | undefined }>(children)
         ? children
         : null;
     const label = child ? child.props.children : children;
@@ -147,7 +147,7 @@ TableHead.displayName = "TableHead";
 
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement> & { asChild?: boolean }
+  React.TdHTMLAttributes<HTMLTableCellElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "td";
   return (
@@ -163,7 +163,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<
   HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLTableCaptionElement> & { asChild?: boolean | undefined }
 >(({ className, asChild, ...props }, ref) => {
   const Component = asChild ? Slot : "caption";
   return (

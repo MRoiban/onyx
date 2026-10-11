@@ -21,12 +21,12 @@ export function acceptsFile(
     );
 }
 export interface UseDropZoneOptions {
-  accept?: string;
-  multiple?: boolean;
-  disabled?: boolean;
-  maxSize?: number;
-  onFiles?: (files: File[]) => void;
-  onReject?: (files: File[]) => void;
+  accept?: string | undefined;
+  multiple?: boolean | undefined;
+  disabled?: boolean | undefined;
+  maxSize?: number | undefined;
+  onFiles?: ((files: File[]) => void) | undefined;
+  onReject?: ((files: File[]) => void) | undefined;
 }
 export function useDropZone({
   accept,

@@ -39,8 +39,8 @@ AlertDialogOverlay.displayName = "AlertDialogOverlay";
 export const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof P.Content>,
   React.ComponentPropsWithoutRef<typeof P.Content> & {
-    tone?: "neutral" | "info" | "success" | "warning" | "danger";
-    container?: HTMLElement | null;
+    tone?: "neutral" | "info" | "success" | "warning" | "danger" | undefined;
+    container?: HTMLElement | null | undefined;
   }
 >(({ className, tone = "danger", container, ...props }, ref) => {
   const [host, setHost] = React.useState<HTMLDivElement | null>(null);
@@ -66,8 +66,8 @@ AlertDialogContent.displayName = "AlertDialogContent";
 export const AlertDialogIcon = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    asChild?: boolean;
-    tone?: "neutral" | "info" | "success" | "warning" | "danger";
+    asChild?: boolean | undefined;
+    tone?: "neutral" | "info" | "success" | "warning" | "danger" | undefined;
   }
 >(({ asChild, className, children, tone: explicitTone, ...props }, ref) => {
   const inheritedTone = React.useContext(AlertDialogToneContext);
@@ -140,7 +140,7 @@ export const AlertDialogCancel = React.forwardRef<
 AlertDialogCancel.displayName = "AlertDialogCancel";
 export const AlertDialogHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -155,7 +155,7 @@ export const AlertDialogHeader = React.forwardRef<
 AlertDialogHeader.displayName = "AlertDialogHeader";
 export const AlertDialogBody = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (
@@ -170,7 +170,7 @@ export const AlertDialogBody = React.forwardRef<
 AlertDialogBody.displayName = "AlertDialogBody";
 export const AlertDialogFooter = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean | undefined }
 >(({ asChild, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "div";
   return (

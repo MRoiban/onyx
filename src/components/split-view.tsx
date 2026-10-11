@@ -7,11 +7,11 @@ import { useComposedRefs } from "../lib/compose-refs";
 import { ResizeHandle, type ResizeHandleProps } from "./resize-handle";
 
 export interface PaneConstraints {
-  minSize?: number;
-  maxSize?: number;
-  collapsible?: boolean;
-  collapsedSize?: number;
-  snap?: readonly number[];
+  minSize?: number | undefined;
+  maxSize?: number | undefined;
+  collapsible?: boolean | undefined;
+  collapsedSize?: number | undefined;
+  snap?: readonly number[] | undefined;
 }
 const bounds = (pane: PaneConstraints = {}) => ({
   min: pane.minSize ?? 0,
@@ -57,7 +57,7 @@ export function normalizeSplitSizes(
         size +
         (Math.sign(remaining) *
           Math.min(Math.abs(remaining), capacity) *
-          available[index]) /
+          available[index]!) /
           capacity,
     );
   }
@@ -76,7 +76,7 @@ export function resizeSplitSizes(
     b = constraints[index + 1] ?? {};
   const A = bounds(a),
     B = bounds(b),
-    total = sizes[index] + sizes[index + 1];
+    total = sizes[index]! + sizes[index + 1]!;
   const aMin = Math.max(A.min, total - B.max),
     aMax = Math.min(A.max, total - B.min);
   let next = nextSize;
@@ -126,15 +126,15 @@ const Context = React.createContext<SplitContext | null>(null);
 export const splitViewVariants = cva("onyx-split-view");
 export const splitViewPaneVariants = cva("onyx-split-view-pane");
 export interface SplitViewSizingOptions {
-  orientation?: "horizontal" | "vertical";
-  sizes?: readonly number[];
-  defaultSizes?: readonly number[];
-  onSizesChange?: (sizes: number[]) => void;
-  autoSaveId?: string;
+  orientation?: "horizontal" | "vertical" | undefined;
+  sizes?: readonly number[] | undefined;
+  defaultSizes?: readonly number[] | undefined;
+  onSizesChange?: ((sizes: number[]) => void) | undefined;
+  autoSaveId?: string | undefined;
   constraints?: readonly (PaneConstraints & {
-    minPixels?: number;
-    maxPixels?: number;
-  })[];
+    minPixels?: number | undefined;
+    maxPixels?: number | undefined;
+  })[] | undefined;
 }
 export function useSplitView({
   orientation = "horizontal",
@@ -238,11 +238,11 @@ export interface SplitViewProps
   extends
     Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue">,
     Omit<SplitViewSizingOptions, "constraints"> {
-  asChild?: boolean;
+  asChild?: boolean | undefined;
   handleProps?: Omit<
     ResizeHandleProps,
     "value" | "onValueChange" | "orientation"
-  >;
+  > | undefined;
 }
 export const SplitView = React.forwardRef<HTMLDivElement, SplitViewProps>(
   (
@@ -261,7 +261,7 @@ export const SplitView = React.forwardRef<HTMLDivElement, SplitViewProps>(
     forwardedRef,
   ) => {
     const child =
-      asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+      asChild && React.isValidElement<{ children?: React.ReactNode | undefined }>(children)
         ? children
         : null;
     const panes = React.Children.toArray(
@@ -318,11 +318,11 @@ export const SplitView = React.forwardRef<HTMLDivElement, SplitViewProps>(
 SplitView.displayName = "SplitView";
 export interface SplitViewPaneProps
   extends React.HTMLAttributes<HTMLDivElement>, PaneConstraints {
-  defaultSize?: number;
-  minPixels?: number;
-  maxPixels?: number;
-  asChild?: boolean;
-  index?: number;
+  defaultSize?: number | undefined;
+  minPixels?: number | undefined;
+  maxPixels?: number | undefined;
+  asChild?: boolean | undefined;
+  index?: number | undefined;
 }
 export const SplitViewPane = React.forwardRef<
   HTMLDivElement,
@@ -374,14 +374,14 @@ export const SplitViewHandle = React.forwardRef<
   if (!context) throw new Error("SplitViewHandle requires SplitView");
   const a = bounds(context.constraints[index]),
     b = bounds(context.constraints[index + 1]);
-  const total = context.sizes[index] + context.sizes[index + 1];
+  const total = context.sizes[index]! + context.sizes[index + 1]!;
   return (
     <ResizeHandle
       ref={ref}
       data-slot="split-view-handle"
       aria-label={`Resize pane ${index + 1}`}
       aria-controls={context.paneIds[index]}
-      aria-valuetext={`${Math.round(context.sizes[index])}%`}
+      aria-valuetext={`${Math.round(context.sizes[index]!)}%`}
       orientation={
         context.orientation === "horizontal" ? "vertical" : "horizontal"
       }

@@ -37,7 +37,7 @@ const CommandDialog = ({
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
       </DialogDescription>
-      <Command className="h-auto rounded-none" shouldFilter={shouldFilter}>{children}</Command>
+      <Command className="h-auto rounded-none" {...(shouldFilter === undefined ? {} : { shouldFilter })}>{children}</Command>
     </DialogContent>
   </Dialog>
 );
