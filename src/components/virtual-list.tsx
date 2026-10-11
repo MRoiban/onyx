@@ -4,6 +4,7 @@ import { cva } from "class-variance-authority";
 import { defaultRangeExtractor, useVirtualizer } from "@tanstack/react-virtual";
 import { cn } from "../lib/cn";
 import { useComposedRefs } from "../lib/compose-refs";
+export { calculateMeasuredVirtualWindow, type MeasuredVirtualWindow } from '../lib/measured-virtual-window';
 
 export const virtualListVariants = cva("onyx-virtual-list");
 export interface UseVirtualListOptions {

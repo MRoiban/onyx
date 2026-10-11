@@ -9,3 +9,5 @@ WorkbenchSidebar retains its public API and now passes existing `sidebarWidth`, 
 State/ARIA/tokens match ResizeHandle (`data-state`, `data-orientation`, aria values), with `data-slot="sidebar-rail"`. Existing Sidebar slots/exports remain. Headless resizing is available through `useResizable`; `resizeHandleVariants` supplies the visual variant function.
 
 All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+
+`ActivityBar` accepts `asChild` to retain a host navigation element and its accessible label.

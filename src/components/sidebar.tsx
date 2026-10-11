@@ -618,9 +618,10 @@ SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
 
 export const ActivityBar = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+>(({ className, asChild, ...props }, ref) => {
+  const Component = asChild ? Slot : 'div';
+  return <Component
     ref={ref}
     data-slot="activity-bar"
     role="none"
@@ -629,8 +630,8 @@ export const ActivityBar = React.forwardRef<
       className,
     )}
     {...props}
-  />
-));
+/>;
+});
 ActivityBar.displayName = "ActivityBar";
 
 export interface ActivityBarItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

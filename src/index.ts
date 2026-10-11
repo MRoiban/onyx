@@ -76,3 +76,7 @@ export * from './components/spinner';
 export * from './visually-hidden';
 export * from './portal';
 export * from './hooks';
+export * from './components/action-menu';
+export * from './components/anchored-popover';
+export * from './components/overlay-scrollbar';
+export * from './components/fixed-virtual-list';

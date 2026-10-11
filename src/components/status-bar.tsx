@@ -21,13 +21,15 @@ export const statusBarItemVariants = cva(
   }
 );
 
-export const StatusBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export const StatusBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { size?: 'sm' | 'md' }>(
+  ({ className, size = 'md', ...props }, ref) => (
     <footer
       ref={ref}
       data-slot="status-bar"
+      data-size={size}
       className={cn(
-        'flex min-h-8 items-center gap-1 bg-[var(--onyx-shell-status-bar-bg)] px-2 text-[var(--onyx-shell-status-bar-fg)]',
+        'flex items-center gap-1 bg-[var(--onyx-shell-status-bar-bg)] text-[var(--onyx-shell-status-bar-fg)]',
+        size === 'sm' ? 'min-h-0 px-1' : 'min-h-8 px-2',
         className
       )}
       {...props}
@@ -35,6 +37,11 @@ export const StatusBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
   )
 );
 StatusBar.displayName = 'StatusBar';
+
+export const StatusBarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} data-slot="status-bar-group" className={cn('flex min-w-0 items-center gap-1', className)} {...props} />
+);
+StatusBarGroup.displayName = 'StatusBarGroup';
 
 export interface StatusBarItemProps
   extends React.HTMLAttributes<HTMLDivElement>,

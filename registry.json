@@ -38,6 +38,10 @@
           "type": "registry:style"
         },
         {
+          "path": "src/styles/overlay-scrollbar.css",
+          "type": "registry:style"
+        },
+        {
           "path": "src/lib/cn.ts",
           "type": "registry:lib"
         }
@@ -1517,6 +1521,10 @@
         {
           "path": "src/lib/cn.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/tree-navigation.ts",
+          "type": "registry:lib"
         }
       ],
       "dependencies": [
@@ -1546,6 +1554,10 @@
         },
         {
           "path": "src/lib/cn.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/measured-virtual-window.ts",
           "type": "registry:lib"
         }
       ],
@@ -2110,6 +2122,78 @@
         "clsx",
         "tailwind-merge"
       ],
+      "registryDependencies": [
+        "theme"
+      ]
+    },
+    {
+      "name": "action-menu",
+      "type": "registry:ui",
+      "title": "Action Menu",
+      "files": [
+        {
+          "path": "src/components/action-menu.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "hooks",
+        "menu",
+        "theme"
+      ]
+    },
+    {
+      "name": "anchored-popover",
+      "type": "registry:ui",
+      "title": "Anchored Popover",
+      "files": [
+        {
+          "path": "src/components/anchored-popover.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "hooks",
+        "popover",
+        "theme"
+      ]
+    },
+    {
+      "name": "overlay-scrollbar",
+      "type": "registry:ui",
+      "title": "Overlay Scrollbar",
+      "files": [
+        {
+          "path": "src/components/overlay-scrollbar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "hooks",
+        "theme"
+      ]
+    },
+    {
+      "name": "fixed-virtual-list",
+      "type": "registry:ui",
+      "title": "Fixed Virtual List",
+      "files": [
+        {
+          "path": "src/components/fixed-virtual-list.ts",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": [],
       "registryDependencies": [
         "theme"
       ]

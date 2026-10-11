@@ -96,7 +96,11 @@
     "./visually-hidden": "./src/visually-hidden.ts",
     "./portal": "./src/portal.ts",
     "./hooks": "./src/hooks.ts",
-    "./tailwind.preset.cjs": "./tailwind.preset.cjs"
+    "./tailwind.preset.cjs": "./tailwind.preset.cjs",
+    "./action-menu": "./src/action-menu.ts",
+    "./anchored-popover": "./src/anchored-popover.ts",
+    "./overlay-scrollbar": "./src/overlay-scrollbar.ts",
+    "./fixed-virtual-list": "./src/fixed-virtual-list.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

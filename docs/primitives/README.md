@@ -15,6 +15,7 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 | [Spinner](spinner.md) | An operation is in progress |
 | [Input](input.md) | Edit a single line (Input) or multiline text (Textarea) |
 | [Toolbar](toolbar.md) | Group related action controls into one tab stop |
+| [Text](text.md) | Shared typography and literal search highlighting |
 | [Code](code.md) | Showing an inline identifier, path or code fragment |
 | [Kbd](kbd.md) | Displaying a keyboard shortcut |
 | [Toggle](toggle.md) | A compact independent pressed action is needed |
@@ -26,6 +27,8 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 | Primitive | Use when |
 |---|---|
 | [Popover](popover.md) | Anchored interactive settings or workspace controls |
+| [ActionMenu](action-menu.md) | State-controlled commands opened at a viewport point |
+| [AnchoredPopover](anchored-popover.md) | Attach an interactive surface to an existing external control |
 | [Menu](menu.md) | Button-triggered commands, checks and mutually exclusive command choices |
 | [Tooltip](tooltip.md) | Short noninteractive explanations and keyboard shortcuts |
 | [Truncate](truncate.md) | Long names or paths in constrained rows |
@@ -79,7 +82,10 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 |---|---|
 | [Listbox](listbox.md) | Choosing one or several options in a collection |
 | [Tree](tree.md) | Navigating/selecting generic hierarchical items |
+| [Fixed Virtual List](fixed-virtual-list.md) | Fixed-height rows in an existing ancestor or explicit scrolling viewport |
 | [VirtualList](virtual-list.md) | A scroll viewport should mount only visible rows from a large flat collection |
+| [OverlayScrollbar](overlay-scrollbar.md) | Attach shared scrollbar behavior to an existing scrolling viewport |
+| [StatusBar](status-bar.md) | Group workbench status contributions in a footer |
 | [ScrollArea](scroll-area.md) | A native scrolling viewport needs an overlay scrollbar and optional edge shadows |
 | [ResizeHandle](resize-handle.md) | A separator changes the size of an adjacent region |
 | [SplitView](split-view.md) | Adjacent panes share a constrained resizable area, including nested horizontal/vertical editor layouts |

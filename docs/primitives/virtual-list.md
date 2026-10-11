@@ -15,3 +15,5 @@ Headless: `useVirtualList(options)` returns `ref` (attach to the scroll element)
 [TanStack Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer).
 
 All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+
+`calculateMeasuredVirtualWindow(heights, scrollTop, viewportHeight, overscan = 12)` returns contiguous `start` / `end` indices and `before` / `after` spacer sizes when a host already tracks variable row heights. Empty and out-of-range viewports remain bounded.

@@ -60,6 +60,8 @@ Onyx remains the upstream package. Projects outside Bedrock can use `@onyx/ui` d
 
 Onyx covers actions and inputs, forms and validation, menus and overlays, feedback and display, collections, navigation, and layout. Examples include Button, Field, Combobox, ColorPicker, Dialog, Toast, Tree, VirtualList, SplitView, and the Stack/Inline/Grid layout primitives.
 
+Workbench hosts can compose Sidebar, docked Panel, StatusBar, and ResizeHandle. ActionMenu opens reusable command menus at a viewport point; AnchoredPopover attaches to an existing application control; OverlayScrollbar adds themed scrolling to a native viewport. `useFixedVirtualList` supports existing scrolling containers and transient reveal requests; tree navigation helpers, literal text highlighting, and shortcut formatting can be used without application dependencies. These primitives own UI interaction while the application owns commands, data, and layout policy.
+
 The [primitive documentation](docs/primitives/README.md) lists the components and explains their anatomy, props, tokens, and available hooks. [`package.json`](package.json) lists all public subpath exports. Shared state, focus, ref, and positioning utilities are available from `@onyx/ui/hooks`.
 
 Many interaction primitives use Radix UI; floating positioning uses Floating UI. The `Icon` component wraps Codicons, whose stylesheet and font are included through the Onyx CSS imports.

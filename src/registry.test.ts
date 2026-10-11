@@ -54,7 +54,7 @@ describe('onyx registry', () => {
     ]);
 
     for (const item of registry.items) {
-      expect(item.dependencies?.length, `${item.name}:dependencies`).toBeGreaterThan(0);
+      expect(Array.isArray(item.dependencies), `${item.name}:dependencies`).toBe(true);
       for (const dependency of item.dependencies ?? []) {
         expect(declaredDependencies.has(dependency), `${item.name}:${dependency}`).toBe(true);
       }

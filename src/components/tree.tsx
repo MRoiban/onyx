@@ -13,6 +13,14 @@ import { useVirtualList } from "./virtual-list";
 import { TreeRow } from "./panel";
 import { Icon } from "./icon";
 import { Button } from "./button";
+import { resolveTreeNavigationAction } from "../lib/tree-navigation";
+export {
+  resolveTreeNavigationAction,
+  findTreeTypeAheadMatch,
+  type TreeNavigationItem,
+  type TreeNavigationAction,
+  type TreeNavigationOptions,
+} from "../lib/tree-navigation";
 
 export interface TreeNode<T> {
   item: T;
@@ -298,21 +306,18 @@ export function useTree<T>(options: UseTreeOptions<T>) {
       !event.ctrlKey
     ) {
       event.preventDefault();
-      if (event.key === "ArrowRight") {
-        if (!expandedKeys.includes(focused.key)) expand(focused, true);
-        else {
-          const child = rows.find(
-            (row) =>
-              row.parentKey === focused.key && !options.isDisabled?.(row.item),
-          );
-          if (child) selection.setFocusedKey(child.key);
-        }
-      }
-      if (event.key === "ArrowLeft") {
-        if (expandedKeys.includes(focused.key) && focused.expandable)
-          expand(focused, false);
-        else if (focused.parentKey !== null)
-          selection.setFocusedKey(focused.parentKey);
+      if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+        const action = resolveTreeNavigationAction(event.key, {
+          rows: rows.map(row => ({
+            key: row.key, depth: row.depth, branch: row.expandable,
+            expanded: expandedKeys.includes(row.key),
+            label: options.getText?.(row.item) ?? String(row.key), data: row,
+            disabled: options.isDisabled?.(row.item) ?? false,
+          })),
+          focusedKey: focused.key,
+        });
+        if (action?.type === "focus") selection.setFocusedKey(action.key);
+        if (action?.type === "toggle") expand(action.item, !expandedKeys.includes(action.key));
       }
       if (event.key === "*") {
         const siblings = rows.filter(

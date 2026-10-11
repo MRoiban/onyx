@@ -133,7 +133,9 @@ export function useResizable({
     onDoubleClick: (event: React.MouseEvent<HTMLElement>) => {
       if (!disabled) {
         event.preventDefault();
+        onResizeStart?.();
         setValue(defaultValue);
+        onResizeEnd?.();
       }
     },
     onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
@@ -142,6 +144,8 @@ export function useResizable({
         orientation === "vertical"
           ? ["ArrowLeft", "ArrowRight"]
           : ["ArrowUp", "ArrowDown"];
+      if (!keys.includes(event.key) && !['Home', 'End'].includes(event.key) && !(event.key === 'Enter' && collapsible)) return;
+      onResizeStart?.();
       if (keys.includes(event.key))
         setValue(
           value +
@@ -159,6 +163,7 @@ export function useResizable({
         );
       else return;
       event.preventDefault();
+      onResizeEnd?.();
     },
   } satisfies React.HTMLAttributes<HTMLElement> &
     Record<`data-${string}`, unknown>;

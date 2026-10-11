@@ -17,3 +17,5 @@ Headless: `useResizable(options)` returns `value`, `setValue`, `dragging`, `hove
 [APG window splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/).
 
 All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+
+`onResizeStart` and `onResizeEnd` also surround keyboard and double-click changes. `onValueChange` runs before completion so persistence adapters can commit the latest value consistently for pointer and discrete interactions.
