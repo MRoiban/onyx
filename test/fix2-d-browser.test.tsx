@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { describe, it, expect } from 'bun:test';
-import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -36,6 +36,8 @@ async function probe(forced = false) {
         document.getElementById('results').textContent=JSON.stringify({forced:matchMedia('(forced-colors: active)').matches,appearance:getComputedStyle(document.querySelector('.onyx-checkbox')).appearance,indicator:getComputedStyle(document.querySelector('.onyx-checkbox'),'::after').display,result});
       },100);
     </script>`);
+    // The screenshot directory is gitignored, so fresh checkouts lack it.
+    if (forced) mkdirSync(join(process.cwd(), 'gallery/screenshots'), { recursive: true });
     const flags = forced ? ['--force-high-contrast', `--screenshot=${join(process.cwd(), 'gallery/screenshots/fix2-d-checkbox-forced.png')}`] : [];
     const proc = Bun.spawn([shell!, '--no-sandbox', '--allow-file-access-from-files', '--window-size=1000,800', '--virtual-time-budget=1000', '--dump-dom', ...flags, `file://${join(scratch, 'index.html')}`], { stdout: 'pipe', stderr: 'ignore' });
     const dom = await new Response(proc.stdout).text();

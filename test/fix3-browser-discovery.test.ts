@@ -25,7 +25,8 @@ async function runSuites(withBrowser: boolean) {
       const actual = { ...os }; mock.module('node:os', () => ({ ...actual, homedir: () => ${JSON.stringify(home)} }));`);
     const process = Bun.spawn([Bun.which('bun')!, 'test', '--preload', preload, ...suites], {
       cwd: globalThis.process.cwd(),
-      env: { ...globalThis.process.env, CI: '1', ONYX_CHROMIUM: undefined },
+      // GitHub Actions makes Bun repeat each error as an annotation; count plain output only.
+      env: { ...globalThis.process.env, CI: '1', ONYX_CHROMIUM: undefined, GITHUB_ACTIONS: undefined },
       stdout: 'pipe', stderr: 'pipe',
     });
     const [stdout, stderr, code] = await Promise.all([new Response(process.stdout).text(), new Response(process.stderr).text(), process.exited]);
