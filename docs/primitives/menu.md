@@ -29,3 +29,5 @@ Radix owns roving focus, typeahead, submenu arrows, selection and dismissal. Sha
 DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
 
 For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+
+Menu content inherits the host font through `--onyx-font-size` and `--onyx-scale-type`. Menu geometry, icons and popover spacing follow `--onyx-scale-ui`; density and per-component size overrides retain their base units.

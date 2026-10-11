@@ -11,3 +11,5 @@ No headless model; use `useListbox` / `useTree` for behavior.
 All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
 
 `Panel` also accepts `variant="docked"` for workbench regions. The default `card` retains its rounded border and shadow; `docked` supplies the shared surface and flex container while the host chooses its edge borders and dimensions.
+
+Docked panels form an isolated, clipped content boundary with zero minimum width. Editor and other positioned content stays within the panel while shrinking or resizing; floating surfaces should use portals.
