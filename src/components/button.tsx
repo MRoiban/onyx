@@ -5,6 +5,7 @@ import {
   type ElementRef,
   type ReactElement,
   type ReactNode,
+  type MouseEvent,
   forwardRef,
   cloneElement,
   isValidElement,
@@ -138,7 +139,7 @@ export const Button = forwardRef<ElementRef<'button'>, ButtonProps>(
         {...props}
         onPointerDownCapture={blocked ? blockActivation : props.onPointerDownCapture}
         onKeyDownCapture={blocked ? blockActivation : props.onKeyDownCapture}
-        onClickCapture={(event) => {
+        onClickCapture={(event: MouseEvent<HTMLButtonElement>) => {
           if (loading || props.disabled) {
             event.preventDefault();
             event.stopPropagation();
@@ -146,7 +147,7 @@ export const Button = forwardRef<ElementRef<'button'>, ButtonProps>(
           }
           onClickCapture?.(event);
         }}
-        onClick={(event) => {
+        onClick={(event: MouseEvent<HTMLButtonElement>) => {
           if (loading || props.disabled) {
             event.preventDefault();
             return;

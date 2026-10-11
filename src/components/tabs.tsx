@@ -141,7 +141,7 @@ export const TabsList = React.forwardRef<
           context.variant === "line" && "onyx-tabs-line-list",
           className,
         )}
-        onKeyDown={(event) => {
+        onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
           onKeyDown?.(event);
           if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
           const all = getItems();
@@ -158,11 +158,11 @@ export const TabsList = React.forwardRef<
           sync(target);
           target?.focus();
         }}
-        onFocusCapture={(event) => {
+        onFocusCapture={(event: React.FocusEvent<HTMLDivElement>) => {
           onFocusCapture?.(event);
           if (!event.defaultPrevented) sync(getItems().find((el) => el === event.target || el.contains(event.target as Node)));
         }}
-        onBlurCapture={(event) => {
+        onBlurCapture={(event: React.FocusEvent<HTMLDivElement>) => {
           onBlurCapture?.(event);
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
             sync(getItems().find((el) => el.getAttribute("aria-selected") === "true") ?? getItems()[0]);
@@ -226,13 +226,13 @@ export const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
           disabled && "pointer-events-none opacity-50",
           className,
         )}
-        onClick={(event) => {
+        onClick={(event: React.MouseEvent<HTMLDivElement>) => {
           onClick?.(event);
           if (!event.defaultPrevented) {
             selectTab();
           }
         }}
-        onKeyDown={(event) => {
+        onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
           onKeyDown?.(event);
           if (event.defaultPrevented) {
             return;

@@ -65,11 +65,11 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
           className,
         )}
         {...props}
-        onKeyDown={(event) => {
+        onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
           onKeyDown?.(event);
           if (!event.defaultPrevented) roving.onKeyDown(event);
         }}
-        onFocusCapture={(event) => {
+        onFocusCapture={(event: React.FocusEvent<HTMLDivElement>) => {
           onFocusCapture?.(event);
           if (!event.defaultPrevented) roving.onFocusCapture(event);
         }}
