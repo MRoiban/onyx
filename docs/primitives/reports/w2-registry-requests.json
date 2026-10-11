@@ -1,0 +1,285 @@
+{
+  "registryItems": {
+    "input": {
+      "dependencies": [
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot",
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field"
+      ]
+    },
+    "textarea": {
+      "dependencies": [
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot",
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field"
+      ]
+    },
+    "checkbox": {
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field"
+      ]
+    },
+    "switch": {
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field"
+      ]
+    },
+    "select": {
+      "dependencies": [
+        "@radix-ui/react-select",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "theme",
+        "icon",
+        "field"
+      ]
+    },
+    "field": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-label"
+      ],
+      "registryDependencies": [
+        "theme",
+        "icon"
+      ]
+    },
+    "input-group": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "input",
+        "field",
+        "button"
+      ]
+    },
+    "search-field": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "input-group",
+        "icon",
+        "hooks"
+      ]
+    },
+    "number-field": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field",
+        "icon",
+        "hooks"
+      ]
+    },
+    "radio-group": {
+      "dependencies": [
+        "@radix-ui/react-radio-group",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field"
+      ]
+    },
+    "checkbox-group": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "checkbox",
+        "hooks"
+      ]
+    },
+    "slider": {
+      "dependencies": [
+        "@radix-ui/react-slider",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field",
+        "hooks"
+      ]
+    },
+    "toggle": {
+      "dependencies": [
+        "@radix-ui/react-toggle",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "hooks"
+      ]
+    },
+    "toggle-group": {
+      "dependencies": [
+        "@radix-ui/react-toggle-group",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "toggle",
+        "hooks"
+      ]
+    },
+    "otp-field": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "field",
+        "hooks"
+      ]
+    },
+    "password-field": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "input-group",
+        "icon",
+        "hooks"
+      ]
+    },
+    "color-swatch": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "hooks"
+      ]
+    },
+    "color-picker": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "color-swatch",
+        "slider",
+        "input-group",
+        "hooks"
+      ]
+    },
+    "calendar": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "icon",
+        "hooks"
+      ]
+    },
+    "file-trigger": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme",
+        "button"
+      ]
+    },
+    "drop-zone": {
+      "dependencies": [
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "theme"
+      ]
+    }
+  },
+  "addFiles": {
+    "color-picker": [
+      {
+        "path": "src/lib/color.ts",
+        "type": "registry:lib"
+      }
+    ]
+  },
+  "optionalPackageExports": {
+    "./color": "./src/lib/color.ts"
+  },
+  "newDependencies": [],
+  "keyframes": []
+}

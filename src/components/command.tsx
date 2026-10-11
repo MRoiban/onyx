@@ -32,7 +32,7 @@ const CommandDialog = ({
   ...props
 }: CommandDialogProps) => (
   <Dialog modal={modal} {...props}>
-    <DialogContent className="overflow-hidden mb-auto mt-[12vh] max-w-[min(calc(640px*var(--onyx-scale-ui)),calc(100vw-48px))] sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(0px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
+    <DialogContent className="overflow-hidden mb-auto mt-[12vh] max-w-[min(calc(640px*var(--onyx-scale-ui)),calc(100vw-48px))] sm:max-w-[min(calc(576px*var(--onyx-scale-ui)),calc(100vw-48px))] border border-[var(--onyx-border-default)] bg-[var(--onyx-surface-dialog)] p-[calc(0px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)] [&_[cmdk-root]]:outline-none">
       <DialogTitle className="sr-only">Command Palette</DialogTitle>
       <DialogDescription className="sr-only">
         Search for commands and quick actions. Type to filter, Enter to run.
@@ -46,13 +46,13 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div data-slot="command-input-shell" className="flex items-center border-b border-[var(--onyx-shell-tabs-border)] px-[calc(16px*var(--onyx-scale-ui))]">
+  <div data-slot="command-input-shell" className="focus-within:ring-2 focus-within:ring-inset focus-within:ring-[var(--onyx-control-focus-ring)] flex items-center border-b border-[var(--onyx-border-default)] px-[calc(16px*var(--onyx-scale-ui))]">
     <Icon name="search" size="sm" className="text-[var(--onyx-text-description)]" />
     <CommandPrimitive.Input
       ref={ref}
       data-slot="command-input"
       className={cn(
-        'flex h-[max(32px,calc(40px*var(--onyx-scale-ui)))] w-full items-center bg-transparent py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(12px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none placeholder:text-[var(--onyx-text-description)]',
+        'flex h-[max(32px,calc(40px*var(--onyx-scale-ui)))] w-full items-center bg-transparent py-[calc(8px*var(--onyx-scale-ui))] pl-[calc(12px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] text-[var(--onyx-text-foreground)] outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--onyx-control-focus-ring)] placeholder:text-[var(--onyx-text-description)]',
         className
       )}
       {...props}
@@ -110,7 +110,7 @@ const CommandSeparator = React.forwardRef<
   <CommandPrimitive.Separator
     ref={ref}
     data-slot="command-separator"
-    className={cn('mx-[calc(8px*var(--onyx-scale-ui))] h-px bg-[var(--onyx-shell-tabs-border)]', className)}
+    className={cn('mx-[calc(8px*var(--onyx-scale-ui))] h-px bg-[var(--onyx-border-default)]', className)}
     {...props}
   />
 ));

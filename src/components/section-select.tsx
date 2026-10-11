@@ -303,7 +303,7 @@ export function SectionSelect<TValue extends string>({
             aria-label={ariaLabel}
             data-slot="section-select-content"
             className={cn(
-              'fixed flex flex-col z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-menu)] p-[calc(4px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
+              'fixed flex flex-col z-[var(--onyx-z-popover)] select-none overflow-hidden rounded-[calc(var(--onyx-radius-md)*var(--onyx-scale-ui))] border border-[var(--onyx-border-default)] bg-[var(--onyx-surface-menu)] p-[calc(4px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-md)] focus:outline-none',
               contentClassName
             )}
             onPointerDown={(event) => {
@@ -374,7 +374,7 @@ export function SectionSelect<TValue extends string>({
         data-slot="section-select-trigger"
         data-state={isOpen ? 'open' : 'closed'}
         className={cn(
-          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-[calc(8px*var(--onyx-scale-ui))] border-0 bg-transparent px-[calc(0px*var(--onyx-scale-ui))] py-[calc(0px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] font-medium text-[var(--onyx-text-foreground)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0',
+          'inline-flex h-auto w-auto min-h-0 select-none items-center justify-between gap-[calc(8px*var(--onyx-scale-ui))] border-0 bg-transparent px-[calc(0px*var(--onyx-scale-ui))] py-[calc(0px*var(--onyx-scale-ui))] text-[length:calc(14px*var(--onyx-scale-ui))] leading-[1.428571] font-medium text-[var(--onyx-text-foreground)] whitespace-nowrap shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--onyx-control-focus-ring)]',
           triggerClassName
         )}
         onPointerDown={(event) => {

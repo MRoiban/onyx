@@ -1,21 +1,22 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it } from "vitest";
 
 import {
   getProgressPercent,
   Progress,
   progressClassName,
-  progressIndicatorClassName
-} from './progress';
+  progressIndicatorClassName,
+} from "./progress";
 
-describe('Progress', () => {
-  it('uses semantic Onyx control tokens', () => {
-    expect(progressClassName).toContain('bg-[var(--onyx-control-bg)]');
-    expect(progressIndicatorClassName).toContain('bg-[var(--onyx-control-focus-ring)]');
+describe("Progress", () => {
+  it("uses semantic Onyx control tokens", () => {
+    expect(progressClassName).toContain("onyx-track");
+    expect(progressClassName).toContain("onyx-display-tone");
+    expect(progressIndicatorClassName).toContain("onyx-progress-indicator");
   });
 
-  it('clamps progress percentages and aria values', () => {
+  it("clamps progress percentages and aria values", () => {
     expect(getProgressPercent(50, 0, 100)).toBe(50);
     expect(getProgressPercent(150, 0, 100)).toBe(100);
     expect(getProgressPercent(-20, 0, 100)).toBe(0);
@@ -29,6 +30,6 @@ describe('Progress', () => {
     expect(html).toContain('aria-valuemax="12"');
     expect(html).toContain('aria-valuenow="7"');
     expect(html).toContain('data-slot="progress-indicator"');
-    expect(html).toContain('width:50%');
+    expect(html).toContain("width:50%");
   });
 });

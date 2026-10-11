@@ -1,8 +1,7 @@
-const tailwindConfig = require('../new-ui/tailwind.config.cjs');
-
 module.exports = {
-  plugins: {
-    tailwindcss: tailwindConfig,
-    autoprefixer: {}
-  }
+  plugins: [
+    require('postcss-import'),
+    require('tailwindcss')({ config: './tailwind.config.cjs' }),
+    require('autoprefixer'),
+  ],
 };

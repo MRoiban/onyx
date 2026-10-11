@@ -104,8 +104,8 @@ export const Prompt = forwardRef<HTMLDivElement, PromptProps>(
         aria-label={message}
         data-slot="prompt"
         className={cn(
-          'flex w-[calc(320px*var(--onyx-scale-ui))] max-w-[calc(100vw-32px)] cursor-default flex-col gap-[calc(16px*var(--onyx-scale-ui))] overflow-hidden rounded-[calc(var(--onyx-radius-lg)*var(--onyx-scale-ui))] border border-[var(--onyx-shell-tabs-border)] bg-[var(--onyx-surface-dialog)] p-[calc(16px*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)]',
-          '[&_[data-slot=prompt-code]]:rounded-[calc(3px*var(--onyx-scale-ui))] [&_[data-slot=prompt-code]]:bg-[var(--onyx-state-hover)] [&_[data-slot=prompt-code]]:px-[calc(4px*var(--onyx-scale-ui))] [&_[data-slot=prompt-code]]:font-mono',
+          'flex w-[calc(var(--onyx-prompt-width)*var(--onyx-scale-ui))] max-w-[calc(100vw-var(--onyx-space-8))] cursor-default flex-col gap-[calc(var(--onyx-space-4)*var(--onyx-scale-ui))] overflow-hidden rounded-[calc(var(--onyx-radius-lg)*var(--onyx-scale-ui))] border border-[var(--onyx-border-default)] bg-[var(--onyx-surface-dialog)] p-[calc(var(--onyx-space-4)*var(--onyx-scale-ui))] text-[var(--onyx-text-foreground)] shadow-[var(--onyx-shadow-lg)]',
+          '[&_[data-slot=prompt-code]]:rounded-[calc(var(--onyx-radius-xs)*var(--onyx-scale-ui))] [&_[data-slot=prompt-code]]:bg-[var(--onyx-state-hover)] [&_[data-slot=prompt-code]]:px-[calc(var(--onyx-space-1)*var(--onyx-scale-ui))] [&_[data-slot=prompt-code]]:[font-family:var(--onyx-font-mono)]',
           className
         )}
         onKeyDown={handleKeyDown}
@@ -114,11 +114,11 @@ export const Prompt = forwardRef<HTMLDivElement, PromptProps>(
           {renderPromptText(message)}
         </p>
         {detail ? (
-          <p data-slot="prompt-detail" className="m-0 break-words text-[length:calc(12px*var(--onyx-scale-ui))] leading-[1.333333] text-[var(--onyx-text-description)]">
+          <p data-slot="prompt-detail" className="m-0 break-words text-[length:calc(var(--onyx-text-sm)*var(--onyx-scale-ui))] leading-[var(--onyx-leading-normal)] text-[var(--onyx-text-description)]">
             {renderPromptText(detail)}
           </p>
         ) : null}
-        <div data-slot="prompt-actions" className="flex flex-col gap-[calc(4px*var(--onyx-scale-ui))]">
+        <div data-slot="prompt-actions" className="flex flex-col gap-[calc(var(--onyx-space-1)*var(--onyx-scale-ui))]">
           {actions.map((action, index) => {
             const active = index === activeIndex;
             return (
@@ -132,10 +132,10 @@ export const Prompt = forwardRef<HTMLDivElement, PromptProps>(
                 data-active={active ? 'true' : undefined}
                 tabIndex={active ? 0 : -1}
                 className={cn(
-                  'flex h-[max(18px,calc(22px*var(--onyx-scale-ui)))] w-full items-center justify-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] border px-[calc(8px*var(--onyx-scale-ui))] text-[length:inherit] leading-none outline-none transition-colors',
+                  'flex h-[var(--onyx-control-height-sm)] w-full items-center justify-center rounded-[calc(var(--onyx-radius-sm)*var(--onyx-scale-ui))] border px-[calc(var(--onyx-space-2)*var(--onyx-scale-ui))] text-[length:inherit] leading-none outline-none transition-colors',
                   active
                     ? 'border-[color-mix(in_srgb,var(--onyx-control-focus-ring)_50%,transparent)] bg-[color-mix(in_srgb,var(--onyx-control-focus-ring)_16%,transparent)] text-[var(--onyx-text-foreground)]'
-                    : 'border-[var(--onyx-shell-tabs-border)] bg-transparent text-[var(--onyx-text-foreground)] hover:bg-[var(--onyx-state-hover)]'
+                    : 'border-[var(--onyx-border-default)] bg-transparent text-[var(--onyx-text-foreground)] hover:bg-[var(--onyx-state-hover)]'
                 )}
                 onClick={() => onRespond(index)}
               >

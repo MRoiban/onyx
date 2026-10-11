@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onyx primitives — design gallery</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.38/dist/codicon.css">
+<style>
+/* ==========================================================================
+   TIER 1 — PALETTE (raw Flexoki ramps). Never referenced by components.
+   ========================================================================== */
+:root {
+  --onyx-palette-black: #100F0F; --onyx-palette-paper: #FFFCF0;
+  --onyx-palette-base-950: #1C1B1A; --onyx-palette-base-900: #282726; --onyx-palette-base-850: #343331;
+  --onyx-palette-base-800: #403E3C; --onyx-palette-base-700: #575653; --onyx-palette-base-600: #6F6E69;
+  --onyx-palette-base-500: #878580; --onyx-palette-base-300: #B7B5AC; --onyx-palette-base-200: #CECDC3;
+  --onyx-palette-base-150: #DAD8CE; --onyx-palette-base-100: #E6E4D9; --onyx-palette-base-50: #F2F0E5;
+  --onyx-palette-red-400: #D14D41; --onyx-palette-red-600: #AF3029; --onyx-palette-red-800: #552725; --onyx-palette-red-950: #261312; --onyx-palette-red-50: #FFE1D5; --onyx-palette-red-200: #F89A8A;
+  --onyx-palette-yellow-400: #D0A215; --onyx-palette-yellow-600: #AD8301; --onyx-palette-yellow-800: #584113; --onyx-palette-yellow-950: #241E08; --onyx-palette-yellow-50: #FAEEC6; --onyx-palette-yellow-200: #ECCB60;
+  --onyx-palette-green-400: #879A39; --onyx-palette-green-600: #66800B; --onyx-palette-green-800: #3D4C07; --onyx-palette-green-950: #1A1E0C; --onyx-palette-green-50: #EDEECF; --onyx-palette-green-200: #BEC97E;
+  --onyx-palette-blue-400: #4385BE; --onyx-palette-blue-600: #205EA6; --onyx-palette-blue-800: #133D62; --onyx-palette-blue-950: #101A24; --onyx-palette-blue-50: #E1ECEB; --onyx-palette-blue-200: #92BFDB;
+  --onyx-palette-purple-400: #8B7EC8; --onyx-palette-cyan-400: #3AA99F; --onyx-palette-orange-400: #DA702C; --onyx-palette-magenta-400: #CE5D97;
+}
+
+/* ==========================================================================
+   TIER 2 — SEMANTIC (--onyx-*). Public theme API. Dark default.
+   ========================================================================== */
+.onyx {
+  --onyx-surface-app: var(--onyx-palette-black);
+  --onyx-surface-panel: var(--onyx-palette-base-950);
+  --onyx-surface-menu: var(--onyx-palette-base-950);
+  --onyx-surface-dialog: var(--onyx-palette-base-950);
+  --onyx-surface-raised: var(--onyx-palette-base-900);
+  --onyx-surface-overlay: rgba(16,15,15,.76);
+  --onyx-surface-tooltip: var(--onyx-palette-base-900);
+
+  --onyx-text-foreground: var(--onyx-palette-base-200);
+  --onyx-text-muted: var(--onyx-palette-base-300);
+  --onyx-text-description: var(--onyx-palette-base-500);
+  --onyx-text-link: var(--onyx-palette-blue-400);
+  --onyx-text-inverse: var(--onyx-palette-paper);
+
+  --onyx-border-subtle: var(--onyx-palette-base-900);
+  --onyx-border-default: var(--onyx-palette-base-800);
+  --onyx-border-strong: var(--onyx-palette-base-700);
+
+  --onyx-control-button-bg: var(--onyx-palette-blue-600);
+  --onyx-control-button-fg: var(--onyx-palette-paper);
+  --onyx-control-button-hover-bg: var(--onyx-palette-blue-400);
+  --onyx-control-secondary-bg: var(--onyx-palette-base-900);
+  --onyx-control-secondary-fg: var(--onyx-palette-base-200);
+  --onyx-control-secondary-hover-bg: var(--onyx-palette-base-850);
+  --onyx-control-input-bg: var(--onyx-palette-base-950);
+  --onyx-control-input-fg: var(--onyx-palette-base-200);
+  --onyx-control-input-border: var(--onyx-palette-base-800);
+  --onyx-control-track: var(--onyx-palette-base-900);
+  --onyx-control-focus-ring: var(--onyx-palette-blue-400);
+
+  --onyx-state-hover: var(--onyx-palette-base-900);
+  --onyx-state-active: var(--onyx-palette-base-800);
+  --onyx-state-selected: var(--onyx-palette-base-850);
+  --onyx-state-selected-fg: var(--onyx-palette-paper);
+  --onyx-state-selected-inactive: var(--onyx-palette-base-900);
+
+  /* tones: fg (text/icon), bg (subtle fill), border, solid (filled), solid-fg */
+  --onyx-tone-neutral-fg: var(--onyx-palette-base-300); --onyx-tone-neutral-bg: var(--onyx-palette-base-900); --onyx-tone-neutral-border: var(--onyx-palette-base-800); --onyx-tone-neutral-solid: var(--onyx-palette-base-700); --onyx-tone-neutral-solid-fg: var(--onyx-palette-paper);
+  --onyx-tone-info-fg: var(--onyx-palette-blue-400); --onyx-tone-info-bg: var(--onyx-palette-blue-950); --onyx-tone-info-border: var(--onyx-palette-blue-800); --onyx-tone-info-solid: var(--onyx-palette-blue-600); --onyx-tone-info-solid-fg: var(--onyx-palette-paper);
+  --onyx-tone-success-fg: var(--onyx-palette-green-400); --onyx-tone-success-bg: var(--onyx-palette-green-950); --onyx-tone-success-border: var(--onyx-palette-green-800); --onyx-tone-success-solid: var(--onyx-palette-green-600); --onyx-tone-success-solid-fg: var(--onyx-palette-paper);
+  --onyx-tone-warning-fg: var(--onyx-palette-yellow-400); --onyx-tone-warning-bg: var(--onyx-palette-yellow-950); --onyx-tone-warning-border: var(--onyx-palette-yellow-800); --onyx-tone-warning-solid: var(--onyx-palette-yellow-600); --onyx-tone-warning-solid-fg: var(--onyx-palette-black);
+  --onyx-tone-danger-fg: var(--onyx-palette-red-400); --onyx-tone-danger-bg: var(--onyx-palette-red-950); --onyx-tone-danger-border: var(--onyx-palette-red-800); --onyx-tone-danger-solid: var(--onyx-palette-red-600); --onyx-tone-danger-solid-fg: var(--onyx-palette-paper);
+
+  --onyx-radius-xs: 3px; --onyx-radius-sm: 4px; --onyx-radius-md: 6px; --onyx-radius-lg: 10px; --onyx-radius-full: 999px;
+  --onyx-shadow-sm: 0 4px 14px rgba(16,15,15,.24); --onyx-shadow-md: 0 18px 40px rgba(16,15,15,.36); --onyx-shadow-lg: 0 24px 56px rgba(16,15,15,.48);
+
+  --onyx-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --onyx-font-mono: 'Lilex', ui-monospace, 'SF Mono', Menlo, monospace;
+  --onyx-text-xs: 11px; --onyx-text-sm: 12px; --onyx-text-md: 13px; --onyx-text-lg: 15px; --onyx-text-xl: 18px; --onyx-text-2xl: 22px;
+  --onyx-leading-tight: 1.25; --onyx-leading-normal: 1.5;
+  --onyx-weight-regular: 400; --onyx-weight-medium: 500; --onyx-weight-semibold: 600;
+
+  --onyx-space-0-5: 2px; --onyx-space-1: 4px; --onyx-space-1-5: 6px; --onyx-space-2: 8px; --onyx-space-3: 12px; --onyx-space-4: 16px; --onyx-space-5: 20px; --onyx-space-6: 24px; --onyx-space-8: 32px; --onyx-space-10: 40px;
+
+  /* density: compact (workbench) is default; comfortable for web pebbles */
+  --onyx-control-height-xs: 20px; --onyx-control-height-sm: 24px; --onyx-control-height-md: 28px; --onyx-control-height-lg: 32px;
+  --onyx-row-height: 22px;
+
+  --onyx-duration-fast: 100ms; --onyx-duration-normal: 160ms; --onyx-duration-slow: 240ms;
+  --onyx-ease-standard: cubic-bezier(.2,0,0,1); --onyx-ease-emphasized: cubic-bezier(.2,0,.16,1); --onyx-ease-exit: cubic-bezier(.4,0,1,1);
+  --onyx-focus-ring-width: 2px; --onyx-focus-ring-offset: 1px;
+}
+.onyx[data-density="comfortable"] {
+  --onyx-text-md: 14px; --onyx-text-sm: 13px; --onyx-text-xs: 12px;
+  --onyx-control-height-xs: 24px; --onyx-control-height-sm: 30px; --onyx-control-height-md: 36px; --onyx-control-height-lg: 40px;
+  --onyx-row-height: 32px;
+}
+.onyx[data-theme="light"] {
+  --onyx-surface-app: var(--onyx-palette-paper);
+  --onyx-surface-panel: var(--onyx-palette-base-50);
+  --onyx-surface-menu: var(--onyx-palette-paper);
+  --onyx-surface-dialog: var(--onyx-palette-paper);
+  --onyx-surface-raised: var(--onyx-palette-paper);
+  --onyx-surface-overlay: rgba(16,15,15,.3);
+  --onyx-surface-tooltip: var(--onyx-palette-base-900);
+  --onyx-text-foreground: var(--onyx-palette-black);
+  --onyx-text-muted: var(--onyx-palette-base-700);
+  --onyx-text-description: var(--onyx-palette-base-600);
+  --onyx-text-link: var(--onyx-palette-blue-600);
+  --onyx-border-subtle: var(--onyx-palette-base-100);
+  --onyx-border-default: var(--onyx-palette-base-150);
+  --onyx-border-strong: var(--onyx-palette-base-300);
+  --onyx-control-secondary-bg: var(--onyx-palette-base-100);
+  --onyx-control-secondary-fg: var(--onyx-palette-black);
+  --onyx-control-secondary-hover-bg: var(--onyx-palette-base-150);
+  --onyx-control-input-bg: var(--onyx-palette-paper);
+  --onyx-control-input-fg: var(--onyx-palette-black);
+  --onyx-control-input-border: var(--onyx-palette-base-150);
+  --onyx-control-track: var(--onyx-palette-base-100);
+  --onyx-control-focus-ring: var(--onyx-palette-blue-600);
+  --onyx-state-hover: var(--onyx-palette-base-100);
+  --onyx-state-active: var(--onyx-palette-base-150);
+  --onyx-state-selected: var(--onyx-palette-blue-50);
+  --onyx-state-selected-fg: var(--onyx-palette-black);
+  --onyx-state-selected-inactive: var(--onyx-palette-base-100);
+  --onyx-tone-neutral-fg: var(--onyx-palette-base-600); --onyx-tone-neutral-bg: var(--onyx-palette-base-50); --onyx-tone-neutral-border: var(--onyx-palette-base-150);
+  --onyx-tone-info-fg: var(--onyx-palette-blue-600); --onyx-tone-info-bg: var(--onyx-palette-blue-50); --onyx-tone-info-border: var(--onyx-palette-blue-200);
+  --onyx-tone-success-fg: var(--onyx-palette-green-600); --onyx-tone-success-bg: var(--onyx-palette-green-50); --onyx-tone-success-border: var(--onyx-palette-green-200);
+  --onyx-tone-warning-fg: var(--onyx-palette-yellow-600); --onyx-tone-warning-bg: var(--onyx-palette-yellow-50); --onyx-tone-warning-border: var(--onyx-palette-yellow-200);
+  --onyx-tone-danger-fg: var(--onyx-palette-red-600); --onyx-tone-danger-bg: var(--onyx-palette-red-50); --onyx-tone-danger-border: var(--onyx-palette-red-200);
+  --onyx-shadow-sm: 0 2px 8px rgba(16,15,15,.08); --onyx-shadow-md: 0 12px 28px rgba(16,15,15,.14); --onyx-shadow-lg: 0 20px 48px rgba(16,15,15,.2);
+}
+
+/* ==========================================================================
+   TIER 3 — COMPONENT TOKENS. Each defaults to a semantic token, so a theme
+   can change one component without touching the rest.
+   ========================================================================== */
+.onyx {
+  --onyx-button-radius: var(--onyx-radius-md);
+  --onyx-button-height: var(--onyx-control-height-md);
+  --onyx-button-font-weight: var(--onyx-weight-medium);
+  --onyx-menu-item-height: var(--onyx-control-height-md);
+  --onyx-menu-radius: var(--onyx-radius-md);
+  --onyx-input-height: var(--onyx-control-height-md);
+  --onyx-input-radius: var(--onyx-radius-md);
+  --onyx-badge-radius: var(--onyx-radius-full);
+  --onyx-card-radius: var(--onyx-radius-lg);
+  --onyx-tooltip-radius: var(--onyx-radius-sm);
+  --onyx-tree-indent: 12px;
+  --onyx-resize-handle-size: 4px;
+}
+
+/* ==========================================================================
+   Gallery chrome (not part of Onyx)
+   ========================================================================== */
+* { box-sizing: border-box; }
+body { margin: 0; }
+.onyx { font-family: var(--onyx-font-family); font-size: var(--onyx-text-md); line-height: var(--onyx-leading-normal); color: var(--onyx-text-foreground); background: var(--onyx-surface-app); padding: 20px; border-radius: 12px; }
+.g-bar { position: sticky; top: 0; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 12px; margin: -20px -20px 20px; background: color-mix(in srgb, var(--onyx-surface-app) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--onyx-border-default); border-radius: 12px 12px 0 0; }
+.g-bar h1 { font-size: var(--onyx-text-lg); margin: 0 auto 0 0; font-weight: 600; }
+.g-sec { margin: 0 0 28px; }
+.g-sec > h2 { font-size: var(--onyx-text-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--onyx-text-description); margin: 0 0 10px; font-weight: 600; display: flex; gap: 8px; align-items: center; }
+.g-sec > h2::after { content: ''; flex: 1; height: 1px; background: var(--onyx-border-subtle); }
+.g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.g-cell { overflow: clip; border: 1px solid var(--onyx-border-subtle); border-radius: 8px; padding: 14px; min-width: 0; background: color-mix(in srgb, var(--onyx-surface-panel) 50%, transparent); }
+.g-cell.wide { grid-column: 1 / -1; }
+.g-cell > h3 { margin: 0 0 10px; font-size: var(--onyx-text-sm); font-weight: 600; color: var(--onyx-text-muted); display: flex; justify-content: space-between; gap: 8px; }
+.g-cell > h3 code { font-family: var(--onyx-font-mono); font-weight: 400; color: var(--onyx-text-description); font-size: 11px; }
+.g-note { font-size: var(--onyx-text-xs); color: var(--onyx-text-description); margin: 8px 0 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.stage { position: relative; min-height: 220px; }
+.codicon { font-size: 16px; line-height: 1; }
+.codicon-modifier-spin { animation: codicon-spin 1.4s steps(30) infinite; }
+@keyframes codicon-spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================================
+   Primitive styles
+   ========================================================================== */
+:where(.onyx) :focus-visible { outline: var(--onyx-focus-ring-width) solid var(--onyx-control-focus-ring); outline-offset: var(--onyx-focus-ring-offset); }
+.focus-demo { outline: var(--onyx-focus-ring-width) solid var(--onyx-control-focus-ring); outline-offset: var(--onyx-focus-ring-offset); }
+
+/* Button */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: var(--onyx-button-height); padding: 0 12px; border: 1px solid transparent; border-radius: var(--onyx-button-radius); font: inherit; font-weight: var(--onyx-button-font-weight); cursor: pointer; white-space: nowrap; background: var(--onyx-control-button-bg); color: var(--onyx-control-button-fg); transition: background var(--onyx-duration-fast) var(--onyx-ease-standard); }
+.btn:hover { background: var(--onyx-control-button-hover-bg); }
+.btn[data-variant="secondary"] { background: var(--onyx-control-secondary-bg); color: var(--onyx-control-secondary-fg); }
+.btn[data-variant="secondary"]:hover { background: var(--onyx-control-secondary-hover-bg); }
+.btn[data-variant="outline"] { background: transparent; border-color: var(--onyx-border-default); color: var(--onyx-text-foreground); }
+.btn[data-variant="ghost"] { background: transparent; color: var(--onyx-text-foreground); }
+.btn[data-variant="ghost"]:hover, .btn[data-variant="outline"]:hover { background: var(--onyx-state-hover); }
+.btn[data-variant="destructive"] { background: var(--onyx-tone-danger-solid); color: var(--onyx-tone-danger-solid-fg); }
+.btn[data-size="xs"] { height: var(--onyx-control-height-xs); padding: 0 6px; font-size: var(--onyx-text-sm); gap: 4px; border-radius: var(--onyx-radius-sm); }
+.btn[data-size="sm"] { height: var(--onyx-control-height-sm); padding: 0 8px; font-size: var(--onyx-text-sm); }
+.btn[data-size="lg"] { height: var(--onyx-control-height-lg); padding: 0 16px; }
+.btn[data-size="icon"] { width: var(--onyx-button-height); padding: 0; }
+.btn[data-size="icon-sm"] { width: var(--onyx-control-height-sm); height: var(--onyx-control-height-sm); padding: 0; border-radius: var(--onyx-radius-sm); }
+.btn[data-size="icon-xs"] { width: var(--onyx-control-height-xs); height: var(--onyx-control-height-xs); padding: 0; border-radius: var(--onyx-radius-sm); }
+.btn[data-size^="icon"] .codicon { font-size: 16px; }
+.btn[data-loading] { cursor: progress; }
+.btn[data-loading] .btn-label { opacity: .7; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn[aria-pressed="true"] { background: var(--onyx-state-selected); color: var(--onyx-state-selected-fg); }
+
+/* Toggle / ToggleGroup */
+.toggle { display: inline-flex; align-items: center; justify-content: center; min-width: var(--onyx-control-height-xs); height: var(--onyx-control-height-xs); padding: 0 3px; border: 1px solid transparent; border-radius: var(--onyx-radius-sm); background: transparent; color: var(--onyx-text-muted); cursor: pointer; font: inherit; font-size: var(--onyx-text-sm); }
+.toggle:hover { background: var(--onyx-state-hover); color: var(--onyx-text-foreground); }
+.toggle[aria-pressed="true"], .toggle[data-state="on"] { background: var(--onyx-tone-info-bg); border-color: var(--onyx-control-focus-ring); color: var(--onyx-text-foreground); }
+.toggle-group { display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--onyx-radius-md); background: var(--onyx-control-secondary-bg); }
+.toggle-group .toggle { height: calc(var(--onyx-control-height-sm) - 4px); padding: 0 10px; border: 0; }
+.toggle-group .toggle[data-state="on"] { background: var(--onyx-surface-app); color: var(--onyx-text-foreground); box-shadow: var(--onyx-shadow-sm); }
+
+/* Spinner */
+.spinner { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor; animation: spin .7s linear infinite; flex: none; }
+.spinner[data-size="xs"] { width: 10px; height: 10px; border-width: 1.5px; }
+.spinner[data-size="lg"] { width: 20px; height: 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Badge / Count / Tag / Dot */
+.badge { display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 6px; border-radius: var(--onyx-badge-radius); font-size: var(--onyx-text-xs); font-weight: 600; line-height: 1; white-space: nowrap; border: 1px solid var(--onyx-tone-neutral-border); background: var(--onyx-tone-neutral-bg); color: var(--onyx-tone-neutral-fg); }
+.badge .codicon { font-size: 12px; }
+.badge[data-tone] { border-color: var(--b); background: var(--bg); color: var(--fg); }
+.badge[data-variant="solid"] { background: var(--solid, var(--onyx-tone-neutral-solid)); color: var(--solid-fg, var(--onyx-tone-neutral-solid-fg)); border-color: transparent; }
+.badge[data-variant="outline"] { background: transparent; }
+[data-tone="info"] { --fg: var(--onyx-tone-info-fg); --bg: var(--onyx-tone-info-bg); --b: var(--onyx-tone-info-border); --solid: var(--onyx-tone-info-solid); --solid-fg: var(--onyx-tone-info-solid-fg); }
+[data-tone="success"] { --fg: var(--onyx-tone-success-fg); --bg: var(--onyx-tone-success-bg); --b: var(--onyx-tone-success-border); --solid: var(--onyx-tone-success-solid); --solid-fg: var(--onyx-tone-success-solid-fg); }
+[data-tone="warning"] { --fg: var(--onyx-tone-warning-fg); --bg: var(--onyx-tone-warning-bg); --b: var(--onyx-tone-warning-border); --solid: var(--onyx-tone-warning-solid); --solid-fg: var(--onyx-tone-warning-solid-fg); }
+[data-tone="danger"] { --fg: var(--onyx-tone-danger-fg); --bg: var(--onyx-tone-danger-bg); --b: var(--onyx-tone-danger-border); --solid: var(--onyx-tone-danger-solid); --solid-fg: var(--onyx-tone-danger-solid-fg); }
+[data-tone="neutral"] { --fg: var(--onyx-tone-neutral-fg); --bg: var(--onyx-tone-neutral-bg); --b: var(--onyx-tone-neutral-border); --solid: var(--onyx-tone-neutral-solid); --solid-fg: var(--onyx-tone-neutral-solid-fg); }
+.count { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; font-size: 10px; font-weight: 700; background: var(--solid, var(--onyx-tone-info-solid)); color: var(--solid-fg, var(--onyx-tone-info-solid-fg)); font-variant-numeric: tabular-nums; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg, var(--onyx-tone-neutral-fg)); display: inline-block; flex: none; }
+.dot[data-pulse] { box-shadow: 0 0 0 0 var(--fg); animation: pulse 1.6s var(--onyx-ease-standard) infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 5px transparent; } }
+.tag { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 4px 0 8px; border-radius: var(--onyx-radius-sm); background: var(--onyx-control-secondary-bg); color: var(--onyx-text-foreground); font-size: var(--onyx-text-sm); }
+.tag button { all: unset; display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; border-radius: 3px; color: var(--onyx-text-description); cursor: pointer; }
+.tag button:hover { background: var(--onyx-state-active); color: var(--onyx-text-foreground); }
+.tag button .codicon { font-size: 12px; }
+
+/* Alert */
+.alert:not([data-tone]) { --fg: var(--onyx-tone-info-fg); --bg: var(--onyx-tone-info-bg); --b: var(--onyx-tone-info-border); }
+.alert { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; padding: 10px 12px; border: 1px solid var(--b); border-radius: var(--onyx-radius-md); background: var(--bg); }
+.alert > .codicon { color: var(--fg); margin-top: 1px; grid-row: span 2; }
+.alert-title { font-weight: 600; }
+.alert-desc { color: var(--onyx-text-muted); grid-column: 2; font-size: var(--onyx-text-sm); }
+.alert-actions { grid-column: 3; grid-row: 1 / span 2; display: flex; gap: 6px; align-items: center; }
+.alert[data-variant="banner"] { border-radius: 0; border-width: 0 0 1px; }
+
+/* Card */
+.card { border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-card-radius); background: var(--onyx-surface-panel); overflow: hidden; }
+.card-h { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px 0; }
+.card-t { font-weight: 600; font-size: var(--onyx-text-lg); margin: 0; line-height: var(--onyx-leading-tight); }
+.card-d { color: var(--onyx-text-description); font-size: var(--onyx-text-sm); margin: 2px 0 0; }
+.card-b { padding: 12px 16px; }
+.card-f { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--onyx-border-subtle); }
+.card[data-interactive]:hover { border-color: var(--onyx-border-strong); }
+
+/* Avatar */
+.avatar { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; background: var(--onyx-control-secondary-bg); color: var(--onyx-text-foreground); font-size: 11px; font-weight: 600; flex: none; position: relative; }
+.avatar[data-size="sm"] { width: 20px; height: 20px; font-size: 9px; }
+.avatar[data-size="lg"] { width: 40px; height: 40px; font-size: 14px; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-group { display: inline-flex; }
+.avatar-group .avatar { box-shadow: 0 0 0 2px var(--onyx-surface-app); margin-left: -6px; }
+.avatar-group .avatar:first-child { margin-left: 0; }
+.avatar .dot { position: absolute; right: 0; bottom: 0; width: 8px; height: 8px; box-shadow: 0 0 0 2px var(--onyx-surface-app); }
+
+/* Skeleton */
+.skeleton { border-radius: var(--onyx-radius-sm); background: linear-gradient(90deg, var(--onyx-state-hover) 0%, var(--onyx-state-active) 50%, var(--onyx-state-hover) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; height: 10px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* Separator */
+.sep { background: var(--onyx-border-default); height: 1px; width: 100%; flex: none; }
+.sep[data-orientation="vertical"] { width: 1px; height: 16px; }
+.sep-label { display: flex; align-items: center; gap: 8px; font-size: var(--onyx-text-xs); color: var(--onyx-text-description); }
+.sep-label::before, .sep-label::after { content: ''; flex: 1; height: 1px; background: var(--onyx-border-default); }
+
+/* Progress / Meter */
+.track { height: 6px; border-radius: 3px; background: var(--onyx-control-track); overflow: hidden; }
+.track > i { display: block; height: 100%; background: var(--onyx-control-focus-ring); border-radius: inherit; }
+.track[data-indeterminate] > i { width: 30%; animation: indet 1.2s var(--onyx-ease-standard) infinite; }
+@keyframes indet { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+.meter { display: grid; gap: 4px; }
+.meter-h { display: flex; justify-content: space-between; font-size: var(--onyx-text-sm); }
+.meter-h span:last-child { color: var(--onyx-text-description); font-variant-numeric: tabular-nums; }
+.meter .track > i { background: var(--fg, var(--onyx-tone-success-fg)); }
+
+/* Link / Code / Kbd / Truncate */
+.link { color: var(--onyx-text-link); text-decoration: none; text-underline-offset: 3px; cursor: pointer; }
+.link:hover { text-decoration: underline; }
+.link .codicon { font-size: 12px; vertical-align: -1px; }
+.code { font-family: var(--onyx-font-mono); font-size: .92em; padding: 1px 5px; border-radius: var(--onyx-radius-xs); background: var(--onyx-control-secondary-bg); border: 1px solid var(--onyx-border-subtle); }
+.kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 4px; border-radius: var(--onyx-radius-xs); border: 1px solid var(--onyx-border-default); border-bottom-width: 2px; background: var(--onyx-surface-panel); font-size: 10px; font-weight: 600; color: var(--onyx-text-muted); font-family: var(--onyx-font-family); }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.truncate-mid { display: flex; min-width: 0; white-space: nowrap; }
+.truncate-mid > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+
+/* Breadcrumb */
+.crumbs { display: flex; align-items: center; gap: 2px; font-size: var(--onyx-text-sm); color: var(--onyx-text-description); min-width: 0; }
+.crumbs a { color: inherit; text-decoration: none; padding: 1px 4px; border-radius: var(--onyx-radius-xs); display: inline-flex; align-items: center; gap: 4px; }
+.crumbs a:hover { color: var(--onyx-text-foreground); background: var(--onyx-state-hover); }
+.crumbs [aria-current] { color: var(--onyx-text-foreground); }
+.crumbs > .codicon { font-size: 12px; opacity: .7; }
+.crumbs .codicon-ellipsis { font-size: 14px; }
+
+/* Inputs, Field, InputGroup */
+.input { display: flex; align-items: center; width: 100%; height: var(--onyx-input-height); padding: 0 8px; border: 1px solid var(--onyx-control-input-border); border-radius: var(--onyx-input-radius); background: var(--onyx-control-input-bg); color: var(--onyx-control-input-fg); font: inherit; outline: none; }
+.input::placeholder { color: var(--onyx-text-description); }
+.input:focus-visible, .input.is-focus { border-color: var(--onyx-control-focus-ring); outline: 1px solid var(--onyx-control-focus-ring); outline-offset: -1px; }
+.input[aria-invalid="true"] { border-color: var(--onyx-tone-danger-fg); }
+.input[data-size="sm"] { height: var(--onyx-control-height-sm); font-size: var(--onyx-text-sm); padding: 0 6px; }
+.input:disabled { opacity: .5; }
+.field { display: grid; gap: 4px; }
+.label { font-size: var(--onyx-text-sm); font-weight: 600; color: var(--onyx-text-foreground); display: flex; gap: 6px; align-items: baseline; }
+.label .opt { font-weight: 400; color: var(--onyx-text-description); }
+.label .req { color: var(--onyx-tone-danger-fg); }
+.field-desc { font-size: var(--onyx-text-sm); color: var(--onyx-text-description); }
+.field-err { font-size: var(--onyx-text-sm); color: var(--onyx-tone-danger-fg); display: flex; gap: 4px; align-items: center; }
+.field-err .codicon { font-size: 13px; }
+.fieldset { border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); padding: 10px 12px 12px; margin: 0; display: grid; gap: 10px; }
+.fieldset legend { font-size: var(--onyx-text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--onyx-text-description); padding: 0 4px; }
+.igroup { display: flex; align-items: center; gap: 2px; height: var(--onyx-input-height); padding: 0 3px 0 6px; border: 1px solid var(--onyx-control-input-border); border-radius: var(--onyx-input-radius); background: var(--onyx-control-input-bg); }
+.igroup.is-focus { border-color: var(--onyx-control-focus-ring); outline: 1px solid var(--onyx-control-focus-ring); outline-offset: -1px; }
+.igroup[aria-invalid="true"] { border-color: var(--onyx-tone-danger-fg); }
+.igroup input { all: unset; flex: 1; min-width: 0; color: var(--onyx-control-input-fg); }
+.igroup input::placeholder { color: var(--onyx-text-description); }
+.igroup > .codicon { color: var(--onyx-text-description); margin-right: 4px; }
+.igroup .addon { color: var(--onyx-text-description); font-size: var(--onyx-text-sm); padding: 0 4px; }
+.igroup .sep[data-orientation="vertical"] { margin: 0 2px; }
+.textarea { width: 100%; min-height: 64px; padding: 6px 8px; border: 1px solid var(--onyx-control-input-border); border-radius: var(--onyx-input-radius); background: var(--onyx-control-input-bg); color: var(--onyx-control-input-fg); font: inherit; resize: vertical; }
+
+/* NumberField */
+.numfield { display: inline-flex; align-items: stretch; height: var(--onyx-input-height); border: 1px solid var(--onyx-control-input-border); border-radius: var(--onyx-input-radius); background: var(--onyx-control-input-bg); overflow: hidden; width: 140px; }
+.numfield input { all: unset; width: 100%; padding: 0 8px; font-variant-numeric: tabular-nums; color: var(--onyx-control-input-fg); }
+.numfield .unit { display: flex; align-items: center; padding-right: 6px; color: var(--onyx-text-description); font-size: var(--onyx-text-sm); }
+.numfield .steps { display: grid; border-left: 1px solid var(--onyx-control-input-border); }
+.numfield .steps button { all: unset; display: flex; align-items: center; justify-content: center; width: 18px; color: var(--onyx-text-description); cursor: pointer; }
+.numfield .steps button + button { border-top: 1px solid var(--onyx-control-input-border); }
+.numfield .steps button:hover { background: var(--onyx-state-hover); color: var(--onyx-text-foreground); }
+.numfield .steps .codicon { font-size: 12px; }
+
+/* Radio / Checkbox */
+.choice { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.choice .ctl { margin-top: 2px; }
+.choice-t { font-size: var(--onyx-text-md); }
+.choice-d { font-size: var(--onyx-text-sm); color: var(--onyx-text-description); }
+.radio { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--onyx-control-input-border); background: var(--onyx-control-input-bg); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.radio[data-state="checked"] { border-color: var(--onyx-control-button-bg); background: var(--onyx-control-button-bg); }
+.radio[data-state="checked"]::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--onyx-control-button-fg); }
+.check { width: 16px; height: 16px; border-radius: var(--onyx-radius-xs); border: 1px solid var(--onyx-control-input-border); background: var(--onyx-control-input-bg); display: inline-flex; align-items: center; justify-content: center; flex: none; color: var(--onyx-control-button-fg); }
+.check[data-state="checked"], .check[data-state="indeterminate"] { border-color: var(--onyx-control-button-bg); background: var(--onyx-control-button-bg); }
+.check .codicon { font-size: 12px; }
+.radio-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.radio-card { border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); padding: 8px 10px; display: flex; gap: 8px; }
+.radio-card[data-state="checked"] { border-color: var(--onyx-control-focus-ring); background: var(--onyx-tone-info-bg); }
+
+/* Slider */
+.slider { position: relative; height: 16px; display: flex; align-items: center; }
+.slider .rail { position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--onyx-control-track); }
+.slider .range { position: absolute; height: 4px; border-radius: 2px; background: var(--onyx-control-focus-ring); }
+.slider .thumb { position: absolute; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--onyx-palette-paper); border: 2px solid var(--onyx-control-focus-ring); box-shadow: var(--onyx-shadow-sm); }
+.slider .thumb.focus-demo { outline-offset: 2px; }
+.slider-marks { display: flex; justify-content: space-between; font-size: var(--onyx-text-xs); color: var(--onyx-text-description); margin-top: 4px; }
+
+/* OTP / Password */
+.otp { display: flex; gap: 6px; align-items: center; }
+.otp span { width: 32px; height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--onyx-font-mono); font-size: 18px; border: 1px solid var(--onyx-control-input-border); border-radius: var(--onyx-radius-md); background: var(--onyx-control-input-bg); }
+.otp span.is-focus { border-color: var(--onyx-control-focus-ring); outline: 1px solid var(--onyx-control-focus-ring); }
+.otp span.is-focus::after { content: ''; width: 1px; height: 18px; background: var(--onyx-text-foreground); animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.otp i { color: var(--onyx-text-description); font-style: normal; }
+
+/* Color */
+.swatch { width: 18px; height: 18px; border-radius: var(--onyx-radius-xs); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 0 0 1px var(--onyx-border-default); flex: none; display: inline-block; }
+.swatch[data-selected] { box-shadow: 0 0 0 2px var(--onyx-surface-app), 0 0 0 4px var(--onyx-control-focus-ring); }
+.swatch-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.cpick { width: 220px; display: grid; gap: 8px; }
+.cpick .area { height: 120px; border-radius: var(--onyx-radius-md); position: relative; background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, #205EA6); }
+.cpick .area .thumb { position: absolute; left: 78%; top: 30%; width: 12px; height: 12px; margin: -6px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+.cpick .hue { height: 10px; border-radius: 5px; position: relative; background: linear-gradient(to right, red, #ff0, lime, cyan, blue, #f0f, red); }
+.cpick .hue .thumb { position: absolute; left: 59%; top: 50%; width: 14px; height: 14px; margin: -7px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.4); }
+
+/* Floating surfaces: Popover, Menu, Tooltip, HoverCard, Combobox */
+.float { position: absolute; z-index: 5; background: var(--onyx-surface-menu); border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-menu-radius); box-shadow: var(--onyx-shadow-md); color: var(--onyx-text-foreground); }
+.float[data-side="bottom"] { animation: float-in var(--onyx-duration-normal) var(--onyx-ease-emphasized); }
+@keyframes float-in { from { opacity: 0; transform: translateY(-4px); } }
+.popover { width: 280px; padding: 12px; }
+.popover-h { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.popover-h strong { flex: 1; }
+.arrow { position: absolute; width: 10px; height: 10px; background: inherit; border: inherit; border-width: 1px 0 0 1px; transform: rotate(45deg); top: -6px; left: 22px; }
+.menu { min-width: 220px; padding: 4px; }
+.mi { display: flex; align-items: center; gap: 8px; height: var(--onyx-menu-item-height); padding: 0 8px; border-radius: var(--onyx-radius-sm); cursor: default; white-space: nowrap; }
+.mi > .codicon:first-child, .mi > .mi-ind { width: 16px; color: var(--onyx-text-muted); flex: none; }
+.mi .mi-ind { display: inline-flex; justify-content: center; }
+.mi .mi-sc { margin-left: auto; padding-left: 24px; font-size: var(--onyx-text-sm); color: var(--onyx-text-description); }
+.mi .mi-sub { margin-left: auto; font-size: 12px; color: var(--onyx-text-description); }
+.mi[data-highlighted] { background: var(--onyx-state-selected); color: var(--onyx-state-selected-fg); }
+.mi[data-highlighted] > .codicon, .mi[data-highlighted] .mi-sc { color: inherit; }
+.mi[data-disabled] { opacity: .4; }
+.mi[data-tone="danger"] { color: var(--onyx-tone-danger-fg); }
+.mi[data-tone="danger"] > .codicon { color: inherit; }
+.ml { padding: 6px 8px 2px; font-size: var(--onyx-text-xs); font-weight: 600; color: var(--onyx-text-description); }
+.ms { height: 1px; margin: 4px 0; background: var(--onyx-border-default); }
+.tooltip { position: absolute; z-index: 6; display: inline-flex; gap: 8px; align-items: center; padding: 4px 8px; border-radius: var(--onyx-tooltip-radius); background: var(--onyx-surface-tooltip); color: var(--onyx-palette-base-200); font-size: var(--onyx-text-sm); border: 1px solid var(--onyx-palette-base-800); box-shadow: var(--onyx-shadow-sm); white-space: nowrap; }
+.tooltip .kbd { background: var(--onyx-palette-base-950); border-color: var(--onyx-palette-base-800); color: var(--onyx-palette-base-300); }
+.hovercard { width: 280px; padding: 12px; display: grid; gap: 8px; }
+
+/* AlertDialog / Dialog / Sheet */
+.scrim { position: absolute; inset: 0; background: var(--onyx-surface-overlay); border-radius: 8px; }
+.dialog { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(400px, calc(100% - 32px)); background: var(--onyx-surface-dialog); border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-lg); box-shadow: var(--onyx-shadow-lg); padding: 18px; display: grid; gap: 10px; }
+.dialog-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--fg); }
+.dialog h4 { margin: 0; font-size: var(--onyx-text-lg); }
+.dialog p { margin: 0; color: var(--onyx-text-muted); font-size: var(--onyx-text-sm); }
+.dialog-f { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.sheet { position: absolute; top: 0; bottom: 0; right: 0; width: min(300px, 80%); background: var(--onyx-surface-dialog); border-left: 1px solid var(--onyx-border-default); box-shadow: var(--onyx-shadow-lg); display: flex; flex-direction: column; border-radius: 0 8px 8px 0; }
+.sheet-h { display: flex; align-items: center; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--onyx-border-subtle); font-weight: 600; }
+.sheet-h span { flex: 1; }
+.sheet-b { padding: 16px; display: grid; gap: 12px; align-content: start; flex: 1; }
+.sheet-f { padding: 12px 16px; border-top: 1px solid var(--onyx-border-subtle); display: flex; justify-content: flex-end; gap: 8px; }
+.drawer-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--onyx-border-strong); margin: 8px auto 0; }
+
+/* Listbox / Tree */
+.listbox, .tree { border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); padding: 3px; background: var(--onyx-surface-panel); }
+.opt { display: flex; align-items: center; gap: 6px; height: var(--onyx-row-height); padding: 0 6px; border-radius: var(--onyx-radius-sm); cursor: default; white-space: nowrap; position: relative; }
+.opt:hover { background: var(--onyx-state-hover); }
+.opt[aria-selected="true"] { background: var(--onyx-state-selected); color: var(--onyx-state-selected-fg); }
+.opt[data-focused] { box-shadow: inset 0 0 0 1px var(--onyx-control-focus-ring); }
+.opt .meta { margin-left: auto; font-size: var(--onyx-text-xs); color: var(--onyx-text-description); padding-left: 8px; }
+.opt .codicon { color: var(--onyx-text-muted); }
+.opt[aria-selected="true"] .codicon { color: inherit; }
+.opt[aria-disabled="true"] { opacity: .45; }
+.opt-group { padding: 6px 6px 2px; font-size: var(--onyx-text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--onyx-text-description); }
+.tree .opt { padding-left: calc(4px + var(--depth, 0) * var(--onyx-tree-indent)); border-radius: 0; }
+.tree .opt .twisty { width: 16px; display: inline-flex; justify-content: center; color: var(--onyx-text-description); flex: none; }
+.tree .opt .twisty .codicon { font-size: 14px; }
+.tree .opt::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(12px + (var(--depth, 1) - 1) * var(--onyx-tree-indent)); border-left: 1px solid var(--onyx-border-subtle); display: var(--guide, none); }
+.tree .opt[data-depth-guide] { --guide: block; }
+.tree .opt[data-drop-target] { box-shadow: inset 0 0 0 1px var(--onyx-control-focus-ring); background: var(--onyx-tone-info-bg); }
+.tree .opt[data-renaming] .input { height: calc(var(--onyx-row-height) - 2px); padding: 0 4px; }
+.virtual-note { display: flex; justify-content: space-between; font-size: var(--onyx-text-xs); color: var(--onyx-text-description); padding: 4px 6px 0; }
+
+/* ScrollArea */
+.scrollarea { position: relative; height: 140px; border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); overflow: hidden; }
+.scrollarea .content { padding: 8px 18px 8px 10px; font-size: var(--onyx-text-sm); color: var(--onyx-text-muted); display: grid; gap: 6px; }
+.scrollarea .sbar { position: absolute; top: 2px; bottom: 2px; right: 2px; width: 8px; }
+.scrollarea .sbar i { position: absolute; left: 1px; right: 1px; top: 18%; height: 34%; border-radius: 4px; background: var(--onyx-palette-base-700); }
+.scrollarea[data-state="hover"] .sbar { width: 10px; background: color-mix(in srgb, var(--onyx-palette-base-700) 15%, transparent); border-radius: 5px; }
+.scrollarea .shadow-top { position: absolute; inset: 0 0 auto 0; height: 6px; box-shadow: inset 0 6px 6px -6px rgba(0,0,0,.6); }
+
+/* SplitView / ResizeHandle */
+.split { display: flex; height: 180px; border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); overflow: hidden; }
+.split[data-orientation="vertical"] { flex-direction: column; }
+.pane { min-width: 0; min-height: 0; padding: 8px 10px; font-size: var(--onyx-text-sm); color: var(--onyx-text-description); background: var(--onyx-surface-panel); }
+.pane.editor { background: var(--onyx-surface-app); flex: 1; }
+.handle { position: relative; flex: none; width: 1px; background: var(--onyx-border-default); cursor: col-resize; }
+.handle::after { content: ''; position: absolute; inset: 0 calc(var(--onyx-resize-handle-size) / -2 - 1px); }
+.handle[data-orientation="horizontal"] { width: auto; height: 1px; cursor: row-resize; }
+.handle[data-state="hover"], .handle[data-state="dragging"] { background: var(--onyx-control-focus-ring); box-shadow: 0 0 0 1.5px var(--onyx-control-focus-ring); }
+.handle .grip { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 4px; height: 24px; border-radius: 2px; background: var(--onyx-border-strong); }
+.handle[data-orientation="horizontal"] .grip { width: 24px; height: 4px; }
+.handle .size-tip { position: absolute; top: 8px; left: 8px; }
+
+/* Collapsible / Accordion */
+.acc { border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); overflow: hidden; }
+.acc-item + .acc-item { border-top: 1px solid var(--onyx-border-default); }
+.acc-trigger { display: flex; width: 100%; align-items: center; gap: 6px; padding: 8px 10px; background: none; border: 0; color: var(--onyx-text-foreground); font: inherit; font-weight: 600; cursor: pointer; text-align: left; }
+.acc-trigger:hover { background: var(--onyx-state-hover); }
+.acc-trigger .codicon { transition: transform var(--onyx-duration-normal) var(--onyx-ease-standard); color: var(--onyx-text-description); }
+.acc-item[data-state="closed"] .acc-trigger .codicon { transform: rotate(-90deg); }
+.acc-trigger .meta { margin-left: auto; font-weight: 400; }
+.acc-panel { padding: 0 10px 10px 32px; color: var(--onyx-text-muted); font-size: var(--onyx-text-sm); }
+.acc-item[data-state="closed"] .acc-panel { display: none; }
+.collapsible-trigger { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; color: var(--onyx-text-description); font: inherit; font-size: var(--onyx-text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; padding: 2px 0; }
+
+/* Tabs (existing) for context */
+.tabs-line { display: flex; gap: 2px; border-bottom: 1px solid var(--onyx-border-default); }
+.tabs-line button { all: unset; padding: 6px 10px; font-size: var(--onyx-text-sm); color: var(--onyx-text-description); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+.tabs-line button[aria-selected="true"] { color: var(--onyx-text-foreground); border-color: var(--onyx-control-focus-ring); }
+
+/* Toast stack */
+.toasts { position: absolute; right: 12px; bottom: 12px; width: min(340px, calc(100% - 24px)); display: grid; }
+.toast { position: relative; grid-area: 1 / 1; align-self: stretch; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; padding: 10px 10px 10px 12px; background: var(--onyx-surface-menu); border: 1px solid var(--onyx-border-default); border-radius: var(--onyx-radius-md); box-shadow: var(--onyx-shadow-md); }
+.toast > .codicon:first-child { color: var(--fg); margin-top: 1px; }
+.toast:not(:last-child) > * { visibility: hidden; }
+.toast:nth-last-child(2) { transform: translateY(-8px) scale(.96); opacity: .85; }
+.toast:nth-last-child(3) { transform: translateY(-16px) scale(.92); opacity: .6; }
+.toast small { grid-column: 2; color: var(--onyx-text-description); }
+.toast .toast-act { grid-column: 2; display: flex; gap: 6px; margin-top: 6px; }
+.toast .track { grid-column: 1 / -1; height: 2px; margin-top: 8px; }
+.toast .track > i { background: var(--fg); }
+
+/* Pagination */
+.pager { display: flex; align-items: center; gap: 2px; }
+.pager .btn { min-width: var(--onyx-control-height-sm); }
+.pager .btn[aria-current="page"] { background: var(--onyx-state-selected); color: var(--onyx-state-selected-fg); }
+.pager .gap { width: 24px; text-align: center; color: var(--onyx-text-description); }
+
+/* Calendar */
+.cal { width: 248px; padding: 10px; }
+.cal-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-weight: 600; }
+.cal-g { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: var(--onyx-text-sm); }
+.cal-g .dow { color: var(--onyx-text-description); font-size: var(--onyx-text-xs); height: 22px; line-height: 22px; }
+.cal-g .d { height: 30px; line-height: 30px; border-radius: var(--onyx-radius-sm); cursor: pointer; font-variant-numeric: tabular-nums; }
+.cal-g .d:hover { background: var(--onyx-state-hover); }
+.cal-g .d.out { color: var(--onyx-text-description); opacity: .5; }
+.cal-g .d.today { box-shadow: inset 0 0 0 1px var(--onyx-border-strong); }
+.cal-g .d.inrange { background: var(--onyx-tone-info-bg); border-radius: 0; }
+.cal-g .d.sel { background: var(--onyx-control-button-bg); color: var(--onyx-control-button-fg); }
+
+/* Menubar / NavigationMenu */
+.menubar { display: flex; gap: 0; height: 30px; align-items: center; padding: 0 4px; border-bottom: 1px solid var(--onyx-border-default); background: var(--onyx-surface-panel); }
+.menubar button { all: unset; padding: 3px 8px; border-radius: var(--onyx-radius-sm); font-size: var(--onyx-text-md); cursor: default; }
+.menubar button:hover, .menubar button[data-state="open"] { background: var(--onyx-state-hover); }
+.navmenu { display: flex; gap: 4px; align-items: center; }
+.navmenu > button { all: unset; display: inline-flex; gap: 4px; align-items: center; padding: 6px 10px; border-radius: var(--onyx-radius-md); cursor: pointer; font-weight: 500; }
+.navmenu > button:hover, .navmenu > button[data-state="open"] { background: var(--onyx-state-hover); }
+.navmenu > button .codicon { font-size: 12px; transition: transform var(--onyx-duration-normal); }
+.navmenu > button[data-state="open"] .codicon { transform: rotate(180deg); }
+.navpanel { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 6px; width: 400px; }
+.navpanel a { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--onyx-radius-md); color: inherit; text-decoration: none; }
+.navpanel a:hover, .navpanel a.hl { background: var(--onyx-state-hover); }
+.navpanel a small { color: var(--onyx-text-description); }
+
+/* Carousel */
+.carousel { position: relative; }
+.carousel-track { display: flex; gap: 8px; overflow: hidden; border-radius: var(--onyx-radius-md); }
+.slide { flex: 0 0 70%; height: 110px; border-radius: var(--onyx-radius-md); display: flex; align-items: flex-end; padding: 10px; font-weight: 600; color: var(--onyx-palette-paper); }
+.carousel .btn { position: absolute; top: 40px; }
+.carousel-dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
+.carousel-dots i { width: 6px; height: 6px; border-radius: 3px; background: var(--onyx-border-strong); }
+.carousel-dots i.on { width: 16px; background: var(--onyx-control-focus-ring); }
+
+/* DropZone / FileTrigger */
+.dropzone { border: 1.5px dashed var(--onyx-border-strong); border-radius: var(--onyx-radius-lg); padding: 18px; display: grid; justify-items: center; gap: 6px; text-align: center; color: var(--onyx-text-muted); }
+.dropzone .codicon { font-size: 22px; color: var(--onyx-text-description); }
+.dropzone[data-drop-target] { border-color: var(--onyx-control-focus-ring); background: var(--onyx-tone-info-bg); color: var(--onyx-text-foreground); }
+.dropzone[data-drop-target] .codicon { color: var(--onyx-control-focus-ring); }
+.dropzone[data-invalid] { border-color: var(--onyx-tone-danger-fg); background: var(--onyx-tone-danger-bg); }
+
+/* Layout primitives */
+.stack { display: flex; flex-direction: column; gap: var(--gap, var(--onyx-space-3)); }
+.inline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap, var(--onyx-space-2)); }
+.container { max-width: 560px; margin: 0 auto; padding: var(--onyx-space-4); }
+.layout-demo { border: 1px dashed var(--onyx-border-strong); border-radius: 8px; position: relative; }
+.layout-demo [data-outline] { outline: 1px dashed color-mix(in srgb, var(--onyx-palette-magenta-400) 70%, transparent); outline-offset: 2px; }
+.layout-tag { position: absolute; font-family: var(--onyx-font-mono); font-size: 10px; color: var(--onyx-palette-magenta-400); background: var(--onyx-surface-app); padding: 0 4px; }
+
+/* Foundations display */
+.tok-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.tok { display: flex; gap: 8px; align-items: center; font-size: var(--onyx-text-xs); }
+.tok code { font-family: var(--onyx-font-mono); color: var(--onyx-text-description); font-size: 10.5px; overflow-wrap: anywhere; }
+.tone-row { display: grid; grid-template-columns: 70px repeat(4, 1fr); gap: 6px; align-items: center; font-size: var(--onyx-text-xs); }
+.tone-row > div { height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+.space-bar { height: 10px; background: var(--onyx-control-focus-ring); border-radius: 2px; }
+.type-row { display: flex; align-items: baseline; gap: 12px; }
+.type-row code { width: 110px; flex: none; font-family: var(--onyx-font-mono); font-size: 10.5px; color: var(--onyx-text-description); }
+
+/* Theming demo */
+.theme-demo { padding: 14px; border-radius: 10px; border: 1px solid var(--onyx-border-default); background: var(--onyx-surface-app); color: var(--onyx-text-foreground); display: grid; gap: 10px; }
+.theme-custom {
+  --onyx-surface-app: #FFFCF0; --onyx-surface-panel: #F2F0E5; --onyx-surface-menu: #FFFCF0; --onyx-text-foreground: #100F0F; --onyx-text-muted: #403E3C; --onyx-text-description: #6F6E69;
+  --onyx-border-default: #DAD8CE; --onyx-border-subtle: #E6E4D9; --onyx-control-input-bg: #FFFCF0; --onyx-control-input-border: #CECDC3; --onyx-control-input-fg: #100F0F;
+  --onyx-control-secondary-bg: #E6E4D9; --onyx-control-secondary-fg: #100F0F; --onyx-control-secondary-hover-bg: #DAD8CE; --onyx-state-hover: #E6E4D9; --onyx-control-track: #E6E4D9;
+  --onyx-control-button-bg: #A02F6F; --onyx-control-button-hover-bg: #CE5D97; --onyx-control-focus-ring: #CE5D97;
+  --onyx-button-radius: 999px; --onyx-input-radius: 999px; --onyx-card-radius: 18px; --onyx-badge-radius: 4px;
+  --onyx-button-font-weight: 600; --onyx-font-family: Georgia, 'Iowan Old Style', serif;
+  --onyx-tone-success-fg: #66800B; --onyx-tone-success-bg: #EDEECF; --onyx-tone-success-border: #BEC97E;
+  font-family: var(--onyx-font-family);
+}
+.theme-term {
+  --onyx-surface-app: #000; --onyx-surface-panel: #050805; --onyx-text-foreground: #8BE28B; --onyx-text-muted: #6CC06C; --onyx-text-description: #3F7A3F;
+  --onyx-border-default: #1F3D1F; --onyx-border-subtle: #142814; --onyx-control-input-bg: #000; --onyx-control-input-border: #2F5F2F; --onyx-control-input-fg: #8BE28B;
+  --onyx-control-button-bg: #8BE28B; --onyx-control-button-fg: #000; --onyx-control-button-hover-bg: #B4F5B4; --onyx-control-focus-ring: #8BE28B;
+  --onyx-control-secondary-bg: #0C180C; --onyx-control-secondary-fg: #8BE28B; --onyx-control-track: #0C180C;
+  --onyx-button-radius: 0; --onyx-input-radius: 0; --onyx-card-radius: 0; --onyx-badge-radius: 0;
+  --onyx-font-family: var(--onyx-font-mono);
+  --onyx-tone-success-fg: #8BE28B; --onyx-tone-success-bg: #0C180C; --onyx-tone-success-border: #2F5F2F;
+  font-family: var(--onyx-font-family);
+}
+.code-block { font-family: var(--onyx-font-mono); font-size: 11.5px; line-height: 1.55; background: var(--onyx-surface-panel); border: 1px solid var(--onyx-border-subtle); border-radius: 6px; padding: 10px 12px; white-space: pre; overflow-x: auto; color: var(--onyx-text-muted); }
+.code-block b { color: var(--onyx-palette-blue-400); font-weight: 400; }
+.code-block em { color: var(--onyx-palette-green-400); font-style: normal; }
+
+@media (max-width: 560px) {
+  .onyx { padding: 12px; }
+  .g-bar { margin: -12px -12px 16px; }
+  .g-grid { grid-template-columns: 1fr; }
+  .alert { grid-template-columns: auto 1fr; }
+  .alert-actions { grid-column: 2; grid-row: auto; margin-top: 6px; }
+  .navpanel { width: 260px; grid-template-columns: 1fr; }
+  .tone-row { grid-template-columns: 56px repeat(4, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .onyx *, .onyx *::before, .onyx *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; } }
+</style>
+</head>
+<body>
+<div class="onyx" id="root" data-theme="dark" data-density="compact">
+
+<div class="g-bar">
+  <h1>Onyx primitives</h1>
+  <div class="toggle-group" role="radiogroup" aria-label="Theme">
+    <button class="toggle" data-state="on" data-set="theme" data-value="dark">Dark</button>
+    <button class="toggle" data-set="theme" data-value="light">Light</button>
+  </div>
+  <div class="toggle-group" role="radiogroup" aria-label="Density">
+    <button class="toggle" data-state="on" data-set="density" data-value="compact">Compact</button>
+    <button class="toggle" data-set="density" data-value="comfortable">Comfortable</button>
+  </div>
+</div>
+
+<!-- ======================================================= 0 THEMING MODEL -->
+<section class="g-sec">
+  <h2>0 · Theming model</h2>
+  <div class="g-grid">
+    <div class="g-cell wide">
+      <h3>Three token tiers <code>palette → semantic → component</code></h3>
+      <div class="code-block">/* 1. palette — raw ramps, swap to rebrand everything */
+<b>--onyx-palette-blue-600</b>: #205EA6;
+/* 2. semantic — the public theme API every component reads */
+<b>--onyx-control-button-bg</b>: var(--onyx-palette-blue-600);
+<b>--onyx-tone-danger-fg</b>: var(--onyx-palette-red-400);
+/* 3. component — defaults to semantic; override one component alone */
+<b>--onyx-button-radius</b>: var(--onyx-radius-md);
+<b>--onyx-menu-item-height</b>: var(--onyx-control-height-md);
+
+<em>/* Styling hooks on every part */</em>
+&lt;button data-slot="button" data-variant="secondary" data-size="sm" data-state="loading"&gt;
+<em>/* All Onyx CSS lives in @layer onyx.base, onyx.components → app CSS wins, no !important */</em></div>
+      <p class="g-note">Every primitive: tokens only (no raw hex/px), <code class="code">data-slot</code> on each part, <code class="code">data-state</code>/<code class="code">data-variant</code>/<code class="code">data-size</code>/<code class="code">data-tone</code> hooks, <code class="code">className</code> merge, <code class="code">asChild</code>, exported variant functions, and a headless hook where behaviour is non-trivial (<code class="code">useListbox</code>, <code class="code">useTree</code>, <code class="code">useResizable</code>, <code class="code">useFloating</code>…).</p>
+    </div>
+    <div class="g-cell">
+      <h3>Default <code>no overrides</code></h3>
+      <div class="theme-demo">
+        <div class="field"><label class="label">Workspace</label><input class="input" value="babel-translations"></div>
+        <div class="row"><button class="btn">Create</button><button class="btn" data-variant="secondary">Cancel</button><span class="badge" data-tone="success"><i class="codicon codicon-check"></i>Synced</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Re-themed <code>tokens only</code></h3>
+      <div class="theme-demo theme-custom">
+        <div class="field"><label class="label">Workspace</label><input class="input" value="babel-translations"></div>
+        <div class="row"><button class="btn">Create</button><button class="btn" data-variant="secondary">Cancel</button><span class="badge" data-tone="success"><i class="codicon codicon-check"></i>Synced</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Re-themed <code>tokens only</code></h3>
+      <div class="theme-demo theme-term">
+        <div class="field"><label class="label">Workspace</label><input class="input" value="babel-translations"></div>
+        <div class="row"><button class="btn">Create</button><button class="btn" data-variant="secondary">Cancel</button><span class="badge" data-tone="success"><i class="codicon codicon-check"></i>Synced</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 1 FOUNDATIONS -->
+<section class="g-sec">
+  <h2>1 · Foundations</h2>
+  <div class="g-grid">
+    <div class="g-cell wide">
+      <h3>Tones <code>--onyx-tone-{name}-{fg,bg,border,solid}</code></h3>
+      <div class="col">
+        <div class="tone-row" style="color:var(--onyx-text-description)"><span></span><span>fg</span><span>bg</span><span>border</span><span>solid</span></div>
+        <div class="tone-row" data-tone="neutral"><span>neutral</span><div style="color:var(--fg)">Aa</div><div style="background:var(--bg)"></div><div style="border:2px solid var(--b)"></div><div style="background:var(--solid);color:var(--solid-fg)">Aa</div></div>
+        <div class="tone-row" data-tone="info"><span>info</span><div style="color:var(--fg)">Aa</div><div style="background:var(--bg)"></div><div style="border:2px solid var(--b)"></div><div style="background:var(--solid);color:var(--solid-fg)">Aa</div></div>
+        <div class="tone-row" data-tone="success"><span>success</span><div style="color:var(--fg)">Aa</div><div style="background:var(--bg)"></div><div style="border:2px solid var(--b)"></div><div style="background:var(--solid);color:var(--solid-fg)">Aa</div></div>
+        <div class="tone-row" data-tone="warning"><span>warning</span><div style="color:var(--fg)">Aa</div><div style="background:var(--bg)"></div><div style="border:2px solid var(--b)"></div><div style="background:var(--solid);color:var(--solid-fg)">Aa</div></div>
+        <div class="tone-row" data-tone="danger"><span>danger</span><div style="color:var(--fg)">Aa</div><div style="background:var(--bg)"></div><div style="border:2px solid var(--b)"></div><div style="background:var(--solid);color:var(--solid-fg)">Aa</div></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Borders &amp; surfaces</h3>
+      <div class="tok-grid">
+        <div class="tok"><span class="swatch" style="background:var(--onyx-border-subtle)"></span><code>border-subtle</code></div>
+        <div class="tok"><span class="swatch" style="background:var(--onyx-border-default)"></span><code>border-default</code></div>
+        <div class="tok"><span class="swatch" style="background:var(--onyx-border-strong)"></span><code>border-strong</code></div>
+        <div class="tok"><span class="swatch" style="background:var(--onyx-surface-raised)"></span><code>surface-raised</code></div>
+        <div class="tok"><span class="swatch" style="background:var(--onyx-surface-tooltip)"></span><code>surface-tooltip</code></div>
+        <div class="tok"><span class="swatch" style="background:var(--onyx-control-track)"></span><code>control-track</code></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Spacing <code>--onyx-space-*</code></h3>
+      <div class="col" style="gap:4px">
+        <div class="type-row"><code>space-1 · 4</code><div class="space-bar" style="width:4px"></div></div>
+        <div class="type-row"><code>space-2 · 8</code><div class="space-bar" style="width:8px"></div></div>
+        <div class="type-row"><code>space-3 · 12</code><div class="space-bar" style="width:12px"></div></div>
+        <div class="type-row"><code>space-4 · 16</code><div class="space-bar" style="width:16px"></div></div>
+        <div class="type-row"><code>space-6 · 24</code><div class="space-bar" style="width:24px"></div></div>
+        <div class="type-row"><code>space-8 · 32</code><div class="space-bar" style="width:32px"></div></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Type <code>--onyx-text-* · font-mono</code></h3>
+      <div class="col" style="gap:2px">
+        <div class="type-row"><code>text-2xl</code><span style="font-size:var(--onyx-text-2xl);font-weight:600">Settings</span></div>
+        <div class="type-row"><code>text-xl</code><span style="font-size:var(--onyx-text-xl);font-weight:600">Workspace</span></div>
+        <div class="type-row"><code>text-lg</code><span style="font-size:var(--onyx-text-lg)">Section title</span></div>
+        <div class="type-row"><code>text-md</code><span>Body and controls</span></div>
+        <div class="type-row"><code>text-sm</code><span style="font-size:var(--onyx-text-sm)">Descriptions, meta</span></div>
+        <div class="type-row"><code>text-xs</code><span style="font-size:var(--onyx-text-xs)">Badges, labels</span></div>
+        <div class="type-row"><code>font-mono</code><span style="font-family:var(--onyx-font-mono)">i18n/fr.json:42</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Control heights <code>--onyx-control-height-*</code></h3>
+      <div class="row" style="align-items:flex-end">
+        <button class="btn" data-variant="secondary" data-size="xs">xs</button>
+        <button class="btn" data-variant="secondary" data-size="sm">sm</button>
+        <button class="btn" data-variant="secondary">md</button>
+        <button class="btn" data-variant="secondary" data-size="lg">lg</button>
+      </div>
+      <p class="g-note">Compact: 20 / 24 / 28 / 32. Comfortable: 24 / 30 / 36 / 40. Switch with <code class="code">data-density</code> on any ancestor.</p>
+    </div>
+    <div class="g-cell">
+      <h3>Motion &amp; focus</h3>
+      <div class="col" style="gap:6px;font-size:var(--onyx-text-sm)">
+        <div class="tok"><code>duration-fast 100 · normal 160 · slow 240</code></div>
+        <div class="tok"><code>ease-standard · ease-emphasized · ease-exit</code></div>
+        <div class="row"><button class="btn focus-demo" data-variant="secondary">Focus ring</button><span class="g-note" style="margin:0">2px ring, 1px offset; reduced-motion collapses durations.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 2 ACTIONS -->
+<section class="g-sec">
+  <h2>2 · Actions</h2>
+  <div class="g-grid">
+    <div class="g-cell">
+      <h3>Button states <code>loading · pressed</code></h3>
+      <div class="col">
+        <div class="row">
+          <button class="btn" data-loading aria-busy="true"><span class="spinner" data-size="xs"></span><span class="btn-label">Publishing…</span></button>
+          <button class="btn" data-variant="secondary" aria-pressed="true"><i class="codicon codicon-pin"></i>Pinned</button>
+        </div>
+        <div class="row">
+          <button class="btn" data-variant="outline">Outline</button>
+          <button class="btn" data-variant="ghost">Ghost</button>
+          <button class="btn" data-variant="destructive"><i class="codicon codicon-trash"></i>Delete</button>
+          <button class="btn" disabled>Disabled</button>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Compact icon buttons <code>icon · icon-sm · icon-xs</code></h3>
+      <div class="row">
+        <button class="btn" data-variant="ghost" data-size="icon" aria-label="Refresh"><i class="codicon codicon-refresh"></i></button>
+        <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="New file"><i class="codicon codicon-new-file"></i></button>
+        <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Collapse"><i class="codicon codicon-collapse-all"></i></button>
+        <button class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Close"><i class="codicon codicon-close"></i></button>
+        <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Loading" data-loading><span class="spinner" data-size="xs"></span></button>
+      </div>
+      <p class="g-note">Replaces <code class="code">.search-btn</code>, <code class="code">.cloud-popover-btn</code>, <code class="code">.ctx-btn</code> and similar hand-made classes.</p>
+    </div>
+    <div class="g-cell">
+      <h3>Toggle · ToggleGroup <code>aria-pressed</code></h3>
+      <div class="col">
+        <div class="row">
+          <button class="toggle" aria-pressed="true" title="Match case">Aa</button>
+          <button class="toggle" aria-pressed="false" title="Whole word"><span style="text-decoration:underline">ab</span></button>
+          <button class="toggle" aria-pressed="true" title="Regex">.*</button>
+          <button class="toggle" aria-pressed="false" aria-label="Preserve case"><i class="codicon codicon-preserve-case"></i></button>
+        </div>
+        <div class="toggle-group" role="radiogroup">
+          <button class="toggle" data-state="on"><i class="codicon codicon-list-flat"></i>&nbsp;List</button>
+          <button class="toggle"><i class="codicon codicon-list-tree"></i>&nbsp;Tree</button>
+          <button class="toggle"><i class="codicon codicon-table"></i>&nbsp;Table</button>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Link <code>internal · external · muted</code></h3>
+      <div class="col">
+        <span>Read the <a class="link">bedrock reference</a> before deploying.</span>
+        <span><a class="link">Open in browser <i class="codicon codicon-link-external"></i></a></span>
+        <span style="color:var(--onyx-text-description)">Last synced 2m ago · <a class="link" style="color:inherit;text-decoration:underline">view log</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 3 OVERLAYS -->
+<section class="g-sec">
+  <h2>3 · Overlays</h2>
+  <div class="g-grid">
+    <div class="g-cell">
+      <h3>Popover <code>anchored · arrow · focus-trap</code></h3>
+      <div class="stage" style="min-height:230px">
+        <button class="btn" data-variant="secondary" data-size="sm" data-state="open"><i class="codicon codicon-cloud"></i>babel-cloud</button>
+        <div class="float popover" data-side="bottom" style="top:36px;left:0">
+          <span class="arrow"></span>
+          <div class="popover-h"><strong>Cloud workspace</strong><span class="badge" data-tone="success"><span class="dot"></span>Live</span></div>
+          <div class="col" style="gap:6px">
+            <div class="igroup" style="height:var(--onyx-control-height-sm)"><i class="codicon codicon-search"></i><input placeholder="Filter workspaces"></div>
+            <div class="opt" aria-selected="true"><i class="codicon codicon-folder"></i>babel-translations<span class="meta">2m</span></div>
+            <div class="opt"><i class="codicon codicon-folder"></i>stardew-expanded<span class="meta">3d</span></div>
+            <div class="sep"></div>
+            <div class="row" style="justify-content:space-between"><a class="link" style="font-size:var(--onyx-text-sm)">Sign out</a><button class="btn" data-size="sm">Connect</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Menu <code>button-triggered · submenu · check · radio</code></h3>
+      <div class="stage" style="min-height:350px">
+        <button class="btn" data-variant="ghost" data-size="icon-sm" data-state="open" aria-label="More"><i class="codicon codicon-ellipsis"></i></button>
+        <div class="float menu" data-side="bottom" style="top:30px;left:0;min-width:164px">
+          <div class="mi"><i class="codicon codicon-new-file"></i>New file<span class="mi-sc">⌘N</span></div>
+          <div class="mi" data-highlighted><i class="codicon codicon-go-to-file"></i>Open recent<i class="codicon codicon-chevron-right mi-sub"></i></div>
+          <div class="ms"></div>
+          <div class="ml">View</div>
+          <div class="mi"><span class="mi-ind"><i class="codicon codicon-check"></i></span>Show hidden files</div>
+          <div class="mi"><span class="mi-ind"></span>Compact folders</div>
+          <div class="ms"></div>
+          <div class="mi"><span class="mi-ind"><span class="dot" style="width:6px;height:6px;background:currentColor"></span></span>Sort by name</div>
+          <div class="mi"><span class="mi-ind"></span>Sort by modified</div>
+          <div class="ms"></div>
+          <div class="mi" data-disabled><i class="codicon codicon-cloud-upload"></i>Publish<span class="mi-sc">⇧⌘P</span></div>
+          <div class="mi" data-tone="danger"><i class="codicon codicon-trash"></i>Delete</div>
+        </div>
+        <div class="float menu" style="top:62px;left:168px;min-width:0;width:104px">
+          <div class="mi">i18n/fr.json</div>
+          <div class="mi">content.json</div>
+          <div class="mi">manifest.json</div>
+        </div>
+      </div>
+      <p class="g-note">Same item styles as ContextMenu. Replaces Babel's <code class="code">MenuHost</code> flyouts.</p>
+    </div>
+    <div class="g-cell">
+      <h3>Tooltip <code>delay group · shortcut · truncation</code></h3>
+      <div class="stage" style="min-height:150px">
+        <div class="row" style="margin-top:40px">
+          <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Split"><i class="codicon codicon-split-horizontal"></i></button>
+          <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Refresh" style="background:var(--onyx-state-hover)"><i class="codicon codicon-refresh"></i></button>
+          <button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Collapse"><i class="codicon codicon-collapse-all"></i></button>
+        </div>
+        <div class="tooltip" style="top:4px;left:4px">Refresh explorer <span class="kbd">⌘R</span></div>
+        <div style="position:relative;margin-top:22px;max-width:200px">
+          <div class="truncate" style="font-size:var(--onyx-text-sm);padding:2px 4px;border-radius:4px;background:var(--onyx-state-hover)">mods/[CP] Sunberry Village/i18n/fr.json</div>
+          <div class="tooltip" style="top:26px;left:0">mods/[CP] Sunberry Village/i18n/fr.json</div>
+        </div>
+      </div>
+      <p class="g-note">Truncate shows the full text in a tooltip only when it actually overflows.</p>
+    </div>
+    <div class="g-cell">
+      <h3>HoverCard <code>preview on hover/focus</code></h3>
+      <div class="stage" style="min-height:170px">
+        <span>Reviewed by <a class="link" style="text-decoration:underline">@mroiban</a></span>
+        <div class="float hovercard" data-side="bottom" style="top:28px;left:0;max-width:100%">
+          <div class="row"><span class="avatar" data-size="lg">MR</span><div><strong>Marius Roiban</strong><div style="color:var(--onyx-text-description);font-size:var(--onyx-text-sm)">Owner · 12 pebbles</div></div></div>
+          <div style="font-size:var(--onyx-text-sm);color:var(--onyx-text-muted)">Maintains Babel and Bedrock.</div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>AlertDialog <code>role=alertdialog · safe focus</code></h3>
+      <div class="stage" style="min-height:220px">
+        <div class="scrim"></div>
+        <div class="dialog" role="alertdialog" data-tone="danger">
+          <div class="row"><span class="dialog-icon"><i class="codicon codicon-warning"></i></span><h4>Discard 3 unsaved changes?</h4></div>
+          <p>Changes to <span class="code">fr.json</span>, <span class="code">content.json</span> and 1 other file will be lost.</p>
+          <div class="dialog-f"><button class="btn focus-demo" data-variant="secondary">Keep editing</button><button class="btn" data-variant="destructive">Discard</button></div>
+        </div>
+      </div>
+      <p class="g-note">Initial focus lands on the safe action; Escape cancels; outside click does nothing.</p>
+    </div>
+    <div class="g-cell">
+      <h3>Sheet / Drawer <code>side · bottom</code></h3>
+      <div class="stage" style="min-height:220px;border-radius:8px;overflow:hidden;background:var(--onyx-surface-app)">
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="sheet-h"><span>Filters</span><button class="btn" data-variant="ghost" data-size="icon-xs"><i class="codicon codicon-close"></i></button></div>
+          <div class="sheet-b">
+            <label class="choice"><span class="check ctl" data-state="checked"><i class="codicon codicon-check"></i></span><span class="choice-t">Untranslated</span></label>
+            <label class="choice"><span class="check ctl"></span><span class="choice-t">Needs review</span></label>
+          </div>
+          <div class="sheet-f"><button class="btn" data-size="sm">Apply</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Combobox <code>typeahead · create</code></h3>
+      <div class="stage" style="min-height:230px">
+        <div class="field"><label class="label">Language</label>
+          <div class="igroup is-focus"><input value="fr"><button class="btn" data-variant="ghost" data-size="icon-xs"><i class="codicon codicon-chevron-down"></i></button></div>
+        </div>
+        <div class="float menu" data-side="bottom" style="top:58px;left:0;right:0;min-width:0">
+          <div class="mi" data-highlighted><span class="mi-ind"><i class="codicon codicon-check"></i></span><span><b>Fr</b>ench</span><span class="mi-sc">fr</span></div>
+          <div class="mi"><span class="mi-ind"></span><span><b>Fr</b>ench (Canada)</span><span class="mi-sc">fr-CA</span></div>
+          <div class="mi"><span class="mi-ind"></span><span><b>Fr</b>isian</span><span class="mi-sc">fy</span></div>
+          <div class="ms"></div>
+          <div class="mi"><i class="codicon codicon-add"></i>Add “fr” as custom locale</div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Menubar · NavigationMenu</h3>
+      <div class="stage" style="min-height:250px">
+        <div class="menubar"><button>File</button><button data-state="open">Edit</button><button>View</button><button>Help</button></div>
+        <div class="float menu" style="top:30px;left:44px;min-width:180px">
+          <div class="mi">Undo<span class="mi-sc">⌘Z</span></div><div class="mi" data-highlighted>Redo<span class="mi-sc">⇧⌘Z</span></div><div class="ms"></div><div class="mi">Find<span class="mi-sc">⌘F</span></div>
+        </div>
+        <div class="navmenu" style="position:absolute;top:150px"><button data-state="open">Products <i class="codicon codicon-chevron-down"></i></button><button>Docs</button></div>
+        <div class="float navpanel" style="top:186px;left:0;width:auto;right:0">
+          <a class="hl"><strong>Bedrock</strong><small>Personal cloud</small></a><a><strong>Babel</strong><small>Translation workbench</small></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 4 FORMS -->
+<section class="g-sec">
+  <h2>4 · Forms</h2>
+  <div class="g-grid">
+    <div class="g-cell">
+      <h3>Field <code>label · description · error</code></h3>
+      <div class="col" style="gap:12px">
+        <div class="field"><label class="label">Workspace name <span class="req">*</span></label><input class="input" placeholder="my-workspace"><span class="field-desc">Letters, numbers, hyphens or underscores.</span></div>
+        <div class="field"><label class="label">Server address <span class="opt">Optional</span></label><input class="input" aria-invalid="true" value="bedrock.local:80a"><span class="field-err"><i class="codicon codicon-error"></i>Port must be a number.</span></div>
+        <div class="field"><label class="label">Region</label><input class="input" disabled value="eu-west (locked)"></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>InputGroup · SearchField <code>addons · inline toggles</code></h3>
+      <div class="col" style="gap:10px">
+        <div class="igroup is-focus"><i class="codicon codicon-search"></i><input value="sunberry"><button class="toggle" aria-pressed="true">Aa</button><button class="toggle"><span style="text-decoration:underline">ab</span></button><button class="toggle" aria-pressed="true">.*</button></div>
+        <div class="igroup" aria-invalid="true"><i class="codicon codicon-search"></i><input value="(unclosed"><button class="toggle" aria-pressed="true">.*</button></div>
+        <span class="field-err" style="margin-top:-6px"><i class="codicon codicon-error"></i>Invalid regular expression.</span>
+        <div class="igroup"><span class="addon">https://</span><span class="sep" data-orientation="vertical"></span><input value="notes" style="padding-left:6px"><span class="addon">.bedrock.dev</span></div>
+        <div class="igroup"><i class="codicon codicon-filter"></i><input value="fr.json"><button class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Clear"><i class="codicon codicon-close"></i></button></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>NumberField · Slider</h3>
+      <div class="col" style="gap:14px">
+        <div class="field"><label class="label">Font size</label><div class="numfield"><input value="13"><span class="unit">px</span><span class="steps"><button><i class="codicon codicon-chevron-up"></i></button><button><i class="codicon codicon-chevron-down"></i></button></span></div></div>
+        <div class="field"><div class="meter-h"><label class="label">UI scale</label><span>110%</span></div>
+          <div class="slider"><span class="rail"></span><span class="range" style="left:0;width:55%"></span><span class="thumb focus-demo" style="left:55%"></span></div>
+          <div class="slider-marks"><span>80%</span><span>100%</span><span>120%</span><span>140%</span></div>
+        </div>
+        <div class="field"><div class="meter-h"><label class="label">Price range</label><span>€20 – €65</span></div>
+          <div class="slider"><span class="rail"></span><span class="range" style="left:20%;width:45%"></span><span class="thumb" style="left:20%"></span><span class="thumb" style="left:65%"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>RadioGroup · CheckboxGroup <code>fieldset</code></h3>
+      <div class="col" style="gap:12px">
+        <fieldset class="fieldset"><legend>Sync</legend>
+          <label class="choice"><span class="radio ctl" data-state="checked"></span><span><div class="choice-t">Live</div><div class="choice-d">Push changes to every client immediately.</div></span></label>
+          <label class="choice"><span class="radio ctl"></span><span><div class="choice-t">Manual</div><div class="choice-d">Publish when you choose.</div></span></label>
+        </fieldset>
+        <div class="radio-cards">
+          <label class="radio-card" data-state="checked"><span class="radio ctl" data-state="checked"></span><span>Compact</span></label>
+          <label class="radio-card"><span class="radio ctl"></span><span>Comfortable</span></label>
+        </div>
+        <label class="choice"><span class="check ctl" data-state="indeterminate"><i class="codicon codicon-remove"></i></span><span class="choice-t">All locales (2 of 5)</span></label>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>OTP · Password · Textarea</h3>
+      <div class="col" style="gap:12px">
+        <div class="field"><label class="label">Verification code</label><div class="otp"><span>4</span><span>8</span><span>1</span><i>–</i><span class="is-focus"></span><span></span><span></span></div></div>
+        <div class="field"><label class="label">Token</label><div class="igroup"><i class="codicon codicon-key"></i><input type="password" value="secretsecret"><button class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Show"><i class="codicon codicon-eye"></i></button></div></div>
+        <div class="field"><label class="label">Notes</label><textarea class="textarea">Keep dialogue tone informal.</textarea><span class="field-desc" style="text-align:right">28 / 500</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>ColorSwatch · ColorPicker</h3>
+      <div class="col" style="gap:12px">
+        <div class="swatch-grid">
+          <span class="swatch" style="background:#D14D41"></span><span class="swatch" style="background:#DA702C"></span><span class="swatch" style="background:#D0A215"></span><span class="swatch" style="background:#879A39"></span><span class="swatch" style="background:#3AA99F"></span><span class="swatch" data-selected style="background:#4385BE"></span><span class="swatch" style="background:#8B7EC8"></span><span class="swatch" style="background:#CE5D97"></span>
+        </div>
+        <div class="cpick"><div class="area"><span class="thumb"></span></div><div class="hue"><span class="thumb"></span></div>
+          <div class="igroup" style="height:var(--onyx-control-height-sm)"><span class="swatch" style="background:#205EA6;width:14px;height:14px"></span><input value="#205EA6" style="padding-left:6px;font-family:var(--onyx-font-mono)"></div></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>DatePicker · Calendar <code>range</code></h3>
+      <div class="stage" style="min-height:300px">
+        <div class="igroup" style="width:248px"><i class="codicon codicon-calendar"></i><input value="Oct 6 – Oct 10, 2026"></div>
+        <div class="float cal" style="top:36px;left:0">
+          <div class="cal-h"><button class="btn" data-variant="ghost" data-size="icon-xs"><i class="codicon codicon-chevron-left"></i></button>October 2026<button class="btn" data-variant="ghost" data-size="icon-xs"><i class="codicon codicon-chevron-right"></i></button></div>
+          <div class="cal-g">
+            <span class="dow">Mo</span><span class="dow">Tu</span><span class="dow">We</span><span class="dow">Th</span><span class="dow">Fr</span><span class="dow">Sa</span><span class="dow">Su</span>
+            <span class="d out">28</span><span class="d out">29</span><span class="d out">30</span><span class="d">1</span><span class="d">2</span><span class="d">3</span><span class="d">4</span>
+            <span class="d">5</span><span class="d sel">6</span><span class="d inrange">7</span><span class="d inrange">8</span><span class="d inrange">9</span><span class="d sel today">10</span><span class="d">11</span>
+            <span class="d">12</span><span class="d">13</span><span class="d">14</span><span class="d">15</span><span class="d">16</span><span class="d">17</span><span class="d">18</span>
+            <span class="d">19</span><span class="d">20</span><span class="d">21</span><span class="d">22</span><span class="d">23</span><span class="d">24</span><span class="d">25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>FileTrigger · DropZone <code>idle · over · invalid</code></h3>
+      <div class="col" style="gap:8px">
+        <div class="dropzone"><i class="codicon codicon-cloud-upload"></i><span>Drop files here or <a class="link">browse</a></span><span class="field-desc">.zip, .json up to 50 MB</span></div>
+        <div class="row">
+          <div class="dropzone" data-drop-target style="flex:1;padding:10px"><span><i class="codicon codicon-arrow-down"></i> Release to add 3 files</span></div>
+          <div class="dropzone" data-invalid style="flex:1;padding:10px"><span class="field-err">.exe not allowed</span></div>
+        </div>
+        <button class="btn" data-variant="secondary" data-size="sm" style="justify-self:start;width:fit-content"><i class="codicon codicon-file-add"></i>Choose files…</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 5 FEEDBACK & DISPLAY -->
+<section class="g-sec">
+  <h2>5 · Feedback &amp; display</h2>
+  <div class="g-grid">
+    <div class="g-cell">
+      <h3>Badge · Count · Dot · Tag</h3>
+      <div class="col">
+        <div class="row">
+          <span class="badge">Draft</span><span class="badge" data-tone="info">Beta</span><span class="badge" data-tone="success"><i class="codicon codicon-check"></i>Published</span><span class="badge" data-tone="warning">Outdated</span><span class="badge" data-tone="danger">Failed</span>
+        </div>
+        <div class="row">
+          <span class="badge" data-tone="info" data-variant="solid">v2.4</span><span class="badge" data-tone="danger" data-variant="solid">3 errors</span><span class="badge" data-tone="success" data-variant="outline">online</span>
+        </div>
+        <div class="row">
+          <span class="row" style="gap:4px"><i class="codicon codicon-source-control"></i><span class="count">12</span></span>
+          <span class="row" style="gap:4px"><i class="codicon codicon-bell"></i><span class="count" data-tone="danger">99+</span></span>
+          <span class="row" style="gap:6px;font-size:var(--onyx-text-sm)"><span class="dot" data-tone="success" data-pulse></span>Live</span>
+          <span class="row" style="gap:6px;font-size:var(--onyx-text-sm)"><span class="dot" data-tone="warning"></span>Degraded</span>
+        </div>
+        <div class="row"><span class="tag">fr<button aria-label="Remove fr"><i class="codicon codicon-close"></i></button></span><span class="tag">de<button aria-label="Remove de"><i class="codicon codicon-close"></i></button></span><span class="tag">pt-BR<button aria-label="Remove"><i class="codicon codicon-close"></i></button></span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Spinner · Skeleton · Progress · Meter</h3>
+      <div class="col" style="gap:12px">
+        <div class="row"><span class="spinner" data-size="xs"></span><span class="spinner"></span><span class="spinner" data-size="lg"></span><span style="font-size:var(--onyx-text-sm);color:var(--onyx-text-description)">Loading workspaces…</span></div>
+        <div class="col" style="gap:6px"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:90%"></div><div class="skeleton" style="width:40%"></div></div>
+        <div class="track" data-indeterminate><i></i></div>
+        <div class="meter"><div class="meter-h"><span>Storage</span><span>3.1 / 5 GB</span></div><div class="track"><i style="width:62%"></i></div></div>
+        <div class="meter" data-tone="danger"><div class="meter-h"><span>API quota</span><span>94%</span></div><div class="track"><i style="width:94%"></i></div></div>
+      </div>
+    </div>
+    <div class="g-cell wide">
+      <h3>Alert <code>inline · banner · tones · actions</code></h3>
+      <div class="col">
+        <div class="alert" data-tone="info"><i class="codicon codicon-info"></i><div class="alert-title">A new Babel version is available</div><div class="alert-desc">Version 0.18 adds streaming zip downloads.</div><div class="alert-actions"><button class="btn" data-size="sm" data-variant="secondary">Later</button><button class="btn" data-size="sm">Update</button></div></div>
+        <div class="alert" data-tone="warning"><i class="codicon codicon-warning"></i><div class="alert-title">2 bricks failed to load</div><div class="alert-desc">glossary and json-tools need Babel ≥ 0.17.</div></div>
+        <div class="alert" data-tone="danger"><i class="codicon codicon-error"></i><div class="alert-title">Connection lost</div><div class="alert-desc">Reconnecting in 4s…</div><div class="alert-actions"><button class="btn" data-size="icon-xs" data-variant="ghost" aria-label="Dismiss"><i class="codicon codicon-close"></i></button></div></div>
+        <div class="alert" data-tone="success" data-variant="banner"><i class="codicon codicon-pass"></i><div class="alert-title">All changes published</div><div class="alert-desc">fr.json pushed to 3 servers.</div></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Card <code>header · body · footer · interactive</code></h3>
+      <div class="card" data-interactive>
+        <div class="card-h"><span class="avatar" style="border-radius:6px;background:var(--onyx-tone-info-bg);color:var(--onyx-tone-info-fg)"><i class="codicon codicon-notebook"></i></span><div style="flex:1;min-width:0"><p class="card-t">notes</p><p class="card-d">notes.bedrock.dev</p></div><span class="badge" data-tone="success"><span class="dot"></span>Running</span></div>
+        <div class="card-b" style="font-size:var(--onyx-text-sm);color:var(--onyx-text-muted)">Shared notes with live sync and attachments.</div>
+        <div class="card-f"><button class="btn" data-variant="ghost" data-size="sm">Logs</button><button class="btn" data-variant="secondary" data-size="sm">Open</button></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Avatar <code>image · initials · status · group</code></h3>
+      <div class="col">
+        <div class="row">
+          <span class="avatar" data-size="lg"><img alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' fill='%23DA702C'/><circle cx='20' cy='16' r='7' fill='%23FFFCF0'/><rect x='8' y='26' width='24' height='14' rx='7' fill='%23FFFCF0'/></svg>"></span>
+          <span class="avatar" data-size="lg">MR<span class="dot" data-tone="success"></span></span>
+          <span class="avatar">AL</span>
+          <span class="avatar" data-size="sm">J</span>
+        </div>
+        <div class="avatar-group"><span class="avatar">MR</span><span class="avatar" style="background:var(--onyx-tone-info-bg)">AL</span><span class="avatar" style="background:var(--onyx-tone-success-bg)">JD</span><span class="avatar">+4</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Breadcrumb · Separator · Code · Kbd</h3>
+      <div class="col" style="gap:12px">
+        <nav class="crumbs" aria-label="Breadcrumb"><a><i class="codicon codicon-root-folder"></i>mods</a><i class="codicon codicon-chevron-right"></i><a aria-label="More"><i class="codicon codicon-ellipsis"></i></a><i class="codicon codicon-chevron-right"></i><a>i18n</a><i class="codicon codicon-chevron-right"></i><a aria-current="page">fr.json</a></nav>
+        <div class="sep"></div>
+        <div class="sep-label">or continue with</div>
+        <div class="row" style="font-size:var(--onyx-text-sm)">Run <span class="code">bedrock db generate</span> then press <span class="kbd">⌘</span><span class="kbd">S</span><span class="sep" data-orientation="vertical"></span><span style="color:var(--onyx-text-description)">2 files</span></div>
+        <div class="truncate-mid" style="max-width:220px;font-size:var(--onyx-text-sm)"><span>/Users/stellar/Playground/babel-ui/bricks/</span><span>explorer/ExplorerView.tsx</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Toast queue <code>stacked · actions · auto-dismiss</code></h3>
+      <div class="stage" style="min-height:170px">
+        <div class="toasts">
+          <div class="toast" data-tone="info"><i class="codicon codicon-info"></i><span>Indexing workspace</span><span></span></div>
+          <div class="toast" data-tone="warning"><i class="codicon codicon-warning"></i><span>Token expires soon</span><span></span></div>
+          <div class="toast" data-tone="success"><i class="codicon codicon-pass"></i><span>Published fr.json</span><button class="btn" data-variant="ghost" data-size="icon-xs" aria-label="Dismiss"><i class="codicon codicon-close"></i></button><small>3 servers updated</small><div class="toast-act"><button class="btn" data-size="xs" data-variant="secondary">Undo</button><button class="btn" data-size="xs" data-variant="ghost">View log</button></div><div class="track"><i style="width:64%"></i></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Pagination · Carousel</h3>
+      <div class="col" style="gap:14px">
+        <nav class="pager" aria-label="Pages"><button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Previous"><i class="codicon codicon-chevron-left"></i></button><button class="btn" data-variant="ghost" data-size="sm">1</button><span class="gap">…</span><button class="btn" data-variant="ghost" data-size="sm">4</button><button class="btn" data-variant="ghost" data-size="sm" aria-current="page">5</button><button class="btn" data-variant="ghost" data-size="sm">6</button><span class="gap">…</span><button class="btn" data-variant="ghost" data-size="sm">20</button><button class="btn" data-variant="ghost" data-size="icon-sm" aria-label="Next"><i class="codicon codicon-chevron-right"></i></button></nav>
+        <div class="carousel">
+          <div class="carousel-track"><div class="slide" style="background:#205EA6">Bedrock</div><div class="slide" style="background:#66800B">Babel</div></div>
+          <button class="btn" data-variant="secondary" data-size="icon-sm" style="right:6px" aria-label="Next"><i class="codicon codicon-chevron-right"></i></button>
+          <div class="carousel-dots"><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 6 COLLECTIONS -->
+<section class="g-sec">
+  <h2>6 · Collections &amp; structure</h2>
+  <div class="g-grid">
+    <div class="g-cell">
+      <h3>Listbox <code>single · multi · groups · typeahead</code></h3>
+      <div class="listbox" role="listbox" aria-multiselectable="true">
+        <div class="opt-group">Recent</div>
+        <div class="opt" aria-selected="true"><i class="codicon codicon-folder"></i>babel-translations<span class="meta">2m ago</span></div>
+        <div class="opt" aria-selected="true" data-focused><i class="codicon codicon-folder"></i>stardew-expanded<span class="meta">3d ago</span></div>
+        <div class="opt"><i class="codicon codicon-folder"></i>sunberry-village<span class="meta">1w ago</span></div>
+        <div class="opt-group">Archived</div>
+        <div class="opt" aria-disabled="true"><i class="codicon codicon-archive"></i>legacy-mod<span class="meta">read-only</span></div>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Tree <code>keyboard · multiselect · virtual · DnD</code></h3>
+      <div class="tree" role="tree">
+        <div class="opt" style="--depth:0" aria-expanded="true"><span class="twisty"><i class="codicon codicon-chevron-down"></i></span><i class="codicon codicon-folder-opened"></i>mods</div>
+        <div class="opt" style="--depth:1" data-depth-guide aria-expanded="true"><span class="twisty"><i class="codicon codicon-chevron-down"></i></span><i class="codicon codicon-folder-opened"></i>[CP] Sunberry Village</div>
+        <div class="opt" style="--depth:2" data-depth-guide><span class="twisty"><i class="codicon codicon-chevron-right"></i></span><i class="codicon codicon-folder"></i>assets</div>
+        <div class="opt" style="--depth:2" data-depth-guide data-drop-target aria-expanded="true"><span class="twisty"><i class="codicon codicon-chevron-down"></i></span><i class="codicon codicon-folder-opened"></i>i18n</div>
+        <div class="opt" style="--depth:3" data-depth-guide aria-selected="true" data-focused><span class="twisty"></span><i class="codicon codicon-json"></i>fr.json<span class="meta"><span class="badge" data-tone="warning" style="height:16px">M</span></span></div>
+        <div class="opt" style="--depth:3" data-depth-guide aria-selected="true"><span class="twisty"></span><i class="codicon codicon-json"></i>default.json</div>
+        <div class="opt" style="--depth:3" data-depth-guide data-renaming><span class="twisty"></span><i class="codicon codicon-json"></i><input class="input is-focus" value="de.json"></div>
+        <div class="opt" style="--depth:1" data-depth-guide><span class="twisty"><i class="codicon codicon-chevron-right"></i></span><i class="codicon codicon-folder"></i>Lurking in the Dark</div>
+        <div class="virtual-note"><span>Rendering 8 of 12,480 rows</span><span>useVirtualList</span></div>
+      </div>
+      <p class="g-note">Onyx owns keyboard, selection, expansion, type-ahead, inline-rename slot and drop indicators; the file model stays in Gemstone's explorer.</p>
+    </div>
+    <div class="g-cell">
+      <h3>ScrollArea <code>overlay thumb · edge shadow</code></h3>
+      <div class="scrollarea" data-state="hover"><span class="shadow-top"></span>
+        <div class="content"><div>Line 41 — "Abigail.Hello": "Salut !"</div><div>Line 42 — "Abigail.Rain": "Il pleut encore…"</div><div>Line 43 — "Alex.Gridball": "Tu joues ?"</div><div>Line 44 — "Caroline.Tea": "Un thé ?"</div><div>Line 45 — "Clint.Ore": "Du minerai ?"</div><div>Line 46 — "Demetrius.Lab": "Je travaille."</div></div>
+        <div class="sbar"><i></i></div>
+      </div>
+    </div>
+    <div class="g-cell wide">
+      <h3>SplitView · ResizeHandle <code>role=separator · keyboard · snap · persist</code></h3>
+      <div class="split">
+        <div class="pane" style="width:26%">Explorer<br><span style="font-size:var(--onyx-text-xs)">min 160 · collapsible</span></div>
+        <div class="handle" data-state="dragging" role="separator" aria-orientation="vertical" aria-valuenow="26"><span class="tooltip size-tip" style="top:6px;left:8px">26% · 248px</span></div>
+        <div class="pane editor" style="display:flex;flex-direction:column;padding:0">
+          <div style="flex:1;padding:8px 10px">Editor</div>
+          <div class="handle" data-orientation="horizontal" data-state="hover" role="separator"></div>
+          <div style="height:34%;padding:8px 10px;background:var(--onyx-surface-panel)">Panel</div>
+        </div>
+        <div class="handle" role="separator" aria-orientation="vertical"></div>
+        <div class="pane" style="width:22%">Outline</div>
+      </div>
+      <p class="g-note">Arrow keys resize by 10px (Shift = 50px), Home/End snap to min/max, Enter toggles collapse, double-click resets. The Sidebar rail reuses ResizeHandle.</p>
+    </div>
+    <div class="g-cell">
+      <h3>Accordion · Collapsible</h3>
+      <div class="col">
+        <div class="acc">
+          <div class="acc-item" data-state="open"><button class="acc-trigger"><i class="codicon codicon-chevron-down"></i>Editor<span class="meta badge">4</span></button><div class="acc-panel">Font, tab size, word wrap, minimap.</div></div>
+          <div class="acc-item" data-state="closed"><button class="acc-trigger"><i class="codicon codicon-chevron-down"></i>Sync</button><div class="acc-panel">…</div></div>
+          <div class="acc-item" data-state="closed"><button class="acc-trigger"><i class="codicon codicon-chevron-down"></i>Keyboard</button><div class="acc-panel">…</div></div>
+        </div>
+        <button class="collapsible-trigger"><i class="codicon codicon-chevron-right" style="font-size:12px"></i>Advanced options</button>
+      </div>
+    </div>
+    <div class="g-cell">
+      <h3>Tabs <code>existing · new line variant</code></h3>
+      <div class="tabs-line" role="tablist"><button aria-selected="true">Overview</button><button>Logs</button><button>Settings</button></div>
+      <p class="g-note">Adds a <code class="code">variant="line"</code> for web pages next to the existing editor-tab style.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= 7 LAYOUT -->
+<section class="g-sec">
+  <h2>7 · Layout</h2>
+  <div class="g-grid">
+    <div class="g-cell wide">
+      <h3>Stack · Inline · Container <code>gap from --onyx-space-*</code></h3>
+      <div class="layout-demo">
+        <span class="layout-tag" style="top:-7px;left:10px">Container size="sm"</span>
+        <div class="container stack" style="--gap:var(--onyx-space-4)" data-outline>
+          <span class="layout-tag" style="position:static;align-self:flex-start;margin-bottom:-12px">Stack gap="4"</span>
+          <div class="stack" style="--gap:var(--onyx-space-1)"><span style="font-size:var(--onyx-text-xl);font-weight:600">New note</span><span style="color:var(--onyx-text-description);font-size:var(--onyx-text-sm)">Shared with everyone in this pebble.</span></div>
+          <div class="field"><label class="label">Title</label><input class="input" value="Translation glossary"></div>
+          <div class="field"><label class="label">Body</label><textarea class="textarea">Use “vous” for shopkeepers.</textarea></div>
+          <div class="inline" data-outline style="justify-content:flex-end"><button class="btn" data-variant="ghost">Cancel</button><button class="btn">Save note</button></div>
+          <span class="layout-tag" style="position:static;align-self:flex-end;margin-top:-12px">Inline justify="end"</span>
+        </div>
+      </div>
+      <p class="g-note">This whole form is written without app CSS — the success criterion for agents building pebbles.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+<script>
+// Design-only demo switches.
+const root = document.getElementById('root');
+document.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => {
+  root.dataset[b.dataset.set] = b.dataset.value;
+  b.parentElement.querySelectorAll('.toggle').forEach(t => t.dataset.state = t === b ? 'on' : 'off');
+}));
+document.querySelectorAll('.toggle[aria-pressed]').forEach(t => t.addEventListener('click', () => t.setAttribute('aria-pressed', t.getAttribute('aria-pressed') !== 'true')));
+document.querySelectorAll('.acc-trigger').forEach(t => t.addEventListener('click', () => { const i = t.parentElement; i.dataset.state = i.dataset.state === 'open' ? 'closed' : 'open'; }));
+const params = new URLSearchParams(location.search);
+if (params.get('theme')) root.dataset.theme = params.get('theme');
+if (params.get('density')) root.dataset.density = params.get('density');
+</script>
+</body>
+</html>

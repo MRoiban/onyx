@@ -10,12 +10,16 @@ describe('buttonVariants', () => {
 
   it('switches to destructive tokens for destructive buttons', () => {
     expect(buttonVariants({ variant: 'destructive' })).toContain(
-      'bg-[var(--onyx-control-destructive-bg)]'
+      'bg-[var(--onyx-control-destructive-bg)]',
     );
   });
 
   it('supports icon sizing', () => {
-    expect(buttonVariants({ size: 'icon' })).toContain('h-9');
-    expect(buttonVariants({ size: 'icon' })).toContain('w-9');
+    expect(buttonVariants({ size: 'icon' })).toContain(
+      'h-[var(--onyx-button-height,var(--onyx-control-height-md))]',
+    );
+    expect(buttonVariants({ size: 'icon' })).toContain(
+      'w-[var(--onyx-button-height,var(--onyx-control-height-md))]',
+    );
   });
 });
