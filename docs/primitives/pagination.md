@@ -1,17 +1,58 @@
 # Pagination
 
-Use when navigating pages of results. Not for loading infinite-scroll collections or selecting carousel slides.
+Previous and next buttons with page numbers, collapsing long ranges into ellipses (`‹ 1 … 4 5 6 … 20 ›`).
 
-Anatomy: `pagination`, `pagination-button`, `pagination-ellipsis`.
+**Use when:** results are split into numbered pages that users move between.
+**Not for:** infinite scrolling or "Load more" (use a button and your own loading), carousel slides (use [Carousel](carousel.md)), or steps in a wizard.
 
-`Pagination` renders a labelled nav with previous/next controls, page buttons and non-interactive ellipses. Props: `page` / `defaultPage` (1), `totalPages`, `onPageChange`, `siblingCount` (1), `boundaryCount` (1), `renderPage(page,current)`, ordinary nav attributes, and custom `children`. `asChild` is supported with a single custom nav child; use `usePagination` to build custom controls/links in it. `PaginationButton` can also compose a link with `asChild`. Set an appropriate nav `aria-label` when several pagers occur in a page.
+## Import
 
-Current button publishes `aria-current="page"`, `data-state="active"`; previous/next are disabled at bounds. `getPaginationRange(page,totalPages,siblingCount,boundaryCount)` is pure, clamps the page, returns [] for no pages, keeps boundary/sibling pages and fills a one-page gap. Ellipsis identifiers are stable `ellipsis-start` / `ellipsis-end`.
+```tsx
+import { Pagination, PaginationButton, usePagination, getPaginationRange } from '@onyx/ui/pagination';
+```
 
-Tokens: `--onyx-control-height-sm`, `--onyx-space-{0-5,1-5,6}`, `--onyx-button-radius`, `--onyx-text-{foreground,description,sm}`, selection/hover/focus tokens.
+## Example
 
-Headless: `usePagination(options)` returns `page`, `totalPages`, `pages`, `setPage`, `previous`, `next`, `canPrevious`, `canNext`. `paginationVariants` is exported.
+```tsx
+<Pagination aria-label="Search results pages" page={page} totalPages={Math.ceil(total / 20)} onPageChange={setPage} />
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+{/* with links */}
+<Pagination totalPages={20} page={page} renderPage={(p, current) => (
+  <PaginationButton asChild><a href={`?page=${p}`} aria-current={current ? 'page' : undefined}>{p}</a></PaginationButton>
+)} />
+```
 
-Initial, controlled, and requested pages normalize to finite integers (floor), clamped to 1 through the normalized total. Non-finite pages fall back to 1; an empty total retains page 1 with navigation disabled.
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `totalPages` | `number` | — | **Required.** |
+| `page` / `defaultPage` / `onPageChange` | `number` | `1` | Rounded down to a whole number and kept within `1..totalPages`. |
+| `siblingCount` | `number` | `1` | How many pages to show on each side of the current page. |
+| `boundaryCount` | `number` | `1` | How many pages to always show at each end. |
+| `renderPage` | `(page, current) => ReactNode` | a button | Use it for links. |
+| `children` | | | Replaces the default controls. |
+| `asChild` | `boolean` | `false` | Pass a single custom `<nav>`, and build the inside with `usePagination`. |
+| `aria-label` | `string` | — | Needed when there is more than one pager on the page. |
+
+**`usePagination(options)`** returns `{ page, totalPages, pages, setPage, previous, next, canPrevious, canNext }`. **`getPaginationRange(page, total, siblings, boundary)`** returns the entries, with ellipses as `'ellipsis-start'` and `'ellipsis-end'`.
+
+Also exported: `paginationVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the page range calculation, `aria-current="page"`, disabling previous and next at the ends, and non-interactive ellipses.
+
+**You supply:** the total, the current page, and loading that page.
+
+## Anatomy
+
+`pagination` (`<nav>`), `pagination-button` (`data-state="active"` on the current page), `pagination-ellipsis`.
+
+## Tokens read
+
+`--onyx-control-height-sm`, `--onyx-space-{0-5,1-5,6}`, `--onyx-button-radius`, `--onyx-text-{foreground,description,sm}`, selection, hover and focus tokens.
+
+## Gotchas
+
+- **Zero pages is valid.** The page stays at 1 and both arrows are disabled.

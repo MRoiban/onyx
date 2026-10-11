@@ -1,15 +1,61 @@
-# Panel rows
+# Panel · ListRow · TreeRow
 
-Use when rendering a styled collection row or composing a panel. Not for collection selection/keyboard behavior (use Listbox/Tree or their hooks).
+`Panel` is a section surface with a header, body and footer, either as a standalone card or docked into a workbench region. `ListRow` and `TreeRow` are the row styles that Listbox and Tree use, available for your own collections.
 
-Existing Panel, PanelHeader, PanelBody and PanelFooter exports remain. `ListRow` and `TreeRow` are now the visual layer consumed by Listbox and Tree. They forward refs/HTML props, merge classes, accept `asChild`, `selected`, `focused`, `disabled`, and expose `list-row` / `tree-row` slots. Callers can override `data-slot` for another collection's anatomy. `data-selected="true"`, `aria-selected="true"`, and legacy `data-state="active"` apply selection; `data-focused="true"` applies the inset focus border. Legacy active styling remains.
+**Use when:**
+- Panel: a bordered section, or a docked workbench area such as a side panel or bottom panel.
+- ListRow / TreeRow: drawing rows in a custom collection that should match Listbox and Tree.
 
-Tokens: row height, spacing, typography, radius, surface state and focus tokens listed in Listbox; TreeRow adds tree indent/depth styling. Exported cva functions: `listRowVariants`, `treeRowVariants`.
+**Not for:** selection or keyboard behavior in collections (use [Listbox](listbox.md), [Tree](tree.md) or their hooks), resizable layout (use [SplitView](split-view.md) or [Sidebar](sidebar.md)), or content tiles (use [Card](card.md)).
 
-No headless model; use `useListbox` / `useTree` for behavior.
+## Import
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+```tsx
+import { Panel, PanelHeader, PanelBody, PanelFooter, ListRow, TreeRow } from '@onyx/ui/panel';
+```
 
-`Panel` also accepts `variant="docked"` for workbench regions. The default `card` retains its rounded border and shadow; `docked` supplies the shared surface and flex container while the host chooses its edge borders and dimensions.
+## Example
 
-Docked panels form an isolated, clipped content boundary with zero minimum width. Editor and other positioned content stays within the panel while shrinking or resizing; floating surfaces should use portals.
+```tsx
+<Panel variant="docked" className="border-t">
+  <PanelHeader><SectionLabel>Problems</SectionLabel><Count value={problems.length} /></PanelHeader>
+  <PanelBody className="p-0">
+    <ScrollArea style={{ height: '100%' }}>
+      {problems.map((p) => (
+        <ListRow key={p.id} selected={p.id === current} onClick={() => open(p)}>{p.message}</ListRow>
+      ))}
+    </ScrollArea>
+  </PanelBody>
+</Panel>
+```
+
+## API
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Panel` | `variant` | `'card' \| 'docked'` | `'card'` | `card` is rounded, with a border and shadow. `docked` is flat, clips its content and can shrink to zero width. You add the edge borders. Renders a `<section>`. |
+| | `asChild` | `boolean` | `false` | |
+| `PanelHeader` / `PanelBody` / `PanelFooter` | `asChild` | | | Header and footer have dividers. The body grows to fill the space and has padding. |
+| `ListRow`, `TreeRow` | `selected`, `focused`, `disabled` | `boolean` | | Visual state only. `TreeRow` adds indentation by depth. |
+| | `asChild` | `boolean` | `false` | You can override `data-slot` for another collection's anatomy. |
+
+Also exported: `listRowVariants`, `treeRowVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the surfaces, the docked containment (an isolated, clipped region so editors and positioned content can't overflow while resizing), and the row visuals for selected, focused and hover states.
+
+**You supply:** the size, the edge borders for docked panels, and all behavior.
+
+## Anatomy
+
+`panel` (`data-variant`), `panel-header`, `panel-body`, `panel-footer`, `list-row` / `tree-row` (`data-selected`, `data-focused`, `data-disabled`; the older `data-state="active"` still works).
+
+## Tokens read
+
+`--onyx-surface-panel`, `--onyx-border-default`, `--onyx-shadow-sm`, `--onyx-radius-lg`, `--onyx-shell-toolbar-bg` (header), plus the row height, spacing, type, state and focus tokens listed in [Listbox](listbox.md), and `--onyx-tree-indent` for TreeRow.
+
+## Gotchas
+
+- **Floating content inside a docked panel must use a portal.** The panel clips overflow, so a non-portalled dropdown would be cut off. All Onyx overlays already use portals.
+- **The body has padding.** Add `className="p-0"` for edge-to-edge lists or editors.

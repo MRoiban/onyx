@@ -1,42 +1,72 @@
 # Popover
 
-Use when: anchored interactive settings or workspace controls. Not for: hover-only explanations or blocking confirmations.
+A floating panel attached to a trigger. It holds interactive content such as settings, filters or a small form, and the page behind it stays usable.
 
-## Public API
+**Use when:** a button reveals a few controls that relate to it (view options, a share panel, quick filters).
+**Not for:** text shown on hover (use [Tooltip](tooltip.md) or [Hover Card](hover-card.md)), a list of commands (use [Menu](menu.md)), a blocking decision (use [Dialog](dialog.md) or [Alert Dialog](alert-dialog.md)), a panel anchored to an element you don't render as a Radix trigger (use [AnchoredPopover](anchored-popover.md)), or choosing a value (use [Select](select.md), [Combobox](combobox.md) or [Date Picker](date-picker.md)).
 
-`Popover`, `PopoverPortal`, `popoverVariants`, `PopoverTrigger`, `PopoverAnchor`, `PopoverClose`, `PopoverContent`, `PopoverArrow`, `PopoverHeader`, `PopoverBody`, `PopoverFooter`.
+## Import
+
+```tsx
+import {
+  Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody,
+  PopoverFooter, PopoverClose, PopoverArrow, PopoverAnchor
+} from '@onyx/ui/popover';
+```
+
+## Example
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="ghost" size="icon-sm" aria-label="View options"><Icon name="settings" /></Button>
+  </PopoverTrigger>
+  <PopoverContent side="bottom" align="end">
+    <PopoverHeader>View options</PopoverHeader>
+    <PopoverBody>
+      <Field><Inline justify="between"><Label>Show hidden files</Label><Switch /></Inline></Field>
+    </PopoverBody>
+    <PopoverFooter>
+      <PopoverClose asChild><Button size="sm">Done</Button></PopoverClose>
+    </PopoverFooter>
+    <PopoverArrow />
+  </PopoverContent>
+</Popover>
+```
+
+## API
+
+Built on [Radix Popover](https://www.radix-ui.com/primitives/docs/components/popover). Every Radix prop passes through.
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Popover` | `open` / `defaultOpen` / `onOpenChange`, `modal` | Radix | `modal: false` | Root, with no DOM element. |
+| `PopoverContent` | `side`, `align` | Radix | `'bottom'`, `'center'` | |
+| | `sideOffset` | `number` | `8` | |
+| | `collisionPadding` | `number` | `8` | |
+| | `container` | `HTMLElement \| null` | inherited | See [floating content in modals](README.md#floating-content-in-modals). |
+| | `onOpenAutoFocus`, `onEscapeKeyDown`, `onInteractOutside`, `asChild` | Radix | — | |
+| `PopoverTrigger`, `PopoverAnchor`, `PopoverClose` | `asChild` | | — | `PopoverAnchor` positions the content against a different element than the trigger. |
+| `PopoverHeader` / `PopoverBody` / `PopoverFooter` | `asChild` | | — | Layout sections with padding and dividers. |
+| `PopoverArrow` | Radix | | — | Optional pointer arrow. |
+
+Also exported: `popoverVariants`, `PopoverPortal`, `PortalContainerProvider` and `usePortalContainer` (see [floating content in modals](README.md#floating-content-in-modals)).
+
+## Behavior contract
+
+**Onyx owns:** positioning with collision handling, moving focus into the panel and back, Escape and outside-click dismissal, scrolling inside when the panel is taller than the space available, and moving into a surrounding Dialog or Sheet automatically.
+
+**You supply:** the trigger, the content, and closing the popover after a completed action when needed.
 
 ## Anatomy
 
-`popover-anchor`, `popover-arrow`, `popover-body`, `popover-close`, `popover-content`, `popover-footer`, `popover-header`, `popover-trigger`.
-
-## Props and state
-
-Radix root open/defaultOpen/onOpenChange and modal; Content side/align/sideOffset, collisionPadding, container, focus and dismissal events; Trigger/Anchor/Close accept asChild.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`popover-trigger`, `popover-anchor`, `popover-content` (`data-state`, `data-side`, `data-align`), `popover-scroll` (the inner scroller), `popover-header`, `popover-body`, `popover-footer`, `popover-close`, `popover-arrow`.
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`.
+`--onyx-surface-menu`, `--onyx-border-*`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-radius-*`, `--onyx-space-*`, `--onyx-text-*`, `--onyx-duration-*`, `--onyx-ease-*`, focus tokens.
 
-## Headless behavior
+## Gotchas
 
-Radix owns positioning, focus and dismissal; useControllableState/useFloatingPosition are available for custom markup.
-
-## Nested floating content
-
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
-
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
-
-Normal content has an inner `popover-scroll` wrapper that scrolls within the outer available viewport height, CSS-class height limit or `style.maxHeight` constraint, subtracting padding and borders, while a direct PopoverArrow remains outside the scroller. With `asChild`, the supplied element owns the layout and scrolls directly.
-
-```tsx
-<DialogContent>
-  <DialogTitle>Choose</DialogTitle>
-  <DialogDescription>Floating controls inherit this Dialog automatically.</DialogDescription>
-  <Combobox options={options} />
-  <DatePicker />
-</DialogContent>
-```
+- **The content scrolls inside `popover-scroll`.** It respects the viewport height, a height class or `style.maxHeight`. A direct `PopoverArrow` child stays outside the scroller. With `asChild`, your element does the layout and scrolls itself.
+- **The popover is non-modal by default.** Users can still interact with the page. Pass `modal` to trap focus.

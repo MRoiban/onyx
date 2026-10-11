@@ -1,15 +1,52 @@
 # Collapsible
 
-Use when independently revealing optional content. Not for a coordinated set of mutually exclusive sections (use Accordion).
+A single show/hide section. A trigger with a chevron reveals or hides the content below it.
 
-Anatomy: `collapsible`, `collapsible-trigger`, `collapsible-chevron`, `collapsible-content`.
+**Use when:** one block of optional content can be expanded on its own: "Advanced options", "Show details", a section in a sidebar view.
+**Not for:** a set of sections that should behave together (use [Accordion](accordion.md)), switching between panels (use [Tabs](tabs.md)), or tree data (use [Tree](tree.md)).
 
-`Collapsible` wraps Radix Root: `open` / `defaultOpen`, `onOpenChange`, `disabled`, and `asChild`. `CollapsibleTrigger` is a button with a default chevron; with `asChild`, supply the complete custom trigger contents. `CollapsibleContent` supports `forceMount`. Radix connects `aria-expanded`, `aria-controls`, keyboard activation and disabled state.
+## Import
 
-State: Radix `data-state="open|closed"`, `data-disabled`. Content uses W0 `animate-collapsible-open` / `animate-collapsible-close`; reduced motion removes animation.
+```tsx
+import { Collapsible, CollapsibleTrigger, CollapsibleContent, useCollapsible } from '@onyx/ui/collapsible';
+```
 
-Tokens: `--onyx-space-{0-5,1}`, `--onyx-text-{xs,description}`, `--onyx-weight-semibold`, `--onyx-duration-normal`, `--onyx-ease-standard`, `--onyx-control-focus-ring`, `--onyx-focus-ring-{width,offset}`. Animations read `--radix-collapsible-content-height`.
+## Example
 
-Headless: `useCollapsible(options)` returns `open`, `setOpen`, `toggle`. Bind ARIA yourself when supplying your own markup. `collapsibleVariants` is exported.
+```tsx
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>Advanced options</CollapsibleTrigger>
+  <CollapsibleContent>
+    <Field>…</Field>
+  </CollapsibleContent>
+</Collapsible>
+```
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+## API
+
+Built on [Radix Collapsible](https://www.radix-ui.com/primitives/docs/components/collapsible).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Collapsible` | `open` / `defaultOpen` / `onOpenChange` | `boolean` | `false` | |
+| | `disabled`, `asChild` | | | |
+| `CollapsibleTrigger` | `asChild` | `boolean` | `false` | A button with a chevron. With `asChild`, you provide the whole trigger, chevron included. |
+| `CollapsibleContent` | `forceMount` | Radix | — | Keeps the content in the DOM while closed. |
+
+**`useCollapsible({ open, defaultOpen, onOpenChange })`** returns `{ open, setOpen, toggle }`. Wire the ARIA yourself if you build your own markup.
+
+Also exported: `collapsibleVariants`.
+
+## Behavior contract
+
+**Onyx owns:** `aria-expanded` and `aria-controls`, keyboard activation, and the open and close animation (removed under reduced motion).
+
+**You supply:** the trigger label and the content.
+
+## Anatomy
+
+`collapsible`, `collapsible-trigger`, `collapsible-chevron`, `collapsible-content`, each with `data-state="open|closed"` and `data-disabled`.
+
+## Tokens read
+
+`--onyx-space-{0-5,1}`, `--onyx-text-{xs,description}`, `--onyx-weight-semibold`, `--onyx-duration-normal`, `--onyx-ease-standard`, `--onyx-control-focus-ring`, `--onyx-focus-ring-{width,offset}`.

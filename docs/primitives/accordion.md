@@ -1,15 +1,67 @@
 # Accordion
 
-Use when organizing expandable sections with single or multiple expansion. Not for arbitrary tree navigation.
+A stack of collapsible sections, configured so only one is open at a time (`single`) or any number (`multiple`).
 
-Anatomy: `accordion`, `accordion-item`, `accordion-header`, `accordion-trigger`, `accordion-chevron`, `accordion-meta`, `accordion-content`.
+**Use when:** content splits into several labeled sections and users usually need only some of them: FAQs, settings groups, sidebar views with "Open Editors / Outline / Timeline".
+**Not for:** a single expandable block (use [Collapsible](collapsible.md)), panels the user switches between (use [Tabs](tabs.md)), or nested hierarchies (use [Tree](tree.md)).
 
-`Accordion` forwards Radix `type="single|multiple"`, `value` / `defaultValue`, `onValueChange`, `disabled`, `orientation`, `dir`, and `asChild`. Single uses string values and supports `collapsible`; multiple uses arrays. Each `AccordionItem` needs a unique `value`. Nest `AccordionTrigger` in `AccordionHeader`. The trigger includes a chevron and optional `meta` slot; `asChild` supplies the complete custom trigger element. Content supports `forceMount`. Radix owns arrow/Home/End trigger navigation, Enter/Space, expansion and ARIA relationships.
+## Import
 
-State: `data-state="open|closed"`, `data-disabled`, `data-orientation`. W0 `animate-accordion-open` / `animate-accordion-close` classes animate content; reduced motion removes animation.
+```tsx
+import { Accordion, AccordionItem, AccordionHeader, AccordionTrigger, AccordionContent, useAccordion } from '@onyx/ui/accordion';
+```
 
-Tokens: `--onyx-border-default`, `--onyx-radius-md`, `--onyx-space-{0-5,1-5,2,8}`, `--onyx-text-{foreground,muted,description,sm}`, `--onyx-weight-{regular,semibold}`, `--onyx-state-hover`, `--onyx-duration-normal`, `--onyx-ease-standard`, focus tokens. Animations use `--radix-accordion-content-height`.
+## Example
 
-Headless: `useAccordion({type,value,defaultValue,onValueChange,collapsible})` returns `value`, `setValue`, `toggle(key)`. This headless hook consistently uses arrays, including single mode; it does not generate ARIA markup. The Radix-backed component retains Radix's discriminated string/array API. `accordionVariants` is exported.
+```tsx
+<Accordion type="multiple" defaultValue={['editors']}>
+  <AccordionItem value="editors">
+    <AccordionHeader>
+      <AccordionTrigger meta={<Count value={openEditors.length} />}>Open Editors</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionContent>…</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="outline">
+    <AccordionHeader><AccordionTrigger>Outline</AccordionTrigger></AccordionHeader>
+    <AccordionContent>…</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+## API
+
+Built on [Radix Accordion](https://www.radix-ui.com/primitives/docs/components/accordion).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Accordion` | `type` | `'single' \| 'multiple'` | — | **Required.** |
+| | `value` / `defaultValue` / `onValueChange` | `string` (single) or `string[]` (multiple) | | |
+| | `collapsible` | `boolean` | `false` | Single mode only: allows closing the open item. |
+| | `disabled`, `orientation`, `dir`, `asChild` | Radix | | |
+| `AccordionItem` | `value` | `string` | — | **Required** and unique. |
+| `AccordionHeader` | | | | **Required** around the trigger (it renders the heading element). |
+| `AccordionTrigger` | `meta` | `ReactNode` | — | Right-aligned extra content, such as a count. |
+| | `asChild` | `boolean` | `false` | You provide the whole trigger. |
+| `AccordionContent` | `forceMount` | Radix | — | |
+
+**`useAccordion({ type, value, defaultValue, onValueChange, collapsible })`** returns `{ value, setValue, toggle(key) }`, **always using arrays**, even in single mode. It adds no ARIA.
+
+Also exported: `accordionVariants`.
+
+## Behavior contract
+
+**Onyx owns:** expansion state, arrow/Home/End navigation between triggers, Enter and Space, the ARIA relationships, the chevron, and the animation (removed under reduced motion).
+
+**You supply:** the sections and their content.
+
+## Anatomy
+
+`accordion`, `accordion-item`, `accordion-header`, `accordion-trigger`, `accordion-chevron`, `accordion-meta`, `accordion-content`, each with `data-state="open|closed"`, `data-disabled` and `data-orientation`.
+
+## Tokens read
+
+`--onyx-border-default`, `--onyx-radius-md`, `--onyx-space-{0-5,1-5,2,8}`, `--onyx-text-{foreground,muted,description,sm}`, `--onyx-weight-{regular,semibold}`, `--onyx-state-hover`, `--onyx-duration-normal`, `--onyx-ease-standard`, focus tokens.
+
+## Gotchas
+
+- **In single mode, the open item can't be closed** unless `collapsible` is set.

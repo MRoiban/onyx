@@ -1,21 +1,52 @@
 # Meter
 
-Use when: a measurement in a meaningful bounded range. Not for: loading completion (Progress).
+A bar showing a measurement within a known range, such as disk usage, quota or battery. It can turn green, yellow or red based on thresholds.
+
+**Use when:** showing how full or how good something is: storage, CPU, password strength, rate-limit usage.
+**Not for:** how far a task has progressed (use [Progress](progress.md)), or a value the user adjusts (use [Slider](slider.md)).
+
+## Import
+
+```tsx
+import { Meter, useMeter } from '@onyx/ui/meter';
+```
+
+## Example
+
+```tsx
+<Meter label="Storage" value={used} max={quota} high={quota * 0.8} optimum={0} valueText={`${used} of ${quota} GB`} />
+
+<Meter aria-label="Password strength" value={score} max={4} low={2} high={3} optimum={4} />
+```
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` | `number` | — | **Required.** Clamped to `[min, max]`. |
+| `min`, `max` | `number` | `0`, `100` | |
+| `low`, `high`, `optimum` | `number` | — | Thresholds, as on the native `<meter>`, that set the tone (below). |
+| `tone` | `DisplayTone` | inferred | Overrides the inferred tone. |
+| `label` | `ReactNode` | — | Visible label above the bar. Otherwise pass `aria-label`. |
+| `valueText` | `string` | — | Readable value ("12 of 50 GB"), shown and used as `aria-valuetext`. |
+| `asChild` | `boolean` | `false` | Puts the meter semantics on your element. |
+
+**Tone inference:** if `optimum` is below `low`, lower values are better (success ≤ low, warning ≤ high, danger above). If it is above `high`, higher values are better. Otherwise values between `low` and `high` are success and anything outside them is a warning.
+
+**`useMeter({ value, min, max, low, high, optimum, tone })`** returns `{ min, max, value, percent, tone }`.
+
+Also exported: `meterVariants`.
+
+## Behavior contract
+
+**Onyx owns:** clamping, the tone logic, `role="meter"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-valuetext`, and the bar.
+
+**You supply:** the value, the thresholds and a label.
 
 ## Anatomy
 
-`meter`, `meter-header`, `meter-label`, `meter-value`, `meter-track`, `meter-indicator`.
-
-## Props and data attributes
-
-value, min (0), max (100), low, high, optimum, tone override, label, valueText. Clamps finite values/range; native-meter-style thresholds infer success/warning/danger. Label references visible text; valueText maps to aria-valuetext; use aria-label without a visible label. `role=meter`, aria-valuemin/max/now, `data-tone`, `data-state=idle`. asChild puts meter semantics on the supplied element and delegates its visual children.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`meter` (`data-tone`, `data-state`), `meter-header`, `meter-label`, `meter-value`, `meter-track`, `meter-indicator`.
 
 ## Tokens read
 
-`--onyx-track-height`, tone foreground, control-track, space/type/radius/motion.
-
-## Headless hook
-
-`useMeter({value,min,max,low,high,optimum,tone})` returns normalized min/max/value, percent, tone. [APG meter](https://www.w3.org/WAI/ARIA/apg/patterns/meter/).
+`--onyx-track-height`, `--onyx-control-track`, `--onyx-tone-*-fg`, space, type, radius and motion tokens.

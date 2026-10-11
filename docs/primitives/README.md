@@ -2,22 +2,93 @@
 
 Onyx supplies opinionated defaults with full control afterwards. Source is owned by the consumer; parts forward refs, merge classes, and expose `data-slot` and relevant state/variant/size/tone attributes. Many primitives expose a headless hook for custom rendering; each primitive page identifies its available hook or state model. Switch uses its native input directly and has no separate hook; Tabs documents its controlled state model.
 
-## Index
+## Picking a component
 
-Each page covers when to use the primitive, its anatomy (`data-slot` parts), props and data attributes, the tokens it reads and any available headless hook or state model. Build history lives in [reports/](reports/).
+Start with what the user is doing, then open that page for its **Use when / Not for** line.
+
+| The user needs to… | Use |
+|---|---|
+| Run an action by name or shortcut | [Command](command.md) palette |
+| Run an action from a button | [Menu](menu.md) |
+| Run an action on an element by right-clicking it | [Context Menu](context-menu.md) |
+| Run an action from a menu your code opens at a point | [ActionMenu](action-menu.md) |
+| Pick one value from a short list | [Select](select.md) |
+| Search for a value, pick several, or create one | [Select](select.md) | Picking one value from a short list |
+| [SectionSelect](section-select.md) | A panel header that switches between peer views |
+| [Combobox](combobox.md) |
+| Switch the view shown in a panel header | [SectionSelect](section-select.md) |
+| Fill in a short focused form | [Dialog](dialog.md) |
+| Confirm a destructive action | [Dialog](dialog.md) | A focused modal task such as a form or a non-destructive decision |
+| [Prompt](prompt.md) | A keyboard-first question with stacked answer buttons |
+| [Alert Dialog](alert-dialog.md) |
+| Answer a fixed question by keyboard | [Prompt](prompt.md) |
+| See that a number changed | [NumberEffect](number-effect.md) |
+
+## Page format
+
+Pages are written for agents first and people second. Newer pages use this order:
+
+1. **Summary**: one plain sentence saying what the component is.
+2. **Use when / Not for**: every "not for" names the component to use instead.
+3. **Import**: the exact subpath.
+4. **Example**: copy-paste code covering the common case.
+5. **API**: a table of part, prop, type, default and notes. Mark required props.
+6. **Behavior contract**: what Onyx owns and what you supply.
+7. **Keyboard** (when relevant), **Anatomy** (`data-slot` values and state attributes), **Tokens read**.
+8. **Gotchas**: behavior that surprises people, each with what to do about it.
+
+Every page follows this format. Build history lives in [reports/](reports/).
+
+## Shared conventions
+
+Every part forwards its ref, merges `className` and exposes a `data-slot`. Single-element parts accept `asChild`. Roots also expose relevant `data-size`, `data-variant`, `data-tone`, `data-state`, `data-disabled` and `data-invalid` attributes. Your own DOM attributes are passed through.
+
+Form controls connect to a surrounding [Field](field.md) automatically. Explicit props on the control win, including `disabled={false}`. Native form reset restores the value the control had on mount, even for controls linked to an outside `form`. Controlled values always win.
+
+## Floating content in modals
+
+`DialogContent`, `SheetContent` and `AlertDialogContent` become the default portal container for floating content inside them. These components follow it automatically, so their pointer interaction, focus and stacking stay inside the modal:
+
+- Combobox, Popover, AnchoredPopover and ActionMenu
+- Menu (including submenus) and Menubar
+- Tooltip, HoverCard and NavigationMenu
+- DatePicker
+
+Explicit `container` props override the default, and `container={null}` falls back to `document.body`.
+
+These do **not** follow automatically, so pass `container` yourself, or avoid using them inside modals:
+
+- [Context Menu](context-menu.md)
+- [Select](select.md)
+- [SectionSelect](section-select.md)
+
+For your own modal, capture its element with a callback ref and wrap its content in `PortalContainerProvider` (from `@onyx/ui/popover`), or pass the element to each floating component's `container` prop. DatePicker takes it through `contentProps.container`. Keep the container inside the modal's focus scope.
+
+```tsx
+<DialogContent>
+  <DialogTitle>Choose</DialogTitle>
+  <DialogDescription>Floating controls inherit this Dialog automatically.</DialogDescription>
+  <Combobox options={options} />
+  <DatePicker />
+</DialogContent>
+```
+
+## Index
 
 ### Foundations & actions
 
 | Primitive | Use when |
 |---|---|
 | [Theme](theme.md) | Scope an Onyx theme or density, or override tokens |
+| [Icon](icon.md) | Show a Codicon glyph |
 | [Button](button.md) | Invoke an action |
 | [Spinner](spinner.md) | An operation is in progress |
-| [Input](input.md) | Edit a single line (Input) or multiline text (Textarea) |
+| [Input · Textarea](input.md) | Edit a single line (Input) or multiline text (Textarea) |
 | [Toolbar](toolbar.md) | Group related action controls into one tab stop |
-| [Text](text.md) | Shared typography and literal search highlighting |
+| [Text · Heading · SectionLabel](text.md) | Shared typography and literal search highlighting |
 | [Code](code.md) | Showing an inline identifier, path or code fragment |
 | [Kbd](kbd.md) | Displaying a keyboard shortcut |
+| [Command](command.md) | A searchable command palette or inline action list |
 | [Toggle](toggle.md) | A compact independent pressed action is needed |
 | [Toggle Group](toggle-group.md) | Segmented actions select one or multiple pressed values |
 | [Link](link.md) | Navigating to a resource |
@@ -30,6 +101,7 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 | [ActionMenu](action-menu.md) | State-controlled commands opened at a viewport point |
 | [AnchoredPopover](anchored-popover.md) | Attach an interactive surface to an existing external control |
 | [Menu](menu.md) | Button-triggered commands, checks and mutually exclusive command choices |
+| [Context Menu](context-menu.md) | Right-click commands on an element |
 | [Tooltip](tooltip.md) | Short noninteractive explanations and keyboard shortcuts |
 | [Truncate](truncate.md) | Long names or paths in constrained rows |
 | [Hover Card](hover-card.md) | Supplementary profile or object previews on hover/focus |
@@ -70,10 +142,11 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 | [Avatar · AvatarGroup](avatar.md) | Representing people with image or initials |
 | [Skeleton](skeleton.md) | A predictable loading placeholder |
 | [Meter](meter.md) | A measurement in a meaningful bounded range |
+| [NumberEffect](number-effect.md) | A changing count or metric should visibly roll |
 | [Progress](progress.md) | Determinate or indeterminate task completion |
 | [Separator](separator.md) | Dividing groups with optional text |
 | [Breadcrumb](breadcrumb.md) | Showing hierarchy and the current page |
-| [Toast queue](toast.md) | Transient feedback with optional action |
+| [Toast](toast.md) | Transient feedback with optional action |
 | [EmptyState](empty-state.md) | A content area has nothing to display |
 
 ### Collections & structure
@@ -82,7 +155,7 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 |---|---|
 | [Listbox](listbox.md) | Choosing one or several options in a collection |
 | [Tree](tree.md) | Navigating/selecting generic hierarchical items |
-| [Fixed Virtual List](fixed-virtual-list.md) | Fixed-height rows in an existing ancestor or explicit scrolling viewport |
+| [useFixedVirtualList](fixed-virtual-list.md) | Fixed-height rows in an existing ancestor or explicit scrolling viewport |
 | [VirtualList](virtual-list.md) | A scroll viewport should mount only visible rows from a large flat collection |
 | [OverlayScrollbar](overlay-scrollbar.md) | Attach shared scrollbar behavior to an existing scrolling viewport |
 | [StatusBar](status-bar.md) | Group workbench status contributions in a footer |
@@ -95,8 +168,8 @@ Each page covers when to use the primitive, its anatomy (`data-slot` parts), pro
 | [Table](table.md) | Presenting ordinary semantic tabular data |
 | [Pagination](pagination.md) | Navigating pages of results |
 | [Carousel](carousel.md) | Horizontally paging a small set of related slides |
-| [Panel rows](panel.md) | Rendering a styled collection row or composing a panel |
-| [Sidebar resizing](sidebar.md) | A sidebar needs a keyboard-accessible resize rail |
+| [Panel · ListRow · TreeRow](panel.md) | A card or docked section surface, or styled collection rows |
+| [Sidebar · ActivityBar · WorkbenchSidebar](sidebar.md) | App side navigation with a resizable rail and an activity bar |
 
 ### Layout
 
@@ -131,8 +204,6 @@ Import from `@onyx/ui/hooks` (also the root): `useControllableState`, `useRoving
 
 ## Development
 
-`bun install`; `bun run gallery` serves port 4816 and watches Tailwind source. `bun run build:css` rebuilds gallery CSS/assets. `bun run typecheck` and `bun test` validate the library and registry. Tests preload happy-dom.
+`bun install`, then `bun run gallery` to serve the gallery on port 4816 with Tailwind watching the source. `bun run build:css` rebuilds the gallery CSS and assets. `bun run typecheck` and `bun test` validate the library and the registry (tests preload happy-dom). `bun run registry:sync` regenerates the registry from the actual imports.
 
-Workstreams put CSS inside `@layer onyx.components` in `src/styles/{overlays,forms,collections,display}.css`, already imported by globals. The matching gallery section has a default component export. Shared manifest, index, registry, tokens, globals and Tailwind config belong to W0/orchestrator.
-
-W2 also fills the named `FormsActions` export in its gallery file; W4 fills `DisplayActions`. These are rendered in section 2 by the scaffold, so neither workstream needs to edit the app or foundations file.
+Component CSS lives in `@layer onyx.components`, in `src/styles/{overlays,forms,collections,display}.css`. When you add or change a primitive, update its page here in the format above and add it to the index and, if relevant, to the picker table.

@@ -1,51 +1,74 @@
 # Date Picker
 
-Use when: single date or date-range selection with a calendar popup. Not for: time-of-day input or custom date arithmetic.
+A date field with a calendar button. In single mode you can type the date (`YYYY-MM-DD`) or pick it from the popup. Range mode is pick-only and shows the range localized ("6 – 10 Oct 2026").
 
-## Public API
+**Use when:** a form needs a date or a date range in a compact field.
+**Not for:** an always-visible calendar (use [Calendar](calendar.md)), time-of-day input, or relative dates such as "in 3 days" (build those as their own control).
 
-`datePickerVariants`, `UseDatePickerOptions`, `useDatePicker`, `DatePickerProps`, `DatePicker`.
+## Import
 
-## Anatomy
-
-`calendar-day`, `date-picker`, `date-picker-content`, `date-picker-control`, `date-picker-form-end`, `date-picker-form-start`, `date-picker-input`, `date-picker-label`, `date-picker-trigger`.
-
-## Props and state
-
-Calendar mode/value/defaultValue/onValueChange/min/max/locale/weekStartsOn/disabled/defaultMonth; open/defaultOpen/onOpenChange; label/name/inputProps/calendarProps/contentProps. Single input edits YYYY-MM-DD; ranges are read-only and selected in Calendar. Invalid typed dates keep the previous committed value. Range form names are name and name.to.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
-
-## Tokens read
-
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`, `--onyx-input-height`, `--onyx-input-radius`, `--onyx-control-input-bg`, `Tag/Input/Button/Calendar tokens for composed primitives`.
-
-## Headless behavior
-
-useDatePicker(options) returns value/open/setOpen/draft/setDraft/invalid/select/commit/mode. Calendar owns all date math, range validation and grid navigation; a completed selection closes the popup.
+```tsx
+import { DatePicker, useDatePicker, formatRange } from '@onyx/ui/date-picker';
+```
 
 ## Example
 
 ```tsx
+<DatePicker label="Due date" value={due} onValueChange={(v) => setDue(v as Date | undefined)} min={new Date()} name="due" />
+
 <DatePicker
   mode="range"
   label="Review window"
-  name="reviewWindow"
+  name="reviewWindow"           // submits reviewWindow and reviewWindow.to
   defaultMonth={new Date(2026, 9, 1)}
-  onValueChange={setRange}
+  onValueChange={(v) => setRange(v as DateRange)}
 />
 ```
 
-The root exposes `data-state="open|closed"` and `data-invalid`. `Alt+ArrowDown` opens the popup from the input. The popup initially focuses the Calendar's current tabbable day, and a completed selection returns focus through Radix's normal restoration behavior. No separate calendar implementation is included.
+## API
 
-## Nested floating content
+Takes every [Calendar](calendar.md) option (`mode`, `value`, `defaultValue`, `onValueChange`, `min`, `max`, `locale`, `weekStartsOn`, `disabled`, `defaultMonth`), plus:
 
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `label` | `string` | — | A visible label. Otherwise pass `inputProps={{ 'aria-label': … }}`. |
+| `open` / `defaultOpen` / `onOpenChange` | `boolean` | `false` | |
+| `name` | `string` | — | Hidden inputs submit committed ISO dates. Ranges add `<name>.to`. |
+| `form` | `string` | — | Links the hidden inputs to an outside form. Takes precedence over `inputProps.form`. |
+| `inputProps` | input attributes | — | Apply to the visible text input. That input has no `name` and is not submitted. |
+| `calendarProps` | Calendar's non-state props | — | |
+| `contentProps` | PopoverContent props | — | Including `container`; see [floating content in modals](README.md#floating-content-in-modals). |
+| `className`, `style`, `rootProps`, `rootRef` | | | Apply to the root element. |
+| `ref` | | | The text input. |
 
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+**`useDatePicker(options)`** returns `value`, `open`/`setOpen`, `draft`/`setDraft`, `invalid`, `select`, `commit` and `mode`. **`formatRange(value, locale?)`** formats a value the same way the field does.
 
-## Root and input customization
+Also exported: `datePickerVariants`.
 
-`className`, `style`, `rootProps` (div attributes/events) and `rootRef` target the composite root. Root classes/styles merge with `rootProps`; direct `className`/`style` take precedence. `inputProps` styles and attributes target the text input. The existing forwarded `ref` still points to that input for compatibility.
+## Behavior contract
 
-The visible draft input is unnamed. Hidden inputs submit committed local-date ISO values (`yyyy-mm-dd`), using `name` (or `inputProps.name`); ranges also submit `<name>.to`. Root `form` takes precedence over `inputProps.form` and associates both hidden fields with an external form. Invalid edits remain visible and expose `aria-invalid`/root `data-invalid`, while preserving the previous submitted value. Controlled selections/commits display the parent's controlled value when a change is rejected; a parent render reasserting its controlled value also reconciles in-progress drafts.
+**Onyx owns:** parsing typed dates, keeping invalid drafts visible (with `aria-invalid`) without losing the last valid value, the popup (focusing the current day on open and closing on a completed selection), form submission, and all date logic, through Calendar.
+
+**You supply:** the value, the limits, and the label.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| Alt+↓ (in the input) | Open the calendar |
+| Calendar keys | See [Calendar](calendar.md#keyboard) |
+| Escape | Close and return focus to the field |
+
+## Anatomy
+
+`date-picker` (`data-state="open|closed"`, `data-invalid`), `date-picker-label`, `date-picker-control`, `date-picker-input`, `date-picker-trigger`, `date-picker-content`, `date-picker-form-start`, `date-picker-form-end`, plus Calendar's slots.
+
+## Tokens read
+
+Input tokens (`--onyx-input-height`, `--onyx-input-radius`, `--onyx-control-input-bg`), Popover and Calendar tokens.
+
+## Gotchas
+
+- **Typing works only in single mode.** In range mode the input is read-only, so ranges are picked in the calendar.
+- **An invalid typed date doesn't change the value.** The previous valid date is kept, and still submitted, until the user enters a valid one.
+- **Controlled values win.** If your parent rejects a change, the field shows the parent's value again.

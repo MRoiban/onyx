@@ -1,23 +1,71 @@
 # Badge · Count · StatusDot
 
-Use when: compact status, numeric counts, or presence. Not for: actionable buttons or essential status conveyed by color alone.
+Small, non-interactive status indicators.
+
+| Component | Shows | Example |
+|---|---|---|
+| `Badge` | A short label with a tone | "Beta", "Failed", "3 new" |
+| `Count` | A number in a pill, capped at a maximum | `5`, `99+` |
+| `StatusDot` | A colored dot, optionally pulsing | online, running, error |
+
+**Use when:** labeling status, counts or presence next to other content (tab labels, list rows, avatars).
+**Not for:** anything clickable (use [Button](button.md) or [Toggle](toggle.md)), removable values (use [Tag](tag.md)), or messages (use [Alert](alert.md) or [Toast](toast.md)).
+
+## Import
+
+```tsx
+import { Badge, Count, StatusDot, formatCount, badgeVariants } from '@onyx/ui/badge';
+```
+
+## Example
+
+```tsx
+<Badge tone="success">Deployed</Badge>
+<Badge tone="danger" variant="outline" icon={<Icon name="error" />}>Failed</Badge>
+
+<TabsTrigger value="problems">Problems <Count value={problems.length} tone="danger" /></TabsTrigger>
+<Count value={1500} max={999} />                       {/* shows 999+, announces 1500 */}
+
+<StatusDot tone="success" label="Online" />
+<StatusDot tone="info" pulse />                          {/* decorative */}
+
+{/* styling your own markup */}
+<span className={badgeVariants({ tone: 'warning', variant: 'solid' })}>Draft</span>
+```
+
+## API
+
+`DisplayTone` is one of `'neutral' | 'info' | 'success' | 'warning' | 'danger'`.
+
+| Component | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Badge` | `tone` | `DisplayTone` | `'neutral'` | |
+| | `variant` | `'subtle' \| 'solid' \| 'outline'` | `'subtle'` | |
+| | `icon` | `ReactNode` | — | Shown before the text. |
+| `Count` | `value` | `number` | — | **Required.** Negative and non-finite values show `0`, and decimals are dropped. |
+| | `max` | `number` | `99` | Shows `max+` above it. Values below 1 turn the cap off. |
+| | `tone`, `variant` | as Badge | `'info'`, `'solid'` | |
+| `StatusDot` | `tone` | `DisplayTone` | `'neutral'` | |
+| | `pulse` | `boolean` | `false` | The animation stops under reduced motion. |
+| | `label` | `string` | — | Makes the dot meaningful (`role="img"`). Without a label it is hidden from screen readers. |
+| all | `asChild` | `boolean` | `false` | |
+
+**Helpers:** `formatCount(value, max)` returns the displayed text. `badgeVariants`, `countVariants` and `statusDotVariants` style your own markup. The `displayAttributes(...)` and `badgeAttributes(...)` helpers add the matching data attributes.
+
+## Behavior contract
+
+**Onyx owns:** tone colors, tabular numbers for Count, the full number as Count's accessible name, the pulse animation, and hiding decorative dots.
+
+**You supply:** text that makes sense without color, and a `label` for dots that carry meaning.
 
 ## Anatomy
 
-`badge`, `badge-icon`, `count`, `status-dot`.
-
-## Props and data attributes
-
-`Badge`: tone neutral/info/success/warning/danger, variant subtle/solid/outline, icon. `Count`: value, max (99), variant subtle/solid/outline (solid default), normalized full number as accessible label; negative/nonfinite values render 0 and finite values truncate to non-negative integers. max truncates to an integer; nonfinite values and values below 1 disable the cap. Tabular numbers. `StatusDot`: tone, pulse, label (omit for decorative use). `data-tone`, `data-variant`, `data-state=pulsing|idle`, `data-pulse`.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`badge` (`data-tone`, `data-variant`), `badge-icon`, `count` (`data-tone`, `data-variant`), `status-dot` (`data-tone`, `data-state="pulsing|idle"`, `data-pulse`).
 
 ## Tokens read
 
-`--onyx-badge-{radius,gap,height,padding,text-size}`, `--onyx-count-{size,text-size,font-weight}`, `--onyx-status-dot-{size,duration}`, tone sets, space/type/weight/radius.
+`--onyx-badge-{radius,gap,height,padding,text-size}`, `--onyx-count-{size,text-size,font-weight}`, `--onyx-status-dot-{size,duration}`, `--onyx-tone-*-{bg,fg}`, space, type, weight and radius tokens.
 
-## Headless hook
+## Gotchas
 
-Pure helpers `formatCount(value,max)`; dots need no state hook.
-
-Custom markup: `<span className={badgeVariants({tone: "danger", variant: "outline"})}>Error</span>`. No companion attributes are required. `badgeAttributes()` remains available and defaults to neutral/subtle. Other roots accept their visual options directly: `countVariants({tone: "danger", variant: "outline"})`, `statusDotVariants({tone: "success", pulse: true})`, `linkVariants({variant: "muted"})`, and `skeletonVariants({shape: "circle"})`. Attribute helpers only address styling and integration hooks; supply semantic ARIA separately.
+- **Don't rely on color alone.** A red dot means nothing to colorblind or screen reader users. Add a `label`, or text next to it.

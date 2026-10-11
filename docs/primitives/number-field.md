@@ -1,23 +1,80 @@
 # Number Field
 
-Public API: NumberField, useNumberField.
+A numeric input with up/down stepper buttons, limits, step snapping and locale-aware formatting (currency, percent, units).
 
-**Use when / Not for:** bounded numeric entry needs typed text and steppers; not for arbitrary text or phone numbers.
+**Use when:** the user enters a number, usually within limits: a count, a size, a price or a percentage.
+**Not for:** numbers that aren't quantities, such as phone numbers, IDs or ZIP codes (use [Input](input.md)), a value chosen by dragging (use [Slider](slider.md)), or an empty "no value" state (this field always holds a number).
 
-**Anatomy (data-slot):** number-field, number-field-input, number-field-unit, number-field-steppers, number-field-increment/decrement, number-field-form-value.
+## Import
 
-**Props:** value/defaultValue/onValueChange are numbers. min/max/step, unit, locale, formatOptions, wheel (false), disabled/readOnly and native input props. Draft typing commits on blur/Enter, stepping or boundary keys; snaps from min (zero when min is absent), clamps, and reverts unparseable text. ArrowUp/Down = step; PageUp/Down = 10 steps; Home/End = bounded edges. Steppers do not enter the tab sequence. A name/form hidden input submits the raw numeric value.
+```tsx
+import { NumberField, useNumberField } from '@onyx/ui/number-field';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** --onyx-number-field-width/stepper-width, --onyx-input-height/radius; control-input-*, control-focus-ring, text-description, space-*. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<Field>
+  <Label>Font size</Label>
+  <NumberField value={size} onValueChange={setSize} min={8} max={72} step={1} unit="px" />
+</Field>
 
-**Headless hook:** `useNumberField(options)` returns value, text, setText, setValue, increment/decrement, commit, parse, format, and inputProps (spinbutton ARIA, editing, blur, key and opt-in wheel handlers).
+<NumberField
+  aria-label="Price"
+  defaultValue={9.99}
+  step={0.01}
+  min={0}
+  locale="fr-FR"
+  formatOptions={{ style: 'currency', currency: 'EUR' }}
+  name="price"
+/>
+```
 
-Parsing uses Intl parts and localized digits for decimal, currency and percent displays. Scientific notation, compact notation, spelled-out units and accounting parentheses are outside the parser contract. Use standard notation and a separate unit suffix. Empty or invalid drafts revert to the prior numeric value; this primitive represents a number, not a nullable field.
+## API
 
-**Composition exception:** `number-field` generates multiple coordinated children, so its root does not support `asChild`. Use `useNumberField` to render a custom root and wire the returned state and handlers to your own parts; preserve the grouping roles, labels, keyboard behavior and form participation. The rendered component accepts root class/style and exposes `data-slot` hooks for each generated part.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` / `defaultValue` / `onValueChange` | `number` | `0` | |
+| `min`, `max` | `number` | unbounded | |
+| `step` | `number` | `1` | Values snap to `min + n × step`, or `n × step` when there is no `min`. |
+| `unit` | `ReactNode` | — | A suffix such as `px` or `%`. |
+| `locale`, `formatOptions` | Intl | the browser's locale | Used to format and to parse typed text. |
+| `wheel` | `boolean` | `false` | Allow the mouse wheel to step the value while focused. |
+| `disabled`, `readOnly` | `boolean` | from Field | |
+| `name`, `form` | `string` | — | A hidden input submits the raw number. |
+| `inputProps`, `inputRef` | | | Apply to the editable input. Prefer these to the forwarded `ref`. |
+| `className`, `style`, `rootRef` | | | Apply to the root element. |
 
-**Root and input channels:** `className`, `style` and `rootRef` target the root div. `inputProps` and `inputRef` target the editable input. The forwarded `ref` remains an input ref for compatibility; prefer `inputRef` for new code (legacy input prop placement is deprecated in favor of `inputProps`). Remaining top-level native input props remain supported. Consumer handlers run first and may cancel internal keyboard, blur or wheel behavior.
+**`useNumberField(options)`** returns `value`, `text`, `setText`, `setValue`, `increment`, `decrement`, `commit`, `parse`, `format` and `inputProps`, which carries the spinbutton ARIA and the key, blur and wheel handlers.
 
-A valid draft drives `aria-valuenow` and `aria-valuetext`; empty and invalid drafts omit `aria-valuenow` and describe the draft in `aria-valuetext`. Controlled values remain authoritative after commit/stepping and on parent reassertion; only local in-progress typing retains a draft. Native form reset silently restores the mount-time uncontrolled number and formatted text, including external `form` association. Steppers keep their visible size and use token-based pseudo-elements for a minimum 24px hit area.
+Also exported: `numberFieldVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the typed draft (committed on blur, Enter, stepping, or Home/End), parsing localized text, snapping and clamping, reverting text that can't be parsed, `role="spinbutton"` with `aria-valuenow` and `aria-valuetext`, the steppers, form submission, and restoring the default on form reset.
+
+**You supply:** the limits, the step, the format and the label.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ↑ / ↓ | Step up / down |
+| PageUp / PageDown | Ten steps |
+| Home / End | Jump to `min` / `max` (only when they are set) |
+| Enter | Commit the typed text |
+
+## Anatomy
+
+`number-field`, `number-field-input`, `number-field-unit`, `number-field-steppers`, `number-field-increment`, `number-field-decrement`, `number-field-form-value`.
+
+## Tokens read
+
+`--onyx-number-field-width`, `--onyx-number-field-stepper-width`, `--onyx-input-height`, `--onyx-input-radius`, `--onyx-control-input-*`, `--onyx-control-focus-ring`, `--onyx-text-description`, `--onyx-space-*`.
+
+## Gotchas
+
+- **Clearing the field doesn't empty the value.** Empty or invalid text reverts to the last number, so there is no "no value" state. For optional numbers, use an Input and parse the text yourself.
+- **The steppers are out of the tab order.** Keyboard users step with the arrow keys. Each stepper still keeps a 24px pointer target.
+- **Supported formats:** standard notation in any locale, with currency, percent and localized digits. Scientific notation, compact notation ("1.2K"), spelled-out units and accounting parentheses are not parsed.
+- **No `asChild` on the root.** The field generates its own children. For a custom layout, use `useNumberField`.

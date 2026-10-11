@@ -1,31 +1,132 @@
 # Tree
 
-Use when navigating/selecting generic hierarchical items. Not for a filesystem service, editor state, rename validation or an application drag/drop model.
+A keyboard-accessible hierarchical list with expand and collapse, selection, lazy-loaded children, inline rename, drag-and-drop, keyboard cut/paste moves and virtualization. It provides the interaction only: your app supplies the data, such as files.
 
-Anatomy: `tree`, `tree-content`, `tree-virtual-row`, `tree-item`, `tree-twisty`, `tree-rename`, `tree-announcer`, `tree-move-actions`, `tree-move-target`. Tree rows share `TreeRow` / `ListRow` styling.
+**Use when:** navigating or selecting nested items: a file explorer, an outline, a settings hierarchy.
+**Not for:** flat lists (use [Listbox](listbox.md)), or nested navigation menus (use [Menu](menu.md) submenus). The file model, rename validation and filesystem calls belong to your app; a ready-made file explorer is planned for Gemstone.
 
-`Tree<T>` takes `items`, `getKey`, `getChildren` (synchronous array or undefined), `isExpandable`, and the Listbox selection/focus options. `expandedKeys` / `defaultExpandedKeys` and `onExpandedChange` control expansion. Keys must be globally unique. The file/content model remains in the caller. `loadChildren(item)` loads missing children; `onLoadError` receives failures. The hook publishes `loadingKeys`, `loadErrors`, and `retryLoad(item)`. Controlled/default expanded branches load automatically. A loader should return stable children for each item identity; replace/recreate the tree if changing the underlying collection namespace.
+## Import
 
-`renderItem(item, {selected, focused, expanded, loading, depth})` renders row content. `renamingKey` / `defaultRenamingKey`, `onRenamingKeyChange`, `onRename`, and `renderRename(item, {commit, cancel})` expose an inline editor slot. F2 begins rename when `onRename` is supplied. The editor owns its input, validation and Enter/Escape events; root tree navigation ignores events originating inside it. Commit/cancel return focus to the tree.
+```tsx
+import { Tree, useTree, flattenTree, resolveTreeNavigationAction, findTreeTypeAheadMatch } from '@onyx/ui/tree';
+```
 
-`draggable` is a boolean or item predicate. `onDragItem(item,event)` can replace the default text/plain key payload. `canDrop(target,event)` gates drop acceptance; `onDropItem(target,event)` receives `{item,key,position: 'before|inside|after'}` and performs the application mutation. `dropTarget` / `defaultDropTarget` / `onDropTargetChange` also support externally driven indicators. Onyx computes indicator edges from the pointer position, clears them on leave/end/drop and never changes the application model itself.
+## Example
 
-Keyboard moves use the explorer cut/paste convention when `onMoveItem(sourceKeys, targetKey, position)` is supplied. Ctrl/⌘+X marks the selection (or the focused row if it is outside the selection); navigate normally, then Ctrl/⌘+V moves **inside** the focused target, Ctrl/⌘+Shift+V moves **before**, and Ctrl/⌘+Alt+Shift+V moves **after**. Escape cancels the pending move. `data-cut` identifies marked rows. A polite `tree-announcer` live region announces marking, cancellation, rejected targets, and dispatched moves. When `onMoveItem` is provided, the default Tree also renders a move action bar beside the tree root, using Onyx Buttons. For a single-pointer alternative to dragging (WCAG 2.5.7), click a source row, click **Cut**, click a target row, then click **Paste before**, **Paste inside**, or **Paste after**. The bar names the current target; **Cancel move** clears the pending cut. These actions use the same selection, acceptance rules and announcements as keyboard moves. Disabled/rejected targets cannot dispatch a move; a rejected paste retains the cut so another target can be chosen.
+```tsx
+<Tree
+  aria-label="Explorer"
+  items={rootEntries}
+  getKey={(e) => e.path}
+  getText={(e) => e.name}
+  getChildren={(e) => e.children}                 // undefined = not loaded yet
+  isExpandable={(e) => e.kind === 'dir'}
+  loadChildren={(e) => fs.list(e.path)}           // fills in missing children
+  expandedKeys={expanded}
+  onExpandedChange={setExpanded}
+  selectionMode="multiple"
+  selectedKeys={selected}
+  onSelectionChange={setSelected}
+  onRename={(e, name) => fs.rename(e.path, name)}
+  renderRename={(e, { commit, cancel }) => (
+    <Input autoFocus defaultValue={e.name}
+      onKeyDown={(ev) => { if (ev.key === 'Enter') commit(ev.currentTarget.value); if (ev.key === 'Escape') cancel(); }} />
+  )}
+  draggable
+  onMoveItem={(sources, target, position) => fs.move(sources, target, position)}
+  canMove={(sources, target) => target.item.kind === 'dir' || target.position !== 'inside'}
+  virtualized
+  renderItem={(e, { expanded }) => (
+    <Inline gap="1"><Icon name={e.kind === 'dir' ? (expanded ? 'folder-opened' : 'folder') : 'file'} /><Truncate>{e.name}</Truncate></Inline>
+  )}
+/>
+```
 
-`canMove(sourceKeys, target)` and `canDrop(target,event)` both gate keyboard, action-bar, headless and internal-DnD moves. Self/descendant targets and disabled rows are rejected automatically. Item-based `draggable` predicates also constrain sources. The existing `canDrop` signature stays compatible: actual drag events are passed through unchanged; non-drag moves receive a synthetic drop event (`isTrusted: false`) with `dataTransfer.getData("text/plain")` containing the first source key, matching internal DnD. There is no pointer geometry or DOM event target on a non-drag move. Use `canMove` for source-key/model rules rather than pointer coordinates. External drops also pass through `canDrop`. If `onDropItem` is supplied it owns pointer mutation; otherwise internal DnD dispatches `onMoveItem`. Headless consumers can call `cutItem(sourceKey)` (marks the selection when it includes that key), `pasteItem(targetKey,position)` and `cancelMove()` from any custom pointer controls, without rendering Button or Menu. `cutItem` returns whether sources were marked; `pasteItem` and `moveItem(sourceKeys,targetKey,position)` return whether a move was dispatched; mount a polite live region using the returned `announcement.text` and `announcement.revision`. Moves are requests: the consumer updates `items` and should report asynchronous mutation failures itself.
+## API
 
-The root uses **aria-activedescendant**. Up/Down/Home/End, buffered typeahead and multi-selection match Listbox. Right expands or focuses a child; Left collapses or focuses the parent; * expands sibling branches; Enter selects and toggles an expandable item. Each flattened row publishes `aria-level`, `aria-posinset`, `aria-setsize`, `aria-expanded` and loading `aria-busy`. `virtualized`, `rowHeight`, `overscan`, and `onRenderedRangeChange(count,total)` support large visible lists. The active item stays mounted. Custom `rowHeight` also sets `--onyx-row-height` on the viewport so actual row height/min-height match virtual offsets. With `asChild`, pass the custom root as `children`.
+Every [Listbox](listbox.md) option (`items`, `getKey`, `getText`, `isDisabled`, `selectionMode`, `selectedKeys`, `focusedKey`, …), plus:
 
-State: `data-selected`, `data-focused`, `data-disabled`, `data-depth-guide`, `data-renaming`, `data-state="loading|expanded|collapsed"`, `data-drop-target`, `data-drop-position`; root `data-orientation="vertical"`.
+**Structure and loading**
 
-Tokens: Listbox tokens plus `--onyx-tree-indent`, `--onyx-space-{1,3,4}`, `--onyx-border-subtle`, `--onyx-tone-info-bg`, and `--onyx-text-md`. `--onyx-tree-depth` is per-row geometry state.
+| Prop | Type | Notes |
+|---|---|---|
+| `getChildren` | `(item) => readonly T[] \| undefined` | **Required.** Synchronous. `undefined` means not loaded yet. |
+| `isExpandable` | `(item) => boolean` | Shows a twisty even before the children load. |
+| `expandedKeys` / `defaultExpandedKeys` / `onExpandedChange` | `CollectionKey[]` | Branches expanded on mount load automatically. |
+| `loadChildren` | `(item) => Promise<readonly T[]>` | Called when a branch without children is expanded. |
+| `onLoadError` | `(error, item) => void` | |
 
-Headless: `useTree<T>(options)` returns the Listbox model plus flattened `rows`, expansion setters/`expand(row,open)`, loading/error/rename state, `commitRename`, drop state/`getDragProps(row)`, `moveItem`, `cutItem`, `pasteItem`, `cancelMove`, `cutKeys`, `announcement`, and tree-aware root/item bindings. `flattenTree(options,expandedKeys)` is a pure visible-row traversal with cycle protection. Exported variants: `treeVariants`, `treeRowVariants`.
+**Rename**
 
-For an existing application-owned flat tree, `resolveTreeNavigationAction(key, {rows, focusedKey, shiftKey})` and `findTreeTypeAheadMatch(rows, focusedKey, prefix)` provide pure navigation without adopting Tree markup or state. Each visible preorder row is a `TreeNavigationItem<T>` with `{key, depth, branch, expanded, label, data, disabled?}`. The helpers contain no domain services or filesystem model. They return `{type: 'focus', key, item: data, extend}`, `{type: 'toggle', key, item: data}`, `{type: 'activate', key, item: data}`, or null; the caller performs selection, expansion or activation.
+| Prop | Type | Notes |
+|---|---|---|
+| `onRename` | `(item, name) => void` | Turns on F2 to rename. |
+| `renderRename` | `(item, { commit, cancel }) => ReactNode` | **Your** inline editor. It owns its input, validation, Enter and Escape. |
+| `renamingKey` / `defaultRenamingKey` / `onRenamingKeyChange` | `CollectionKey \| null` | Start a rename from your code, for example from a context menu. |
 
-Up/Down clamp at the visible boundaries; Home/End jump; Right opens a branch or enters its first eligible immediate child; Left closes an open branch or focuses its parent. Parent focus does not extend a range; other focus actions carry `shiftKey` as `extend`. With no eligible focused row, navigation lands on the first row (last for End). Disabled rows cannot receive navigation or activation. The typeahead helper compares labels case-insensitively, wraps, cycles single/repeated characters after the current row, and includes it for longer prefixes. The caller owns buffering and timeout policy. `useTree` uses the same helper for branch/parent navigation; its selection and buffered typeahead continue to follow the Listbox model.
+**Moving items** (`position` is `'before' | 'inside' | 'after'`)
 
-[APG tree view pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/).
+| Prop | Type | Notes |
+|---|---|---|
+| `onMoveItem` | `(sourceKeys, targetKey, position) => void` | Turns on keyboard cut/paste, the move action bar, and internal drag-and-drop moves. It is a **request**: update `items` yourself. |
+| `canMove` | `(sourceKeys, target) => boolean` | Your model rules. Dropping onto itself, onto a descendant, or onto a disabled row is already rejected. |
+| `draggable` | `boolean \| (item) => boolean` | Which rows can be dragged. |
+| `canDrop` | `(target, event) => boolean` | Checks every move, including keyboard moves, which receive a synthetic event. Use `canMove` for model rules. |
+| `onDropItem` | `(target, event) => void` | Handles pointer drops yourself (including external files). When set, internal drops do **not** call `onMoveItem`. |
+| `onDragItem` | `(item, event) => void` | Customize the drag payload. The default is the key as `text/plain`. |
+| `dropTarget` / `defaultDropTarget` / `onDropTargetChange` | `TreeDropTarget \| null` | Show the drop indicator from outside the tree. |
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+**Rendering**
+
+| Prop | Type | Notes |
+|---|---|---|
+| `renderItem` | `(item, { selected, focused, expanded, loading, depth }) => ReactNode` | The content of each row. Indentation and the twisty are added for you. |
+| `virtualized`, `rowHeight`, `overscan` | | For large trees. |
+| `onRenderedRangeChange` | `(count, total) => void` | |
+| `aria-label` | `string` | **Required.** |
+| `asChild` | `boolean` | Pass a custom root as `children`. |
+
+**Headless:** `useTree(options)` returns the Listbox model plus `rows`, `expand(row, open)`, loading, error and rename state, `commitRename`, `getDragProps(row)`, `moveItem`, `cutItem`, `pasteItem`, `cancelMove`, `cutKeys`, `announcement` (render it in a polite live region) and the root and item bindings. `flattenTree(options, expandedKeys)` lists the visible rows, with protection against cycles.
+
+**Pure navigation helpers** (for an app that already owns a flat tree): `resolveTreeNavigationAction(key, { rows, focusedKey, shiftKey })` returns `{ type: 'focus' | 'toggle' | 'activate', key, item, extend? }` or `null`. `findTreeTypeAheadMatch(rows, focusedKey, prefix)` finds the next typeahead match. Each row is a `TreeNavigationItem` `{ key, depth, branch, expanded, label, data, disabled? }`.
+
+Also exported: `treeVariants`. Rows use `TreeRow` and `treeRowVariants` from [Panel](panel.md).
+
+## Behavior contract
+
+**Onyx owns:** the flattened visible rows, the tree ARIA (`aria-level`, `aria-posinset`, `aria-setsize`, `aria-expanded`, `aria-busy` while loading), keyboard navigation and typeahead, selection, lazy loading with retry, the rename slot and returning focus after it, drop indicators computed from the pointer position, cut/paste moves with live announcements, and the move action bar.
+
+**You supply:** the data and keys, the row content, the rename editor and its validation, and **performing** renames and moves.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ↑ / ↓ / Home / End / typing | As in [Listbox](listbox.md) |
+| → | Expand, or move to the first child |
+| ← | Collapse, or move to the parent |
+| `*` | Expand all siblings |
+| Enter | Select, and toggle a branch |
+| F2 | Rename (with `onRename`) |
+| Ctrl/⌘+X | Mark the selection (or the focused row) to move |
+| Ctrl/⌘+V | Move **inside** the focused row |
+| Ctrl/⌘+Shift+V | Move **before** it |
+| Ctrl/⌘+Alt+Shift+V | Move **after** it |
+| Escape | Cancel a pending move |
+
+**Moving with a pointer only (WCAG 2.5.7):** when `onMoveItem` is set, a move action bar appears next to the tree. Click a row, then **Cut**, click the target, then **Paste before**, **Paste inside** or **Paste after**. **Cancel move** clears it.
+
+## Anatomy
+
+`tree`, `tree-content`, `tree-virtual-row`, `tree-item` (`data-selected`, `data-focused`, `data-disabled`, `data-depth-guide`, `data-renaming`, `data-cut`, `data-state="loading|expanded|collapsed"`, `data-drop-target`, `data-drop-position`), `tree-twisty`, `tree-rename`, `tree-announcer`, `tree-move-actions`, `tree-move-target`.
+
+## Tokens read
+
+[Listbox](listbox.md) tokens plus `--onyx-tree-indent`, `--onyx-space-{1,3,4}`, `--onyx-border-subtle`, `--onyx-tone-info-bg`, `--onyx-text-md`. `--onyx-tree-depth` is set on each row.
+
+## Gotchas
+
+- **Keys must be unique across the whole tree,** not just among siblings.
+- **`loadChildren` should return the same children each time for a given item.** If the whole collection changes (for example a different workspace), remount the Tree with a new `key`.
+- **Rejected pastes keep the cut**, so the user can pick another target.
+- **Moves don't happen until you update `items`.** Report failed asynchronous moves yourself, for example with a [Toast](toast.md).

@@ -1,21 +1,72 @@
 # Carousel
 
-Use when horizontally paging a small set of related slides. Not for autoplay banners, a virtualized collection or tabs.
+A horizontally scrolling row of slides that snap into place, with previous and next buttons and position dots. The next slide peeks in at the edge. There is no autoplay.
 
-Anatomy: `carousel`, `carousel-track`, `carousel-slide`, `carousel-previous`, `carousel-next`, `carousel-dots`, `carousel-dot`.
+**Use when:** a small set of related items (screenshots, onboarding steps, featured templates) can be browsed one at a time.
+**Not for:** auto-rotating banners, large collections (use [Grid](layout.md) or a [VirtualList](virtual-list.md)), or switching panels (use [Tabs](tabs.md)).
 
-Compose `Carousel` → `CarouselContent` → `CarouselItem` with `CarouselPrevious`, `CarouselNext`, `CarouselDots` as siblings. Root props: `index` / `defaultIndex` (0), `onIndexChange`, `asChild`, and HTML props. Root is a named region with `aria-roledescription="carousel"`; provide `aria-label`. Each item is a group with `aria-roledescription="slide"`; give it a descriptive label or position label (e.g. "2 of 3"). Slides default to 70% width, matching the mockup's peek at the next slide; change that via `className`/style. The track uses native horizontal scroll with mandatory scroll snap.
+## Import
 
-Previous/next stop at bounds. Dot buttons expose position labels and current state. Left/Right and Home/End navigate from the region/track/controls, while inputs retain their own editing keys. Scroll position is reconciled after scrolling settles. Programmatic scroll honors `prefers-reduced-motion` (instant instead of smooth). There is no autoplay, so pause/resume controls are unnecessary.
+```tsx
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots, useCarousel } from '@onyx/ui/carousel';
+```
 
-State: root `data-orientation="horizontal"`; dots `data-state="active|idle"`, `aria-current`; controls native disabled state.
+## Example
 
-Tokens: `--onyx-space-{1-5,2,4,10}`, `--onyx-radius-{md,full}`, `--onyx-border-strong`, `--onyx-control-{height-sm,focus-ring,secondary-bg,secondary-fg}`, `--onyx-button-radius`, `--onyx-text-{foreground,sm}`, focus tokens.
+```tsx
+<Carousel aria-label="Screenshots" index={index} onIndexChange={setIndex}>
+  <CarouselContent>
+    {shots.map((s, i) => (
+      <CarouselItem key={s.id} aria-label={`${i + 1} of ${shots.length}`}><img src={s.src} alt={s.alt} /></CarouselItem>
+    ))}
+  </CarouselContent>
+  <Inline justify="between">
+    <CarouselPrevious />
+    <CarouselDots />
+    <CarouselNext />
+  </Inline>
+</Carousel>
+```
 
-Headless: `useCarousel({index,defaultIndex,onIndexChange,count})` returns `trackRef`, index/count, `goTo`, previous/next, bounds and keyboard/scroll handlers. Direct children of the attached track are the slide elements. `carouselVariants` is exported.
+## API
 
-[APG carousel pattern](https://www.w3.org/WAI/ARIA/apg/patterns/carousel/).
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Carousel` | `index` / `defaultIndex` / `onIndexChange` | `number` | `0` | |
+| | `aria-label` | `string` | — | **Required.** The root is a region with `aria-roledescription="carousel"`. |
+| | `asChild` | `boolean` | `false` | |
+| `CarouselContent` | | | | The scroll track. Its direct children are the slides. |
+| `CarouselItem` | `aria-label` | `string` | — | Label each slide, for example "2 of 5". Slides are 70% wide by default. |
+| `CarouselPrevious`, `CarouselNext`, `CarouselDots` | button props | | | Disabled at the first and last slide. Dots are labeled with their position. |
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+**`useCarousel({ index, defaultIndex, onIndexChange, count })`** returns `trackRef`, the index and count, `goTo`, previous and next, the bounds, and the keyboard and scroll handlers.
 
-Controlled navigation scrolls only after the parent accepts the new index; a rejected settled user scroll returns to the controlled index. Dots keep their visible geometry with at least 24×24 CSS-pixel pseudo-element targets and spacing that prevents adjacent target overlap.
+Also exported: `carouselVariants`.
+
+## Behavior contract
+
+**Onyx owns:** native scrolling with snap points, keeping the index in sync once scrolling settles, keyboard navigation, scrolling instantly instead of smoothly under reduced motion, button and dot state, and dot targets of at least 24px.
+
+**You supply:** the slides, their labels, and the index if it is controlled.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ← / → | Previous / next slide |
+| Home / End | First / last slide |
+
+Text fields inside slides keep their own editing keys.
+
+## Anatomy
+
+`carousel` (`data-orientation="horizontal"`), `carousel-track`, `carousel-slide`, `carousel-previous`, `carousel-next`, `carousel-dots`, `carousel-dot` (`data-state="active|idle"`, `aria-current`).
+
+## Tokens read
+
+`--onyx-space-{1-5,2,4,10}`, `--onyx-radius-{md,full}`, `--onyx-border-strong`, `--onyx-control-{height-sm,focus-ring,secondary-bg,secondary-fg}`, `--onyx-button-radius`, `--onyx-text-{foreground,sm}`, focus tokens.
+
+## Gotchas
+
+- **A controlled index can veto scrolling.** If the user swipes and your `onIndexChange` doesn't accept the change, the carousel scrolls back to your index.
+- **Change slide width with `className` or `style`** on `CarouselItem`.

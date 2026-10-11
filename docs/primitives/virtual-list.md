@@ -1,19 +1,71 @@
 # VirtualList
 
-Use when a scroll viewport should mount only visible rows from a large flat collection. Not for tree expansion or selection logic.
+A scrolling viewport that renders only the rows currently visible, so lists of thousands of items stay fast. Rows can have a fixed or measured height. Built on TanStack Virtual.
 
-Anatomy: `virtual-list`, `virtual-list-content`, `virtual-list-item`.
+**Use when:** you render a long flat list in its own scroll area: logs, search results, a large file list.
+**Not for:** a list inside a scroll container you already have, or one that sits below a header in the same scroller (use [`useFixedVirtualList`](fixed-virtual-list.md)), or for selection and keyboard behavior (VirtualList has none; use [Listbox](listbox.md) or [Tree](tree.md), which can virtualize themselves).
 
-`VirtualList` takes `count`, `children(index)`, `getKey(index)`, `rowHeight`, `measured`, `overscan` (default 4), `activeIndex`, and `enabled`. Supply a constrained CSS height to create a viewport. Fixed rows use `rowHeight` (defaults to the computed density row token). For variable content, `measured` attaches TanStack's `measureElement` to wrappers carrying `data-index`; `rowHeight` is then an estimate. With `asChild`, pass the custom root through `viewport` because `children` is the row render function. Keep row keys stable when collections reorder.
+## Import
 
-`activeIndex` scrolls into view and is included in the mounted range, suitable for aria-activedescendant keyboard models. VirtualList is semantically neutral; the caller supplies list/grid/tree ARIA.
+```tsx
+import { VirtualList, useVirtualList, calculateMeasuredVirtualWindow } from '@onyx/ui/virtual-list';
+```
 
-Tokens: `--onyx-row-height` for the density-aware height estimate. Position/height styles represent measured runtime geometry rather than design constants.
+## Example
 
-Headless: `useVirtualList(options)` returns `ref` (attach to the scroll element), `virtualizer`, `virtualItems`, `totalSize`, `measureElement` and `scrollIntoView(index)`. Render an absolute-positioned content spacer of `totalSize` using the provided item starts. `virtualListVariants` is exported.
+```tsx
+<VirtualList
+  style={{ height: 400 }}
+  count={lines.length}
+  getKey={(i) => lines[i].id}
+  rowHeight={22}
+  role="log"
+  aria-label="Build output"
+>
+  {(i) => <div className="log-line">{lines[i].text}</div>}
+</VirtualList>
 
-[TanStack Virtualizer API](https://tanstack.com/virtual/latest/docs/api/virtualizer).
+{/* variable heights */}
+<VirtualList style={{ height: '100%' }} count={messages.length} measured rowHeight={60}>
+  {(i) => <Message message={messages[i]} />}
+</VirtualList>
+```
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+## API
 
-`calculateMeasuredVirtualWindow(heights, scrollTop, viewportHeight, overscan = 12)` returns contiguous `start` / `end` indices and `before` / `after` spacer sizes when a host already tracks variable row heights. Empty and out-of-range viewports remain bounded.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `count` | `number` | — | **Required.** |
+| `children` | `(index: number) => ReactNode` | — | **Required.** Renders one row. |
+| `getKey` | `(index) => Key` | the index | Use stable ids when the collection reorders. |
+| `rowHeight` | `number` | `--onyx-row-height` | Exact for fixed rows, an estimate when `measured`. |
+| `measured` | `boolean` | `false` | Measures each row's real height. |
+| `overscan` | `number` | `4` | Extra rows rendered above and below the visible ones. |
+| `activeIndex` | `number` | — | Kept rendered and scrolled into view, for `aria-activedescendant` patterns. |
+| `enabled` | `boolean` | `true` | |
+| `asChild` + `viewport` | | | With `asChild`, pass the custom root through `viewport` (since `children` is the row function). |
+
+**`useVirtualList(options)`** returns `{ ref, virtualizer, virtualItems, totalSize, measureElement, scrollIntoView(index) }`. Attach `ref` to the scroll element and position the rows yourself.
+
+**`calculateMeasuredVirtualWindow(heights, scrollTop, viewportHeight, overscan = 12)`** returns `{ start, end, before, after }`, for hosts that already track row heights.
+
+Also exported: `virtualListVariants`.
+
+## Behavior contract
+
+**Onyx owns:** which rows are rendered, positioning, measuring, and keeping the active row mounted.
+
+**You supply:** a viewport with a constrained height, the row content, and **all ARIA semantics** (list, grid, log, …). VirtualList adds none.
+
+## Anatomy
+
+`virtual-list`, `virtual-list-content`, `virtual-list-item` (`data-index`).
+
+## Tokens read
+
+`--onyx-row-height` (the default height estimate).
+
+## Gotchas
+
+- **Without a height, nothing scrolls.** The viewport needs an explicit or flex-constrained height, otherwise it grows to fit every row.
+- **Rows must not change height unless you set `measured`.** Otherwise the positions drift.

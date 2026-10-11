@@ -1,33 +1,71 @@
 # Alert Dialog
 
-Use when: an explicit irreversible or destructive decision. Not for: ordinary informational content or anchored controls.
+A modal that interrupts the user to confirm a destructive or irreversible action. It cannot be dismissed by clicking outside, and Cancel has focus when it opens.
 
-## Public API
+**Use when:** confirming something that cannot be undone or is costly to undo: delete, discard changes, revoke access.
+**Not for:** a form or a non-destructive task (use [Dialog](dialog.md)), a quick keyboard-driven question with several answers (use [Prompt](prompt.md)), or information that needs no decision (use [Alert](alert.md) or [Toast](toast.md)).
 
-`alertDialogVariants`, `AlertDialog`, `AlertDialogPortal`, `AlertDialogTrigger`, `AlertDialogOverlay`, `AlertDialogContent`, `AlertDialogIcon`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogAction`, `AlertDialogCancel`, `AlertDialogHeader`, `AlertDialogBody`, `AlertDialogFooter`.
+## Import
+
+```tsx
+import {
+  AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogIcon,
+  AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction
+} from '@onyx/ui/alert-dialog';
+```
+
+## Example
+
+```tsx
+<AlertDialog open={confirming} onOpenChange={setConfirming}>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogIcon />
+      <AlertDialogTitle>Delete “notes.md”?</AlertDialogTitle>
+      <AlertDialogDescription>This permanently removes the file from every device.</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction onClick={deleteFile}>Delete</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## API
+
+Built on [Radix Alert Dialog](https://www.radix-ui.com/primitives/docs/components/alert-dialog).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `AlertDialog` | `open` / `defaultOpen` / `onOpenChange` | Radix | — | |
+| `AlertDialogContent` | `tone` | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'danger'` | Changes the icon and its color. |
+| | `container` | `HTMLElement \| null` | `document.body` | Portal target. |
+| | `onOpenAutoFocus` | Radix | — | Prevent it and focus another *safe* element if Cancel is not the right default. |
+| `AlertDialogIcon` | `tone` | as above | the Content's `tone` | A warning icon for `danger` and `warning`, otherwise an info icon. Pass children for a custom icon. |
+| `AlertDialogTitle`, `AlertDialogDescription` | Radix | | — | **Both required.** |
+| `AlertDialogCancel` | Radix | | — | The safe choice. Secondary Button styling, and focused on open. |
+| `AlertDialogAction` | Radix | | — | Destructive Button styling. Closes the dialog after `onClick`. |
+| `AlertDialogHeader` / `Body` / `Footer`, `AlertDialogTrigger` | `asChild` | | — | |
+
+Also exported: `alertDialogVariants`, `AlertDialogPortal`, `AlertDialogOverlay`.
+
+## Behavior contract
+
+**Onyx owns:** the overlay, focus trap, focusing Cancel first, Escape to cancel, **no** outside-click dismissal, returning focus on close, and moving nested floating content into the dialog.
+
+**You supply:** a title that names the action and the object ("Delete notes.md?"), a description of the consequence, button labels that are verbs, and the action itself.
 
 ## Anatomy
 
-`alert-dialog-action`, `alert-dialog-body`, `alert-dialog-cancel`, `alert-dialog-content`, `alert-dialog-description`, `alert-dialog-footer`, `alert-dialog-header`, `alert-dialog-icon`, `alert-dialog-overlay`, `alert-dialog-title`, `alert-dialog-trigger`.
-
-## Props and state
-
-Radix open/defaultOpen/onOpenChange; Content tone, container and onOpenAutoFocus; Icon tone; Cancel is the safe action; Action defaults to destructive Button styling. Always provide Title and Description.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`alert-dialog-trigger`, `alert-dialog-overlay`, `alert-dialog-content` (`data-tone`, `data-state`), `alert-dialog-header`, `alert-dialog-icon` (`data-tone`), `alert-dialog-title`, `alert-dialog-description`, `alert-dialog-body`, `alert-dialog-footer`, `alert-dialog-cancel`, `alert-dialog-action`.
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-surface-dialog`, `--onyx-surface-overlay`, `--onyx-shadow-lg`, `--onyx-z-overlay`, `--onyx-z-dialog`, `--onyx-tone-*-{bg,fg}`, `Button tokens for action/cancel`.
+`--onyx-surface-dialog`, `--onyx-surface-overlay`, `--onyx-shadow-lg`, `--onyx-z-{overlay,dialog}`, `--onyx-tone-*-{bg,fg}`, Button tokens, plus spacing, text, radius and motion tokens.
 
-## Headless behavior
+## Gotchas
 
-Radix traps focus, initially focuses Cancel, restores trigger focus, closes on Escape and prevents outside dismissal. Supply an explicit onOpenAutoFocus for a different safe target.
-
-Icon inherits Content's tone unless explicitly overridden. `tone` changes the icon; Action retains its destructive default. Cancel remains the initial focus target. `container` directs the portal to a specific document/container.
-
-## Nested floating content
-
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
-
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+- **`tone` doesn't change the Action button.** It stays destructive. For a non-destructive confirmation, use a [Dialog](dialog.md) instead.
+- **Use verbs on the buttons.** "Delete" and "Cancel" are clearer than "OK" and "Cancel".
+- **Async actions:** `AlertDialogAction` closes the dialog right away. To keep it open while work runs, call `event.preventDefault()` in `onClick`, show `loading`, and close it yourself when the work finishes.

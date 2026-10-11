@@ -1,31 +1,58 @@
 # Truncate
 
-Use when: long names or paths in constrained rows. Not for: wrapping prose or essential hidden instructions.
+Shortens text that doesn't fit, with an ellipsis at the end or in the middle (`very-long-fi…name.tsx`), and shows the full text in a tooltip, but only when it is actually cut off.
 
-## Public API
+**Use when:** file names, paths, titles or IDs sit in a fixed-width row such as a tree, list, tab or table cell.
+**Not for:** paragraphs that should wrap (use [Text](text.md)), or hiding instructions the user needs.
 
-`truncateVariants`, `useTruncate`, `TruncateProps`, `Truncate`.
+## Import
+
+```tsx
+import { Truncate, useTruncate } from '@onyx/ui/truncate';
+```
+
+## Example
+
+```tsx
+<Truncate>{file.name}</Truncate>
+<Truncate mode="middle" endCharacters={10} text={file.path} />
+<Truncate asChild text={tab.title}><span className="tab-label" /></Truncate>
+<Truncate tooltipProps={{ side: 'right', delayDuration: 200 }}>{branch}</Truncate>
+```
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `children` | `string` | — | The text. Alternatively, pass `text`. |
+| `text` | `string` | — | **Required with `asChild`.** |
+| `mode` | `'end' \| 'middle'` | `'end'` | `middle` keeps the last `endCharacters` characters visible, such as a file extension. |
+| `endCharacters` | `number` | `12` | Used only in `middle` mode. |
+| `tooltipProps` | Tooltip props except `content` and `children` | — | Use `side`, `delayDuration` or `contentProps`. |
+| `asChild` | `boolean` | `false` | Pass exactly one element as the child, plus `text`. |
+| `tabIndex` | `number` | `0` while overflowing | Overflowing text is focusable, so keyboard users can open the tooltip. |
+| other | `<span>` props | — | |
+
+**`useTruncate(text)`** returns `{ ref, measureRef, overflowing }`. Attach `ref` to the constrained element and `measureRef` to a hidden copy of the full text that has no width limit.
+
+Also exported: `truncateVariants`.
+
+## Behavior contract
+
+**Onyx owns:** measuring overflow (with a ResizeObserver, re-measuring once fonts load), the ellipsis, showing the tooltip only while text overflows, and keeping the full text as the accessible name.
+
+**You supply:** the text, and a parent with a constrained width.
 
 ## Anatomy
 
-`truncate`, `truncate-end`, `truncate-measure`, `truncate-start`, `truncate-text`.
-
-## Props and state
-
-text or string children; mode="end|middle", endCharacters (default 12), tooltipProps; asChild requires one element plus text. Default tabIndex becomes 0 only when overflowing.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`truncate` (`data-mode="end|middle"`, `data-state="idle|overflowing"`), `truncate-text` or `truncate-start` + `truncate-end`, `truncate-measure` (hidden and `aria-hidden`).
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-tooltip-radius`, `--onyx-surface-tooltip`, `--onyx-control-button-fg`, `--onyx-z-tooltip`, `--onyx-shadow-sm`.
+Tooltip tokens (`--onyx-tooltip-radius`, `--onyx-surface-tooltip`, `--onyx-z-tooltip`, …).
 
-## Headless behavior
+## Gotchas
 
-useTruncate(text) returns ref, measureRef and overflowing. Attach both refs and measure the full text without width constraints. ResizeObserver observes text and available width; font readiness remeasures. Tooltip is rendered only when full text exceeds available width.
-
-## References
-
-[WAI-ARIA APG combobox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/), [Radix Tooltip](https://www.radix-ui.com/primitives/docs/components/tooltip), [Floating UI autoUpdate](https://floating-ui.com/docs/autoupdate).
-
-`data-mode="end|middle"` controls the visual mode; `data-state="idle|overflowing"` reports measurement. Middle mode retains the last `endCharacters` characters while the prefix ellipsizes. `asChild` requires one element and an explicit `text` prop. The measurement part is visually hidden and `aria-hidden`; the visible text retains its full accessible name. Truncate supplies its own TooltipProvider for standalone use.
+- **The parent must constrain the width.** Inside flex rows, give the Truncate (or its wrapper) `min-w-0`, or it never overflows and so never truncates.
+- **No TooltipProvider is needed.** Truncate includes its own.
+- **It takes plain text only.** Rich children are not supported. Highlight matches next to it instead.

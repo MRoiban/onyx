@@ -1,21 +1,62 @@
 # OverlayScrollbar
 
-Attach an overlay scrollbar to an existing native vertical viewport when its DOM structure or virtualization prevents replacing it with `ScrollArea`.
+Adds Onyx's overlay scrollbar to a native vertical scroll element you already render, for cases where you can't swap that element for a ScrollArea (a virtualized list, a third-party editor).
+
+**Use when:** you own a scrolling `<div>` and want the theme's scrollbar on it without restructuring.
+**Not for:** new scroll regions (use [ScrollArea](scroll-area.md), which includes this), or horizontal scrolling (it is vertical only).
+
+## Import
 
 ```tsx
-const scrollElementRef = React.useRef<HTMLDivElement>(null);
-return <div style={{ position: 'relative', height: 240 }}>
-  <div ref={scrollElementRef} style={{ height: '100%', overflow: 'auto', scrollbarWidth: 'none' }}>
-    {content}
-  </div>
-  <OverlayScrollbar scrollElementRef={scrollElementRef} aria-label="Files scroll position" />
-</div>;
+import { OverlayScrollbar, calculateOverlayScrollbarMetrics } from '@onyx/ui/overlay-scrollbar';
 ```
 
-The parent establishes positioning and matches the viewport height. The application owns native scrollbar suppression, content, and the viewport ref. `OverlayScrollbar` forwards its root ref and DOM attributes, merges `className`, and accepts an `aria-label` for its focusable thumb. Slots are `overlay-scrollbar` and `overlay-scrollbar-thumb`; the root exposes `data-visible` and `data-dragging`.
+## Example
 
-The thumb appears on parent hover, keyboard focus, and pointer drag. Pointer capture supports dragging outside the thumb and clears on release, cancellation, lost capture, and unmount. Arrow keys scroll by 40 UI pixels; Page Up/Down scroll by a viewport; Home/End reach the boundaries. The ARIA value follows native scrolling. An existing viewport ID is reused; otherwise a temporary ID connects `aria-controls` and is removed on unmount.
+```tsx
+const scrollRef = React.useRef<HTMLDivElement>(null);
 
-Scroll, viewport/content resize, and subtree mutations refresh measurements. Direct content children are observed again when replaced, and all listeners and observers are cleaned up. The minimum thumb is 24 UI pixels, clamped to the viewport height. `calculateOverlayScrollbarMetrics({ clientHeight, scrollHeight, scrollTop, minThumbHeight? })` exports the same geometry for headless use, with an unscaled default minimum of 24 pixels.
+<div style={{ position: 'relative', height: 240 }}>
+  <div ref={scrollRef} style={{ height: '100%', overflow: 'auto', scrollbarWidth: 'none' }}>
+    {content}
+  </div>
+  <OverlayScrollbar scrollElementRef={scrollRef} aria-label="Files scroll position" />
+</div>
+```
 
-Styling uses `--onyx-shell-scrollbar-thumb`, `--onyx-shell-scrollbar-thumb-hover`, `--onyx-shell-scrollbar-thumb-active`, `--onyx-scale-ui`, `--onyx-radius-full`, `--onyx-control-focus-ring`, `--onyx-focus-ring-width`, `--onyx-duration-fast`, and `--onyx-ease-standard`. Reduced motion disables the opacity transition. Application-specific colors and units stay in the theme adapter.
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `scrollElementRef` | `RefObject<HTMLElement>` | — | **Required.** The element that scrolls. |
+| `aria-label` | `string` | — | Labels the focusable thumb. |
+| other | `<div>` props | — | `className` and `ref` apply to the root. |
+
+**`calculateOverlayScrollbarMetrics({ clientHeight, scrollHeight, scrollTop, minThumbHeight? = 24 })`** returns `{ visible, thumbHeight, thumbOffset }`.
+
+## Behavior contract
+
+**Onyx owns:** the thumb's size and position, keeping it updated on scroll, resize and content changes, showing it on parent hover, focus or drag, dragging with pointer capture, keyboard scrolling, ARIA values tied to the native scroll position, and `aria-controls` (borrowing the viewport's id, or adding a temporary one).
+
+**You supply:** a positioned parent the same height as the viewport, the scroll element itself, and **hiding the native scrollbar** (`scrollbar-width: none`).
+
+## Keyboard (thumb focused)
+
+| Key | Result |
+|---|---|
+| ↑ / ↓ | Scroll 40 UI pixels |
+| PageUp / PageDown | Scroll one viewport |
+| Home / End | Top / bottom |
+
+## Anatomy
+
+`overlay-scrollbar` (`data-visible`, `data-dragging`), `overlay-scrollbar-thumb`.
+
+## Tokens read
+
+`--onyx-shell-scrollbar-thumb{,-hover,-active}`, `--onyx-scale-ui`, `--onyx-radius-full`, `--onyx-control-focus-ring`, `--onyx-focus-ring-width`, `--onyx-duration-fast`, `--onyx-ease-standard`.
+
+## Gotchas
+
+- **The parent must be `position: relative`.** The scrollbar is absolutely positioned against it.
+- **The thumb is at least 24 UI pixels tall**, but never taller than the viewport.

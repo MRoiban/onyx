@@ -1,21 +1,61 @@
 # Breadcrumb
 
-Use when: showing hierarchy and the current page. Not for: primary site navigation.
+The path to the current page or item (`Workspace / src / components / button.tsx`). Long paths collapse their middle into a "…" menu.
+
+**Use when:** content is nested (folders, settings sections, documents) and users need to see where they are and go back up.
+**Not for:** main site navigation (use [Navigation Menu](navigation-menu.md)), steps in a process, or switching peer views (use [Tabs](tabs.md) or [SectionSelect](section-select.md)).
+
+## Import
+
+```tsx
+import { Breadcrumb, useBreadcrumb } from '@onyx/ui/breadcrumb';
+```
+
+## Example
+
+```tsx
+<Breadcrumb
+  maxItems={4}
+  items={[
+    { label: 'Workspace', href: '/' },
+    { label: 'src', onClick: () => openFolder('src') },
+    { label: 'components', onClick: () => openFolder('src/components') },
+    { label: 'ui', onClick: () => openFolder('src/components/ui') },
+    { label: 'button.tsx' }                      // last item = current page
+  ]}
+/>
+```
+
+You can also build it from the exported parts: `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbSeparator` and `BreadcrumbOverflow`.
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `items` | `{ label: ReactNode; href?: string; onClick?: () => void }[]` | — | The last item is the current page. |
+| `maxItems` | `number` | show all | The minimum is 3. Middle items move into the overflow menu. |
+| `onOverflowClick` | `(hidden) => void` | — | Notifies you that the overflow menu was opened. The menu still opens. |
+| `asChild` | `boolean` | `false` | |
+
+**`useBreadcrumb(items, maxItems)`** returns `{ visible, hidden }`.
+
+Also exported: a `*Variants` function for each part.
+
+## Behavior contract
+
+**Onyx owns:** `<nav aria-label="Breadcrumb">` with an ordered list, `aria-current="page"` on the last item, decorative separators, and the overflow [Menu](menu.md) with real links and keyboard support.
+
+**You supply:** the path and the navigation.
 
 ## Anatomy
 
-`breadcrumb`, `breadcrumb-list`, `breadcrumb-item`, `breadcrumb-link`, `breadcrumb-separator`, `breadcrumb-overflow`.
-
-## Props and data attributes
-
-items [{label,href,onClick}], maxItems (minimum 3), onOverflowClick; or compose the exported parts. nav has Breadcrumb label, ol/li, current item aria-current=page. Overflow uses W1 Menu with native links and keyboard handling; callback is notification, not a replacement for the menu. `data-slot` on all parts.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`breadcrumb` (`<nav>`), `breadcrumb-list` (`<ol>`), `breadcrumb-item`, `breadcrumb-link`, `breadcrumb-separator` (`aria-hidden`), `breadcrumb-overflow`.
 
 ## Tokens read
 
-text-description/foreground, space/radius, hover/focus; Menu reads overlay tokens.
+`--onyx-text-{description,foreground}`, space, radius, hover and focus tokens, plus Menu tokens for the overflow.
 
-## Headless hook
+## Gotchas
 
-`useBreadcrumb(items,maxItems)` returns visible/hidden. [APG breadcrumb](https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/).
+- **The last item is never a link.** It represents where you are, so it needs no `href`.
+- **Long labels:** wrap them in [Truncate](truncate.md) so one long folder name doesn't push the rest off screen.

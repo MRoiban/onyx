@@ -1,17 +1,64 @@
 # Color Swatch
 
-Public API: ColorSwatch, ColorSwatchGroup.
+A color sample button. `ColorSwatchGroup` turns a set of swatches into a palette picker where one color is chosen.
 
-**Use when / Not for:** a color sample or a palette choice is needed; not for arbitrary color editing.
+**Use when:** choosing from a fixed set of colors (label colors, theme accents), or showing a color sample.
+**Not for:** choosing any color (use [Color Picker](color-picker.md)), or status colors that carry meaning (use [Badge · StatusDot](badge.md)).
 
-**Anatomy (data-slot):** color-swatch, color-swatch-group, color-swatch-form-value.
+## Import
 
-**Props:** Swatch requires color and supports selected, disabled, asChild, native button props and style. Group value/defaultValue/onValueChange, disabled, name/form, asChild. Group uses radiogroup/radio and roving focus; arrows/Home/End select focused swatch. Standalone swatch remains a button; render a noninteractive sample with asChild and suitable markup.
+```tsx
+import { ColorSwatch, ColorSwatchGroup } from '@onyx/ui/color-swatch';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** --onyx-color-swatch-size; border-subtle/default, radius-xs, surface-app, control-focus-ring, space-*. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<Field>
+  <Label>Label color</Label>
+  <ColorSwatchGroup value={color} onValueChange={setColor} name="color">
+    {palette.map((c) => <ColorSwatch key={c.hex} color={c.hex} aria-label={c.name} />)}
+  </ColorSwatchGroup>
+</Field>
 
-**Headless hook:** useRovingFocus and useControllableState supply headless group building blocks.
+{/* a sample that is not a control */}
+<ColorSwatch asChild color="#3AA99F"><span aria-hidden /></ColorSwatch>
+```
 
-Native form reset silently restores the mount-time uncontrolled default, including controls associated with an external `form`. Controlled props remain authoritative.
+## API
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `ColorSwatch` | `color` | CSS color | — | **Required.** Inside a group, it is also the value. |
+| | `selected` | `boolean` | from the group | Set it yourself for a standalone swatch. |
+| | `disabled`, `asChild` | | | Without a group, a swatch is a `<button>`. |
+| | `aria-label` | `string` | — | **Required.** Use the color's name, such as "Teal". |
+| `ColorSwatchGroup` | `value` / `defaultValue` / `onValueChange` | `string` | — | |
+| | `disabled`, `name`, `form`, `asChild` | | | `name` submits the chosen color. |
+
+Also exported: `colorSwatchVariants`, `colorSwatchGroupVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the radio-group pattern inside a group (`radiogroup` and `radio`, one tab stop, arrow keys that select), the selected ring, form submission, and restoring the default on form reset.
+
+**You supply:** the colors and their names.
+
+## Keyboard (in a group)
+
+| Key | Result |
+|---|---|
+| Arrow keys | Move to and select the next or previous swatch |
+| Home / End | First / last swatch |
+
+## Anatomy
+
+`color-swatch` (`data-state="selected|unselected"`, `data-disabled`), `color-swatch-group`, `color-swatch-form-value`.
+
+## Tokens read
+
+`--onyx-color-swatch-size`, `--onyx-border-{subtle,default}`, `--onyx-radius-xs`, `--onyx-surface-app`, `--onyx-control-focus-ring`, `--onyx-space-*`.
+
+## Gotchas
+
+- **Name the color, not the hex code.** "Teal" means more to a screen reader user than "#3AA99F".

@@ -1,23 +1,83 @@
 # SplitView
 
-Use when adjacent panes share a constrained resizable area, including nested horizontal/vertical editor layouts. Not for moving/resizing unrelated windows.
+Two or more panes side by side (or stacked) with draggable handles between them. Sizes are percentages, panes can collapse, and the layout can be saved automatically. SplitViews can be nested for editor-style layouts.
 
-Anatomy: `split-view`, `split-view-pane`, `split-view-handle`. Handles reuse ResizeHandle internals and state attributes.
+**Use when:** adjacent panes share one area: editor plus preview, file list plus details, an editor area above a terminal.
+**Not for:** a single resizable region (use [ResizeHandle](resize-handle.md)), the app's main sidebar (use [Sidebar](sidebar.md)), or floating windows.
 
-`SplitView` accepts direct `SplitViewPane` children, `orientation="horizontal|vertical"` (layout direction), controlled `sizes` / `onSizesChange`, `defaultSizes`, and `autoSaveId`. It inserts handles between panes; `handleProps` supplies shared handle options such as `showSize` and `formatValue`. **Sizes/minSize/maxSize/defaultSize/collapsedSize/snap are percentages of the group.** `minPixels` / `maxPixels` add measured physical constraints, intersected with percentages. Supply feasible constraints (expanded minimum sum <= 100 and maximum sum >= 100); a collapsed pane's reserved size is included in that sum. Pane defaults are equal weights unless `defaultSizes` or `defaultSize` is supplied. A root must have a definite extent in its resize direction.
+## Import
 
-Pane props: `minSize`, `maxSize`, `minPixels`, `maxPixels`, `collapsible`, `collapsedSize`, `snap`, `defaultSize`, plus ordinary HTML props and `asChild`. Collapsed panes are inert and clip content. `SplitViewHandle` is exported for custom composition with the sizing context and an `index`; the standard root inserts it automatically. It publishes `aria-controls` and percent value text. Keyboard movement converts 10/50 CSS pixels into percent changes. Adjacent-pair resizing preserves other panes and the pair total, respects both neighbors' bounds, snaps and collapses. Double-click restores the preceding pane's default within adjacent constraints.
+```tsx
+import { SplitView, SplitViewPane, SplitViewHandle, useSplitView, normalizeSplitSizes, resizeSplitSizes } from '@onyx/ui/split-view';
+```
 
-`autoSaveId` stores JSON sizes at `onyx:split:<id>` in localStorage, reads once on mount, validates the saved array, and tolerates unavailable storage. Controlled sizes take precedence. Changing storage identity requires remounting if a different saved layout should be loaded. For `asChild` root composition, wrap the pane children in one custom root element.
+## Example
 
-State: root/pane `data-orientation`; pane `data-state="collapsed|expanded"`; handle `data-state="idle|hover|dragging"`, `data-orientation` (perpendicular to the layout).
+```tsx
+<div style={{ height: '100%' }}>
+  <SplitView orientation="vertical" autoSaveId="workbench-main" defaultSizes={[70, 30]}>
+    <SplitViewPane minSize={30}>
+      <SplitView orientation="horizontal" autoSaveId="editors">
+        <SplitViewPane minPixels={240}><Editor /></SplitViewPane>
+        <SplitViewPane collapsible collapsedSize={0} minSize={20}><Preview /></SplitViewPane>
+      </SplitView>
+    </SplitViewPane>
+    <SplitViewPane minSize={10} collapsible snap={[30]}><Terminal /></SplitViewPane>
+  </SplitView>
+</div>
+```
 
-Tokens: ResizeHandle tokens plus `--onyx-surface-panel`, `--onyx-radius-md`, `--onyx-text-{description,sm}`. Pane spacing is consumer supplied to allow editor canvases with no padding.
+## API
 
-Headless: `useSplitView({sizes,defaultSizes,onSizesChange,autoSaveId,constraints,orientation})` returns `ref`, extent, normalized sizes/defaults, effective percentage constraints, setters, `resize(index,nextSize)` and `reset()`. Attach its ref for pixel conversion/constraints. Pure math exports: `normalizeSplitSizes(sizes,constraints)` and `resizeSplitSizes(sizes,index,nextSize,constraints,snapThreshold)`. Exported cva functions: `splitViewVariants`, `splitViewPaneVariants`.
+**`SplitView`**
 
-The model follows [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels)' adjacent-pane constraint behavior while keeping Onyx's own generic primitive API.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | The **layout** direction: horizontal places panes side by side. |
+| `sizes` / `defaultSizes` / `onSizesChange` | `number[]` (%) | equal shares | |
+| `autoSaveId` | `string` | — | Saves sizes to `localStorage` under `onyx:split:<id>`. Read once on mount. Controlled `sizes` win. |
+| `handleProps` | ResizeHandle options | — | Shared by every handle, for example `showSize` or `formatValue`. |
+| `asChild` | `boolean` | `false` | Wrap the panes in a single custom root element. |
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+**`SplitViewPane`** (all sizes are **percentages** of the group)
 
-Storage availability checks, reads, and writes are guarded; unavailable/throwing localStorage and server rendering fall back to default sizes.
+| Prop | Type | Notes |
+|---|---|---|
+| `defaultSize` | `number` | |
+| `minSize`, `maxSize` | `number` | |
+| `minPixels`, `maxPixels` | `number` | Pixel limits, combined with the percentage limits. |
+| `collapsible`, `collapsedSize` | `boolean`, `number` | Collapsed panes are inert and clip their content. |
+| `snap` | `number[]` | |
+| `asChild` | `boolean` | |
+
+`SplitViewHandle` (with `index`) is for custom composition. The standard root inserts handles for you.
+
+**`useSplitView({ sizes, defaultSizes, onSizesChange, autoSaveId, constraints, orientation })`** returns `ref`, the extent, normalized sizes and defaults, effective limits, setters, `resize(index, size)` and `reset()`. Pure math: `normalizeSplitSizes(sizes, constraints)` and `resizeSplitSizes(sizes, index, next, constraints, snapThreshold)`.
+
+Also exported: `splitViewVariants`, `splitViewPaneVariants`.
+
+## Behavior contract
+
+**Onyx owns:**
+- Inserting handles between panes.
+- Resizing only the two panes next to a handle, keeping their total and both their limits; other panes don't move.
+- Snapping, collapse, and resetting on double-click.
+- Keyboard steps (10 and 50 CSS pixels, converted to percentages) and the separator ARIA (`aria-controls`, a percentage value text).
+- Saving the layout, guarded against missing storage and server rendering.
+
+**You supply:** a container with a definite size in the resize direction, pane content and its padding, and limits that can be satisfied together.
+
+## Anatomy
+
+`split-view` (`data-orientation`), `split-view-pane` (`data-orientation`, `data-state="collapsed|expanded"`), `split-view-handle` (as [ResizeHandle](resize-handle.md); its `data-orientation` is perpendicular to the layout).
+
+## Tokens read
+
+[ResizeHandle](resize-handle.md) tokens, plus `--onyx-surface-panel`, `--onyx-radius-md`, `--onyx-text-{description,sm}`.
+
+## Gotchas
+
+- **Limits must add up.** The pane minimums (counting collapsed panes at their reserved size) must total at most 100, and the maximums at least 100.
+- **The container needs a size.** A SplitView inside an element with no height (vertical) or width (horizontal) can't resize.
+- **Changing `autoSaveId` doesn't reload.** To load a different saved layout, remount with a new `key`.
+- **Panes have no padding.** That suits edge-to-edge editors. Add padding inside the pane yourself.

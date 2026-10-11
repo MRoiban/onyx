@@ -1,31 +1,73 @@
 # Navigation Menu
 
-Use when: site navigation with related destination cards. Not for: application command menus or arbitrary dialogs.
+Website-style top navigation. Each item is a link, or a trigger that opens a panel of related destinations, often laid out as cards.
 
-## Public API
+**Use when:** a site or marketing-style page has top-level sections, some with several sub-pages ("Products ▾" → a grid of product cards).
+**Not for:** application commands (use [Menubar](menubar.md) or [Menu](menu.md)), switching panels in place (use [Tabs](tabs.md)), or a breadcrumb trail (use [Breadcrumb](breadcrumb.md)).
 
-`navigationMenuVariants`, `NavigationMenu`, `NavigationMenuList`, `NavigationMenuItem`, `NavigationMenuTrigger`, `NavigationMenuContent`, `NavigationMenuLink`, `NavigationMenuIndicator`, `NavigationMenuViewport`.
+## Import
+
+```tsx
+import {
+  NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger,
+  NavigationMenuContent, NavigationMenuLink, NavigationMenuIndicator
+} from '@onyx/ui/navigation-menu';
+```
+
+## Example
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem value="pebbles">
+      <NavigationMenuTrigger>Pebbles</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <Grid columns={2} gap="2">
+          <NavigationMenuLink href="/babel"><strong>Babel</strong><Text tone="description">Translate mods</Text></NavigationMenuLink>
+          <NavigationMenuLink href="/nexusboard"><strong>Nexusboard</strong><Text tone="description">Dashboards</Text></NavigationMenuLink>
+        </Grid>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/docs" active={path === '/docs'}>Docs</NavigationMenuLink>
+    </NavigationMenuItem>
+    <NavigationMenuIndicator />
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+## API
+
+Built on [Radix Navigation Menu](https://www.radix-ui.com/primitives/docs/components/navigation-menu).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `NavigationMenu` | `value` / `defaultValue` / `onValueChange` | `string` | — | The open item. Renders a `<nav>`. |
+| | `delayDuration`, `skipDelayDuration`, `orientation` | Radix | `200`, `300`, horizontal | Hover timing. |
+| `NavigationMenuItem` | `value` | `string` | generated | |
+| `NavigationMenuTrigger` | `asChild` | | — | Opens the item's content on hover or click. |
+| `NavigationMenuContent` | `container` | `HTMLElement \| null` | inherited | Positioned below the whole menu bar and as wide as it, with collision handling (8px padding). |
+| | `forceMount` | Radix | — | |
+| `NavigationMenuLink` | `href`, `active`, `onSelect`, `asChild` | | — | `active` marks the current page (`aria-current`). Use `asChild` with router links. |
+| `NavigationMenuIndicator`, `NavigationMenuViewport` | | | | An optional indicator, and Radix's shared viewport. |
+
+Also exported: `navigationMenuVariants`.
+
+## Behavior contract
+
+**Onyx owns:** hover and click disclosure with delays, arrow-key navigation, link focus, and placing the content panel against the menu bar.
+
+**You supply:** the destinations, the routing, and marking the active link.
 
 ## Anatomy
 
-`navigation-menu`, `navigation-menu-content`, `navigation-menu-indicator`, `navigation-menu-item`, `navigation-menu-link`, `navigation-menu-list`, `navigation-menu-trigger`, `navigation-menu-viewport`.
-
-## Props and state
-
-Radix root value/defaultValue/onValueChange, delayDuration, skipDelayDuration and orientation; Item value; Link href, active and onSelect; Trigger asChild; Content forceMount.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. NavigationMenu root renders a navigation element with the `navigation-menu` DOM slot, forwards its ref and merges className; providers and portals are context-only. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`navigation-menu` (`<nav>`), `navigation-menu-list`, `navigation-menu-item`, `navigation-menu-trigger` (`data-state`), `navigation-menu-content` (`data-side`, `data-state`), `navigation-menu-link` (`data-active`), `navigation-menu-indicator`, `navigation-menu-viewport`.
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`.
+`--onyx-surface-menu`, `--onyx-border-*`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-radius-*`, `--onyx-space-*`, `--onyx-text-*`, `--onyx-state-selected{,-fg}`, motion tokens.
 
-## Headless behavior
+## Gotchas
 
-Radix owns arrow navigation, hover timing, disclosure and link focus. Floating UI anchors the card panel, flips and shifts it within the viewport using 8px padding.
-
-## Nested floating content
-
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
-
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+- **The content panel is as wide as the whole menu bar**, not the trigger. Design the panel for that width.
+- **Give the `<nav>` an `aria-label`** when the page has more than one navigation landmark.

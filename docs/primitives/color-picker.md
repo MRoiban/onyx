@@ -1,19 +1,59 @@
 # Color Picker
 
-Public API: ColorPicker, useColorPicker; hexToRgb, rgbToHex, rgbToHsv, hsvToRgb, hexToHsv, hsvToHex.
+A full color editor: a saturation/brightness area, a hue slider, an optional opacity slider, and a hex input.
 
-**Use when / Not for:** HSV color editing and hexadecimal entry are needed; not for a simple predefined palette.
+**Use when:** users can pick any color, for example custom theme colors or a drawing tool.
+**Not for:** picking from a fixed palette (use [Color Swatch](color-swatch.md) groups). It is also not needed just to convert colors: the helpers below work without the component.
 
-**Anatomy (data-slot):** color-picker, color-picker-area, color-picker-thumb, color-picker-saturation/brightness, color-picker-hue, color-picker-alpha, color-picker-form-value; composed Slider/InputGroup slots.
+## Import
 
-**Props:** Hex string value/defaultValue/onValueChange; alpha, disabled, name/form. Pointer area adjusts saturation/value. Two visually hidden native range controls expose Saturation and Brightness keyboard adjustment, with focus visible on the area. Hue and optional opacity use Slider. Hex input retains invalid drafts until blur. Pure helpers use RGB 0–255 and HSV h 0–360, s/v/a 0–1. Hex accepts 3/4/6/8 digits.
+```tsx
+import { ColorPicker, useColorPicker, hexToRgb, rgbToHex, hexToHsv, hsvToHex, rgbToHsv, hsvToRgb } from '@onyx/ui/color-picker';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** --onyx-color-picker-width/area-height/hue/white/black; radius-md/full, space-*, shadow-sm; composed Slider/InputGroup tokens. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<Field>
+  <Label>Accent color</Label>
+  <ColorPicker value={accent} onValueChange={setAccent} />
+</Field>
 
-**Headless hook:** `useColorPicker(options)` returns value, hsv, setValue(hex), update(partialHSV). Helpers also live in src/lib/color.ts and are re-exported through color-picker. Mathematical spectrum colors are data, independent of UI theme.
+<ColorPicker aria-label="Fill" defaultValue="#3AA99F80" alpha name="fill" />
+```
 
-**Composition exception:** `color-picker` generates multiple coordinated children, so its root does not support `asChild`. Use `useColorPicker` to render a custom root and wire the returned state and handlers to your own parts; preserve the grouping roles, labels, keyboard behavior and form participation. The rendered component accepts root class/style and exposes `data-slot` hooks for each generated part.
+## API
 
-The picker retains editable HSV coordinates when brightness or saturation reaches zero; raising brightness restores the chosen hue/saturation. External hex changes reconcile the editable coordinates. Native form reset restores the initial uncontrolled color, including external `form` association.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` / `defaultValue` / `onValueChange` | hex `string` | — | Accepts 3, 4, 6 or 8 digits. |
+| `alpha` | `boolean` | `false` | Adds an opacity slider and 8-digit hex. |
+| `disabled` | `boolean` | from Field | |
+| `name`, `form` | `string` | — | A hidden input submits the hex value. |
+| `className`, `style` | | | Apply to the root element. |
+
+**`useColorPicker(options)`** returns `{ value, hsv, setValue(hex), update(partialHsv) }`.
+
+**Helpers** (pure functions): `hexToRgb`, `rgbToHex`, `rgbToHsv`, `hsvToRgb`, `hexToHsv`, `hsvToHex`. RGB channels are 0–255; HSV uses h 0–360 and s, v, a 0–1. The `RGB` and `HSV` types are exported too.
+
+Also exported: `colorPickerVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the HSV editing model (hue and saturation are remembered even at zero brightness), pointer dragging on the area, keyboard access to the area through two hidden range inputs (Saturation and Brightness), the hue and opacity [Sliders](slider.md), keeping the hex draft while typing (committed on blur), form submission, and restoring the default on form reset.
+
+**You supply:** the value and the label.
+
+## Anatomy
+
+`color-picker`, `color-picker-area`, `color-picker-thumb`, `color-picker-saturation`, `color-picker-brightness` (the hidden range inputs), `color-picker-hue`, `color-picker-alpha`, `color-picker-form-value`, plus Slider and Input Group slots.
+
+## Tokens read
+
+`--onyx-color-picker-width`, `--onyx-color-picker-area-height`, `--onyx-color-picker-{hue,white,black}`, `--onyx-radius-{md,full}`, `--onyx-space-*`, `--onyx-shadow-sm`, plus Slider and Input Group tokens.
+
+## Gotchas
+
+- **The value is always hex.** Convert it with the helpers for other formats.
+- **An invalid hex draft stays visible** until blur, then reverts to the last valid color.
+- **No `asChild` on the root.** For a custom layout, use `useColorPicker`.

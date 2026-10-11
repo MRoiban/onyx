@@ -1,55 +1,102 @@
 # Combobox
 
-Use when: searchable choices, creation flows or multiple selections. Not for: command menus, inline autocomplete completion or virtualized huge result sets.
+A text input with a filtered dropdown of options. It handles single or multiple selection, can create new options, and shows the selected values as tags.
 
-## Public API
+**Use when:** the list is long enough that typing to find an option helps, users may add a new value, or they pick several values (assignees, tags, languages).
+**Not for:** a short list with no search (use [Select](select.md)), running commands (use [Command](command.md)), inline autocomplete inside a text editor, or huge server-side result sets that need virtualization (use [Listbox](listbox.md) with [VirtualList](virtual-list.md)).
 
-`comboboxVariants`, `ComboboxOption`, `ComboboxValue`, `UseComboboxOptions`, `useCombobox`, `ComboboxHighlight`, `ComboboxProps`, `Combobox`.
+## Import
 
-## Anatomy
-
-`combobox`, `combobox-chip`, `combobox-control`, `combobox-create-option`, `combobox-empty`, `combobox-indicator`, `combobox-input`, `combobox-label`, `combobox-listbox`, `combobox-match`, `combobox-option`, `combobox-option-description`, `combobox-option-label`, `combobox-separator`, `combobox-trigger`.
-
-## Props and state
-
-options: {value,label,disabled?,description?}[]; value/defaultValue/onValueChange (string or string[]); multiple; inputValue/defaultInputValue/onInputValueChange; open/defaultOpen/onOpenChange; filter=false for consumer filtering or a custom predicate; onCreate/createOption; emptyState; showTags; renderSelected/renderOption; activeIndex/defaultActiveIndex/onActiveIndexChange; label/inputProps. Ref points to the input.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
-
-## Tokens read
-
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`, `--onyx-input-height`, `--onyx-input-radius`, `--onyx-control-input-bg`, `Tag/Input/Button/Calendar tokens for composed primitives`.
-
-## Headless behavior
-
-useCombobox(options) exposes value/selected/query/setQuery/open/setOpen/activeIndex/setActiveIndex/filteredOptions/canCreate/inputRef/inputProps/listboxProps/getOptionProps/select/remove. Wire these into custom markup; keep DOM focus in the input. ArrowUp/Down skip disabled choices; Enter selects or creates, Escape closes without selection, Tab dismisses. Native editing keys are preserved. Use unique option values.
-
-## References
-
-[WAI-ARIA APG combobox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/), [Radix Tooltip](https://www.radix-ui.com/primitives/docs/components/tooltip), [Floating UI autoUpdate](https://floating-ui.com/docs/autoupdate).
+```tsx
+import { Combobox, useCombobox, ComboboxHighlight, type ComboboxOption } from '@onyx/ui/combobox';
+```
 
 ## Example
 
 ```tsx
+const languages: ComboboxOption[] = [
+  { value: 'fr', label: 'French' },
+  { value: 'en', label: 'English', description: 'Default' },
+  { value: 'tlh', label: 'Klingon', disabled: true }
+];
+
+{/* single */}
+<Combobox label="Language" options={languages} value={language} onValueChange={(v) => setLanguage(v as string)} placeholder="Search languages…" />
+
+{/* multiple + create */}
 <Combobox
-  label="Language"
-  options={[{ value: 'fr', label: 'French' }, { value: 'en', label: 'English' }]}
-  onValueChange={setLanguage}
-  onCreate={createLocale}
-  createOption={query => `Add “${query}” as custom locale`}
+  label="Tags"
+  multiple
+  options={tags}
+  value={selected}
+  onValueChange={(v) => setSelected(v as string[])}
+  onCreate={(query) => createTag(query)}
+  createOption={(query) => `Create “${query}”`}
 />
+
+{/* server-side search */}
+<Combobox label="User" options={results} filter={false} onInputValueChange={search} emptyState="No users found" />
 ```
 
-For consumer filtering, set `filter={false}` and supply the filtered `options` yourself. `onCreate` notifies the consumer, which owns creating and selecting the new value. Default multiple-selection chips use Tag; `renderSelected` can replace their markup. The input's `aria-activedescendant` always references a rendered enabled option, and committed selection remains separate from keyboard exploration.
+## API
 
-## Nested floating content
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `options` | `ComboboxOption[]` | — | **Required.** `{ value, label, disabled?, description? }`. Values must be unique. |
+| `value` / `defaultValue` / `onValueChange` | `string` or `string[]` | `''` / `[]` | An array when `multiple`. Cast it in the handler. |
+| `multiple` | `boolean` | `false` | Shows the selections as removable [Tags](tag.md). |
+| `label` | `string` | — | A visible label. Otherwise pass `inputProps={{ 'aria-label': … }}`. |
+| `placeholder` | `string` | — | |
+| `inputValue` / `defaultInputValue` / `onInputValueChange` | `string` | — | The typed query. |
+| `open` / `defaultOpen` / `onOpenChange` | `boolean` | `false` | |
+| `filter` | `false \| (option, query) => boolean` | case-insensitive "label contains query" | `false` turns off client filtering, so you pass already-filtered `options`. |
+| `onCreate` | `(query: string) => void` | — | Turns on a "create" row when nothing matches exactly. **You** add and select the new value. |
+| `createOption` | `ReactNode \| (query) => ReactNode` | — | The create row's label. |
+| `emptyState` | `ReactNode` | — | Shown when nothing matches. |
+| `renderOption` | `(option, query) => ReactNode` | label with the match highlighted | |
+| `renderSelected` | `(option, remove) => ReactNode` | a Tag | Custom chips in `multiple` mode. |
+| `showTags` | `boolean` | `true` | |
+| `disabled` | `boolean` | — | |
+| `activeIndex` / `defaultActiveIndex` / `onActiveIndexChange` | `number` | `-1` | The keyboard-highlighted option. Rarely needed. |
+| `container` | `HTMLElement \| null` | inherited | See [floating content in modals](README.md#floating-content-in-modals). |
+| `className`, `style`, `rootProps`, `rootRef` | | | Apply to the root element. |
+| `inputProps` | input attributes | — | Apply to the text input. |
+| `contentClassName` | `string` | — | Applies to the dropdown. |
+| `ref` | | | The `<input>`. |
 
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
+**`useCombobox(options)`** is the same state model without the UI. It returns `value`, `selected`, `query`, `setQuery`, `open`, `setOpen`, `activeIndex`, `setActiveIndex`, `filteredOptions`, `canCreate`, `inputRef`, `inputProps`, `listboxProps`, `getOptionProps(index)`, `select(value)` and `remove(value)`. Spread the prop getters onto your own markup and keep DOM focus in the input.
 
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+**`ComboboxHighlight`** (`text`, `query`) highlights the first case-insensitive match with a `<mark>`, for use in custom `renderOption`.
 
-## Root and input customization
+Also exported: `comboboxVariants`.
 
-`className`, `style`, `rootProps` (div attributes/events) and `rootRef` target the composite root. Root classes/styles merge with `rootProps`; direct `className`/`style` take precedence. `inputProps` styles and attributes target the text input. The existing forwarded `ref` still points to that input for compatibility.
+## Behavior contract
 
-Selected labels refresh when options load or change, for controlled and uncontrolled selections. An active typed query is preserved until blur or selection. Internally, active options follow their unique value through reordering; removed or disabled active options clear exploration rather than selecting the item at their old index. The optional controlled `activeIndex` API remains consumer-owned.
+**Onyx owns:** filtering, the ARIA combobox pattern (`aria-activedescendant` always points to a rendered, enabled option), keyboard navigation, selection, the create row, tags, the dropdown position, keeping labels in sync when options change, and moving into a surrounding Dialog automatically.
+
+**You supply:** the options (and, with `filter={false}`, the filtering), creating new values, and the label.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ↓ / ↑ | Open the list, then move between enabled options |
+| Enter | Select the highlighted option, or create one |
+| Escape | Close without selecting |
+| Tab | Close |
+| Backspace, other editing keys | Edit the query normally |
+
+## Anatomy
+
+`combobox` (root), `combobox-label`, `combobox-control`, `combobox-chip`, `combobox-input`, `combobox-trigger`, `combobox-listbox`, `combobox-option` (`aria-selected`, `data-disabled`), `combobox-option-label`, `combobox-option-description`, `combobox-match`, `combobox-indicator`, `combobox-create-option`, `combobox-empty`, `combobox-separator`.
+
+## Tokens read
+
+`--onyx-input-height`, `--onyx-input-radius`, `--onyx-control-input-bg`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`, plus Tag, Input and Button tokens.
+
+## Gotchas
+
+- **`onValueChange` receives `string | string[]`.** Cast it based on `multiple`.
+- **Selecting a created value is up to you.** `onCreate` only reports the query. Add the option to `options` and update `value` yourself.
+- **The typed query survives option reloads.** It is kept until blur or a selection, so async results don't wipe what the user typed.
+- **The highlighted option follows its value**, not its position, when options reorder. If that option disappears, the highlight clears rather than jumping to a different option.

@@ -1,19 +1,71 @@
-# Otp Field
+# OTP Field
 
-Public API: OTPField, useOTPField.
+A row of single-character cells for a short verification code, such as a 6-digit sign-in code. It supports paste and SMS autofill.
 
-**Use when / Not for:** a short verification code needs distinct cells; not for passwords or arbitrary text.
+**Use when:** users enter a one-time code from an email, SMS or authenticator app.
+**Not for:** passwords (use [Password Field](password-field.md)), or text of any length (use [Input](input.md)).
 
-**Anatomy (data-slot):** otp-field, otp-field-cell, otp-field-separator, otp-field-form-value.
+## Import
 
-**Props:** length (6), value/defaultValue/onValueChange, onComplete, pattern (digits), disabled, separatorAfter ([3]), separator (en dash), name/form, autoFocus. Paste/autofill distributes accepted characters from the active cell. Typing advances; Backspace clears current or previous empty cell; Delete clears; arrows/Home/End move cells. First cell has autocomplete=one-time-code. All cells have individual accessible labels and Field ARIA.
+```tsx
+import { OTPField, useOTPField } from '@onyx/ui/otp-field';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** --onyx-otp-gap/cell-width/cell-height; control-input-*, control-focus-ring, font-mono, text-lg, radius-md, space-*. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<Field invalid={!!error}>
+  <Label>Verification code</Label>
+  <OTPField length={6} value={code} onValueChange={setCode} onComplete={verify} autoFocus name="code" />
+  <FieldError>{error}</FieldError>
+</Field>
 
-**Headless hook:** `useOTPField(options)` returns value, setValue, inputs ref, distribute(index,text), getCellProps(index).
+{/* letters and digits, grouped 4-4 */}
+<OTPField aria-label="Recovery code" length={8} pattern={/[A-Z0-9]/} separatorAfter={[4]} />
+```
 
-**Composition exception:** `otp-field` generates multiple coordinated children, so its root does not support `asChild`. Use `useOTPField` to render a custom root and wire the returned state and handlers to your own parts; preserve the grouping roles, labels, keyboard behavior and form participation. The rendered component accepts root class/style and exposes `data-slot` hooks for each generated part.
+## API
 
-The group inherits the Field label or its explicit `aria-label`. Cell names combine that name with “digit N of M”; without a group label cells use “Digit N of M”. IME input and navigation wait until `compositionend`. Native form reset restores the initial uncontrolled code, including an external `form` association.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `length` | `number` | `6` | |
+| `value` / `defaultValue` / `onValueChange` | `string` | `''` | |
+| `onComplete` | `(value: string) => void` | — | Fires when every cell is filled. A good place to submit automatically. |
+| `pattern` | `RegExp` | digits | Tested on each character. Other characters are ignored. |
+| `separatorAfter` | `number[]` | `[3]` | Cell positions after which a separator appears. |
+| `separator` | `ReactNode` | `–` | |
+| `disabled`, `autoFocus` | `boolean` | | |
+| `name`, `form` | `string` | — | A hidden input submits the full code. |
+| `className`, `style` | | | Apply to the root element. |
+
+**`useOTPField(options)`** returns `{ value, setValue, inputs, distribute(index, text), getCellProps(index) }`.
+
+Also exported: `otpFieldVariants`.
+
+## Behavior contract
+
+**Onyx owns:** moving to the next cell as you type, spreading pasted or autofilled text from the active cell onward, `autocomplete="one-time-code"` on the first cell, a label on each cell ("Verification code, digit 2 of 6"), waiting for IME input to finish, form submission, and restoring the default on form reset.
+
+**You supply:** the label, checking the code, and the error.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| A character | Fill the cell and move to the next |
+| Backspace | Clear the cell, or the previous one if this cell is empty |
+| Delete | Clear the cell |
+| ← / → / Home / End | Move between cells |
+
+## Anatomy
+
+`otp-field` (`role="group"`), `otp-field-cell` (`data-state="filled|empty"`), `otp-field-separator`, `otp-field-form-value`.
+
+## Tokens read
+
+`--onyx-otp-gap`, `--onyx-otp-cell-width`, `--onyx-otp-cell-height`, `--onyx-control-input-*`, `--onyx-control-focus-ring`, `--onyx-font-mono`, `--onyx-text-lg`, `--onyx-radius-md`, `--onyx-space-*`.
+
+## Gotchas
+
+- **The default `pattern` accepts digits only.** Pass your own `pattern` for codes with letters.
+- **No `asChild` on the root.** The field generates its cells. For a custom layout, use `useOTPField`.

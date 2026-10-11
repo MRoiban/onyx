@@ -1,23 +1,58 @@
 # Avatar · AvatarGroup
 
-Use when: representing people with image or initials. Not for: sole accessible names of actions.
+A person's picture, falling back to their initials while the image loads or if it fails. It can show a status dot. `AvatarGroup` overlaps several avatars and collapses the extras into "+N".
+
+**Use when:** representing a user or member next to their content: comments, assignees, presence lists.
+**Not for:** the only accessible name of a button (give the button its own `aria-label`), logos or icons (use `<img>` or [Icon](icon.md)), or a status on its own (use [StatusDot](badge.md)).
+
+## Import
+
+```tsx
+import { Avatar, AvatarGroup, AvatarImage, AvatarFallback, getAvatarInitials } from '@onyx/ui/avatar';
+```
+
+## Example
+
+```tsx
+<Avatar name="Ada Lovelace" src={user.photoUrl} status="success" statusLabel="Online" />
+
+<AvatarGroup max={3} aria-label="Collaborators">
+  {members.map((m) => <Avatar key={m.id} name={m.name} src={m.photo} size="sm" />)}
+</AvatarGroup>
+```
+
+## API
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Avatar` | `name` | `string` | — | Used for the initials and the accessible name. |
+| | `src`, `alt` | `string` | — | `alt` defaults to `name`. |
+| | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | |
+| | `variant` | `'circle' \| 'square'` | `'circle'` | |
+| | `status` | `DisplayTone` | — | Adds a status dot, kept outside the image's clipping so its ring stays visible. |
+| | `statusLabel` | `string` | — | The dot's accessible name. |
+| | children | `AvatarImage`, `AvatarFallback` | | Use these instead of `src` and `name` for full control. |
+| `AvatarGroup` | `max` | `number` | unlimited | Avatars beyond `max` become a "+N" avatar, announced as "N more people". |
+| | `asChild` | `boolean` | `false` | |
+
+**`getAvatarInitials(name)`** returns the first character of the first and last names, `?` when empty, and handles accents, emoji and flags correctly.
+
+Also exported: `avatarVariants`, `avatarImageVariants`, `avatarFallbackVariants`, `avatarGroupVariants`, `avatarAttributes`.
+
+## Behavior contract
+
+**Onyx owns:** loading the image and falling back to initials (via Radix), working out the initials, overflow in groups, and the status dot.
+
+**You supply:** the name, the image URL and the status.
 
 ## Anatomy
 
-`avatar`, `avatar-image`, `avatar-fallback`, `avatar-status`, `avatar-group`.
-
-## Props and data attributes
-
-Avatar name, src, alt, size sm/md/lg, variant circle/square, status, statusLabel; explicit AvatarImage/Fallback children supported. Radix hides image until loaded and falls back on failure. AvatarGroup max truncates to +N with accessible count. `data-size`, `data-variant`, status `data-tone`. Status remains outside the clipped image to keep its ring visible.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`avatar` (`data-size`, `data-variant`), `avatar-image`, `avatar-fallback`, `avatar-status` (`data-tone`), `avatar-group` (`role="group"`).
 
 ## Tokens read
 
-`--onyx-avatar-{size,size-sm,size-lg,bg,fg,square-radius}`, `--onyx-avatar-group-overlap`, spacing, radius, status dot, tones.
+`--onyx-avatar-{size,size-sm,size-lg,bg,fg,square-radius}`, `--onyx-avatar-group-overlap`, spacing, radius, status dot and tone tokens.
 
-## Headless hook
+## Gotchas
 
-`getAvatarInitials(name)` NFC-normalizes names and takes the first grapheme of the first and last names using Intl.Segmenter. A single name uses one grapheme; empty names use ?. Emoji, flags and ZWJ sequences remain intact as the first grapheme. Without Segmenter, a Unicode regex preserves combining marks, flags, modifiers and ZWJ sequences. Radix owns image load behavior. [Radix Avatar](https://www.radix-ui.com/primitives/docs/components/avatar).
-
-Custom markup needs only `avatarVariants({size: "lg", variant: "square"})` for its visual styling. Optional `avatarAttributes({size: "lg", variant: "square"})` remains supported; `avatarAttributes()` defaults to md/circle.
+- **Give an AvatarGroup an `aria-label`.** Without one, the group has no name for screen readers.

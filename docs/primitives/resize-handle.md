@@ -1,21 +1,89 @@
 # ResizeHandle
 
-Use when a separator changes the size of an adjacent region. Not for arbitrary drag/drop.
+A draggable, keyboard-accessible divider that changes the size of the region next to it, with optional collapse, snap points and a size tooltip.
 
-Anatomy: `resize-handle`, `resize-handle-grip`, `resize-handle-tooltip`.
+**Use when:** a single region (a sidebar, a bottom panel, an inspector) has a user-adjustable width or height that you store.
+**Not for:** several panes sharing a space (use [SplitView](split-view.md), which inserts handles for you), a sidebar rail (use [Sidebar](sidebar.md)'s resize support), or general drag-and-drop.
 
-`ResizeHandle` takes `value` / `defaultValue` (default 240), `onValueChange`, `min` (0), `max` (1000), `orientation="vertical|horizontal"` (separator orientation), `disabled`, `collapsible`, `collapsedSize` (0), `unitsPerPixel` (1), `direction` (1 or -1), `snap`, `snapThreshold` (4 value units), `onResizeStart`, `onResizeEnd`, `showSize`, `formatValue`, and `grip`. Supply `aria-label` and optional `aria-controls`. Pointer capture handles drag/up/cancel/lost capture. Pointer deltas use `unitsPerPixel` and `direction` so percent-based or right-edge layouts can reuse the model.
+## Import
 
-Vertical separators use Left/Right, horizontal separators Up/Down. Arrows change 10px, Shift+arrows 50px. Home goes to minimum (or collapsed size), End to maximum, Enter toggles collapse/restores the last expanded size, and double-click resets to `defaultValue`. Snapping is applied within bounds. Values between collapsed and minimum use a midpoint collapse threshold.
+```tsx
+import { ResizeHandle, useResizable } from '@onyx/ui/resize-handle';
+```
 
-State: `data-state="idle|hover|dragging"`, `data-orientation`, `data-disabled`; role separator with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`, `aria-orientation`, `aria-disabled`. The optional size tooltip appears on hover/drag and is rendered without a portal.
+## Example
 
-Tokens: `--onyx-resize-handle-size` (hit area), `--onyx-border-{default,strong}`, `--onyx-control-focus-ring`, `--onyx-space-{0-5,1,2,6}`, `--onyx-radius-{xs,sm}`, `--onyx-text-xs`, `--onyx-text-foreground`, `--onyx-surface-tooltip`, `--onyx-shadow-md`, `--onyx-z-tooltip`.
+```tsx
+<div style={{ display: 'flex', height: '100%' }}>
+  <aside id="inspector" style={{ width }}>…</aside>
+  <ResizeHandle
+    aria-label="Resize inspector"
+    aria-controls="inspector"
+    orientation="vertical"
+    value={width}
+    onValueChange={setWidth}
+    min={200}
+    max={600}
+    defaultValue={280}
+    collapsible
+    snap={[280, 400]}
+    onResizeEnd={() => save('inspectorWidth', width)}
+    showSize
+  />
+  <main style={{ flex: 1 }}>…</main>
+</div>
 
-Headless: `useResizable(options)` returns `value`, `setValue`, `dragging`, `hovered`, `collapsed` and `handleProps`. Attach all handle props to a focusable separator. `resizeHandleVariants({orientation})` is exported.
+{/* a handle on the right edge of a region on the right: invert the direction */}
+<ResizeHandle direction={-1} … />
+```
 
-[APG window splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/).
+## API
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` / `defaultValue` / `onValueChange` | `number` | `240` | In your units (pixels by default). `defaultValue` is also the double-click reset value. |
+| `min`, `max` | `number` | `0`, `1000` | |
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | The **separator's** orientation: `vertical` resizes widths. |
+| `collapsible` | `boolean` | `false` | Dragging below halfway between `collapsedSize` and `min` collapses the region. |
+| `collapsedSize` | `number` | `0` | |
+| `unitsPerPixel` | `number` | `1` | Converts pointer pixels to your units, for example percentages. |
+| `direction` | `1 \| -1` | `1` | Use `-1` when dragging toward the region makes it larger (handles on right or bottom edges). |
+| `snap`, `snapThreshold` | `number[]`, `number` | —, `4` | |
+| `onResizeStart`, `onResizeEnd` | `() => void` | — | Also fire around keyboard and double-click changes, so persist in `onResizeEnd`. |
+| `showSize`, `formatValue` | `boolean`, `(v) => ReactNode` | | A tooltip showing the size while hovering or dragging. |
+| `grip` | `boolean` | — | Shows a visible grip. |
+| `disabled`, `asChild` | | | |
+| `aria-label` | `string` | — | **Required.** |
+| `aria-controls` | `string` | — | The id of the region being resized. |
 
-`onResizeStart` and `onResizeEnd` also surround keyboard and double-click changes. `onValueChange` runs before completion so persistence adapters can commit the latest value consistently for pointer and discrete interactions.
+**`useResizable(options)`** returns `{ value, setValue, dragging, hovered, collapsed, handleProps }`. Spread `handleProps` onto your own focusable separator.
+
+Also exported: `resizeHandleVariants`.
+
+## Behavior contract
+
+**Onyx owns:** dragging with pointer capture, the keyboard behavior, clamping, snapping, collapse and restore, the `role="separator"` ARIA values, and the tooltip.
+
+**You supply:** applying the value to the region's size, and storing it.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ← / → (vertical) or ↑ / ↓ (horizontal) | 10px; with Shift, 50px |
+| Home / End | `min` (or collapsed) / `max` |
+| Enter | Collapse, or restore the last size |
+| Double-click | Reset to `defaultValue` |
+
+## Anatomy
+
+`resize-handle` (`data-state="idle|hover|dragging"`, `data-orientation`, `data-disabled`), `resize-handle-grip`, `resize-handle-tooltip` (not portalled).
+
+## Tokens read
+
+`--onyx-resize-handle-size` (the hit area), `--onyx-border-{default,strong}`, `--onyx-control-focus-ring`, `--onyx-space-{0-5,1,2,6}`, `--onyx-radius-{xs,sm}`, `--onyx-text-xs`, `--onyx-text-foreground`, `--onyx-surface-tooltip`, `--onyx-shadow-md`, `--onyx-z-tooltip`.
+
+## Gotchas
+
+- **`orientation` describes the line, not the layout.** A vertical line between side-by-side regions resizes widths.
+- **`onValueChange` fires before `onResizeEnd`,** so `onResizeEnd` always sees the latest value.

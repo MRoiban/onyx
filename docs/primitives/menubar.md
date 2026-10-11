@@ -1,31 +1,73 @@
 # Menubar
 
-Use when: application command categories such as File/Edit/View. Not for: site navigation (use NavigationMenu).
+A horizontal bar of application menus (File, Edit, View, …), like a desktop app's menu bar. Each menu works like [Menu](menu.md).
 
-## Public API
+**Use when:** an app or editor has categories of commands that live at the top of the window.
+**Not for:** website navigation with links (use [Navigation Menu](navigation-menu.md)), a single dropdown (use [Menu](menu.md)), or a row of buttons (use [Toolbar](toolbar.md)).
 
-`menubarVariants`, `Menubar`, `MenubarMenu`, `MenubarPortal`, `MenubarSub`, `MenubarTrigger`, `MenubarGroup`, `MenubarRadioGroup`, `MenubarContent`, `MenubarSubContent`, `MenubarItem`, `MenubarSubTrigger`, `MenubarCheckboxItem`, `MenubarRadioItem`, `MenubarLabel`, `MenubarSeparator`, `MenubarShortcut`.
+## Import
+
+```tsx
+import {
+  Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarShortcut,
+  MenubarSeparator, MenubarSub, MenubarSubTrigger, MenubarSubContent,
+  MenubarCheckboxItem, MenubarRadioGroup, MenubarRadioItem, MenubarLabel, MenubarGroup
+} from '@onyx/ui/menubar';
+```
+
+## Example
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem onSelect={newFile}>New File <MenubarShortcut>{formatShortcut('cmd+n')}</MenubarShortcut></MenubarItem>
+      <MenubarSub>
+        <MenubarSubTrigger>Open Recent</MenubarSubTrigger>
+        <MenubarSubContent>{recent.map((r) => <MenubarItem key={r.id} onSelect={() => open(r)}>{r.name}</MenubarItem>)}</MenubarSubContent>
+      </MenubarSub>
+      <MenubarSeparator />
+      <MenubarItem tone="danger" onSelect={closeAll}>Close All</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+  <MenubarMenu>
+    <MenubarTrigger>View</MenubarTrigger>
+    <MenubarContent>
+      <MenubarCheckboxItem checked={minimap} onCheckedChange={setMinimap}>Minimap</MenubarCheckboxItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+## API
+
+Built on [Radix Menubar](https://www.radix-ui.com/primitives/docs/components/menubar).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Menubar` | `value` / `defaultValue` / `onValueChange` | `string` | — | The open menu's `value`. |
+| | `loop`, `dir` | Radix | | |
+| `MenubarMenu` | `value` | `string` | — | Needed when you control which menu is open. |
+| `MenubarContent`, `MenubarSubContent` | `sideOffset` (`4`), `collisionPadding` (`8`), `container`, `align` | | | `container` is inherited; see [floating content in modals](README.md#floating-content-in-modals). |
+| Items | the same as [Menu](menu.md): `onSelect`, `tone`, `inset`, `checked`, `value`, … | | | `MenubarItem`, `MenubarSubTrigger`, `MenubarCheckboxItem`, `MenubarRadioItem`, `MenubarLabel`, `MenubarShortcut`, `MenubarSeparator`. |
+
+Also exported: `menubarVariants`, `MenubarPortal`, and the shared menu variants.
+
+## Behavior contract
+
+**Onyx owns:** Left and Right moving between menus (they stay open while you move), focus moving between items, typeahead, submenus, dismissal, and styling shared with Menu.
+
+**You supply:** the menus, the items and their actions.
 
 ## Anatomy
 
-`menubar`, `menubar-checkbox-item`, `menubar-content`, `menubar-group`, `menubar-indicator`, `menubar-item`, `menubar-label`, `menubar-radio-item`, `menubar-radiogroup`, `menubar-separator`, `menubar-shortcut`, `menubar-sub-content`, `menubar-sub-trigger`, `menubar-submenu-icon`, `menubar-trigger`.
-
-## Props and state
-
-Radix root value/defaultValue/onValueChange, loop/dir; Menu value; all command/check/radio/submenu props match Menu; Item supports tone and inset.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`menubar`, `menubar-trigger` (`data-state`), `menubar-content`, `menubar-sub-content`, `menubar-group`, `menubar-radiogroup`, `menubar-item`, `menubar-sub-trigger`, `menubar-submenu-icon`, `menubar-checkbox-item`, `menubar-radio-item`, `menubar-indicator`, `menubar-label`, `menubar-separator`, `menubar-shortcut`.
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-menu-item-height`, `--onyx-menu-radius`, `--onyx-surface-menu`, `--onyx-shadow-md`, `--onyx-z-popover`, `--onyx-state-selected{,-fg}`.
+The same as [Menu](menu.md).
 
-## Headless behavior
+## Gotchas
 
-Radix owns horizontal category navigation, menu item roving focus and typeahead.
-
-## Nested floating content
-
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
-
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+- **The shortcuts shown are labels only.** Register the actual key bindings in your app.

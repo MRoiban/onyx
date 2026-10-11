@@ -1,17 +1,62 @@
 # Search Field
 
-Public API: SearchField.
+A search input with a magnifier icon, a clear (×) button that appears once there is text, and Escape to clear. You can add toggle buttons such as "Match case" or "Regex".
 
-**Use when / Not for:** text search needs a clear action or find toggles; not for an option-selecting combobox.
+**Use when:** users type to filter or search a list, a tree, a page or results.
+**Not for:** picking a value from options (use [Combobox](combobox.md)), running commands (use [Command](command.md)), or ordinary text entry (use [Input](input.md)).
 
-**Anatomy (data-slot):** search-field, input-group-leading/trailing/input/button; icon.
+## Import
 
-**Props:** Input props plus value/defaultValue/onValueChange, onChange, toggles and clearable (true). Escape clears a nonempty input and prevents default. The clear button restores input focus. Native name/form submit search text. Type search; accessible name comes from Field Label or aria-label.
+```tsx
+import { SearchField, useSearchField } from '@onyx/ui/search-field';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** --onyx-input-height/radius; InputGroup and Button tokens; control-input-*, control-focus-ring. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<SearchField aria-label="Filter files" placeholder="Filter" value={query} onValueChange={setQuery} />
 
-**Headless hook:** useSearchField exposes value/setValue, clear and keyboard bindings.
+<SearchField
+  aria-label="Find in file"
+  value={query}
+  onValueChange={setQuery}
+  toggles={<>
+    <Toggle size="sm" pressed={matchCase} onPressedChange={setMatchCase} aria-label="Match case"><Icon name="case-sensitive" /></Toggle>
+    <Toggle size="sm" pressed={regex} onPressedChange={setRegex} aria-label="Use regular expression"><Icon name="regex" /></Toggle>
+  </>}
+/>
+```
 
-Native form reset silently restores the mount-time uncontrolled default, including controls associated with an external `form`. Controlled props remain authoritative.
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` / `defaultValue` / `onValueChange` | `string` | `''` | |
+| `onChange` | native change handler | — | Runs first. Call `preventDefault()` to cancel the update. |
+| `clearable` | `boolean` | `true` | Shows the × button while the field has text. |
+| `toggles` | `ReactNode` | — | Shown before the clear button, usually [Toggles](toggle.md). |
+| `name`, `form` | `string` | — | Submits the text natively. |
+| other | [Input](input.md) props | — | `type` is always `"search"`. |
+
+**`useSearchField({ value, defaultValue, onValueChange })`** returns `{ value, setValue, clear, onKeyDown, reset }`.
+
+Also exported: `searchFieldVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the icon, the clear button (which returns focus to the input), Escape clearing non-empty text, restoring the default on form reset, and wiring to Field.
+
+**You supply:** the label (a Field with a Label, or `aria-label`), what the search does, and any debouncing.
+
+## Anatomy
+
+`search-field` (an `input-group`), with `input-group-leading` (the search `icon`), `input-group-input`, `input-group-trailing` and `input-group-button` (clear).
+
+## Tokens read
+
+[Input Group](input-group.md) and Button tokens.
+
+## Gotchas
+
+- **Escape on empty text is not handled.** It bubbles up, so an Escape in an empty field can still close a surrounding panel. That is usually what you want.
+- **No debouncing.** `onValueChange` fires on every keystroke, so debounce expensive searches yourself.

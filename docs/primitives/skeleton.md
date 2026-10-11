@@ -1,21 +1,56 @@
 # Skeleton
 
-Use when: a predictable loading placeholder. Not for: announcing loading (pair with Spinner or an aria-busy region).
+A shimmering gray placeholder shaped like the content that is about to load: lines of text, an avatar circle, an image block.
+
+**Use when:** you know the layout of the content that is loading and want to avoid a jump when it arrives.
+**Not for:** loading of unknown shape or length (use [Spinner](spinner.md)), measurable progress (use [Progress](progress.md)), or telling screen readers that something is loading (Skeleton is hidden from them).
+
+## Import
+
+```tsx
+import { Skeleton } from '@onyx/ui/skeleton';
+```
+
+## Example
+
+```tsx
+<div aria-busy={loading} aria-live="polite">
+  {loading ? (
+    <Inline gap="3">
+      <Skeleton shape="circle" />
+      <Stack gap="1" style={{ flex: 1 }}>
+        <Skeleton style={{ width: '40%' }} />
+        <Skeleton style={{ width: '80%' }} />
+      </Stack>
+    </Inline>
+  ) : <UserRow user={user} />}
+</div>
+```
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `shape` | `'text' \| 'text-line' \| 'circle' \| 'rect'` | `'text'` | `text-line` is an alias for `text`. |
+| `style` | CSS | — | Set the width and height here. |
+| `asChild` | `boolean` | `false` | |
+
+Also exported: `skeletonVariants({ shape })`.
+
+## Behavior contract
+
+**Onyx owns:** the shapes, the shimmer (removed under reduced motion), and `aria-hidden`.
+
+**You supply:** sizes that match the real content, and the loading state on a surrounding region (`aria-busy`).
 
 ## Anatomy
 
-`skeleton`.
-
-## Props and data attributes
-
-shape text (alias text-line)/circle/rect, style for widths/heights. aria-hidden. `data-variant`, `data-state=loading`. Reduced motion removes shimmer.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`skeleton` (`data-variant`, `data-state="loading"`).
 
 ## Tokens read
 
-`--onyx-skeleton-{radius,height,size}`, state-hover/active, spacing, duration.
+`--onyx-skeleton-{radius,height,size}`, `--onyx-state-{hover,active}`, spacing and duration tokens.
 
-## Headless hook
+## Gotchas
 
-None (presentation only).
+- **Screen readers don't see it.** Mark the region `aria-busy` while loading, or add a visually hidden "Loading…" message.

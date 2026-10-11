@@ -1,17 +1,84 @@
 # Tabs
 
-Use when switching related panels without leaving a page. Not for a navigation menu linking unrelated pages.
+A row of tabs, each showing its own panel. Comes in two styles: `editor` (VS Code-like file tabs that can have close buttons and badges) and `line` (underlined web-page tabs).
 
-Anatomy: `tabs`, `tabs-list`, `tabs-trigger`, `tabs-content`, existing `tab-close`, `tab-badge`. Existing `TabList`/`Tab` aliases remain.
+**Use when:** related panels share one space and users switch between them without leaving the page: open files, Settings › General / Advanced, Output / Problems / Terminal.
+**Not for:** links to different pages (use [Navigation Menu](navigation-menu.md) or [Link](link.md)), switching a view mode or filter in a toolbar (use [Toggle Group](toggle-group.md)), or a panel header that switches views (use [SectionSelect](section-select.md)).
 
-`Tabs` keeps `value` / `defaultValue` / `onValueChange` and adds `variant="editor|line"` (editor default) and `asChild`. `TabsTrigger` retains `value`, `disabled` and div markup for compatibility with editor close controls; it now supports `asChild`. Root/list/trigger expose `data-variant`, and trigger/panel expose `data-state="active|inactive"`. Line triggers add a focusable underline treatment for web pages. Tab/panel IDs and `aria-controls` / `aria-labelledby` connect automatically. `TabsContent` accepts `asChild` and keeps `hidden` override behavior.
+## Import
 
-TabsList uses a single roving tab stop, skips disabled triggers and supports Left/Right/Home/End. Enter/Space activates (manual activation). Existing close/badge API remains. `tabsVariants` and existing `tabTriggerVariants` are exported.
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent, TabClose, TabBadge } from '@onyx/ui/tabs';
+```
 
-Tokens: line uses `--onyx-space-{0-5,1-5,2}`, `--onyx-border-default`, `--onyx-text-{sm,description,foreground}`, `--onyx-control-focus-ring`, `--onyx-focus-ring-{width,offset}`. Editor chrome retains `--onyx-shell-tabs-*`.
+## Example
 
-Headless focus behavior uses the shared `useRovingFocus` hook; the existing controlled Tabs value is the state integration API.
+```tsx
+{/* editor tabs */}
+<Tabs value={activeFile} onValueChange={setActiveFile}>
+  <TabsList aria-label="Open files">
+    {files.map((f) => (
+      <TabsTrigger key={f.path} value={f.path}>
+        <Truncate>{f.name}</Truncate>
+        {f.dirty && <TabBadge>●</TabBadge>}
+        <TabClose aria-label={`Close ${f.name}`} onClick={() => closeFile(f.path)}><Icon name="close" /></TabClose>
+      </TabsTrigger>
+    ))}
+  </TabsList>
+  {files.map((f) => <TabsContent key={f.path} value={f.path}><Editor file={f} /></TabsContent>)}
+</Tabs>
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+{/* page tabs */}
+<Tabs variant="line" defaultValue="general">
+  <TabsList aria-label="Settings sections">
+    <TabsTrigger value="general">General</TabsTrigger>
+    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+  </TabsList>
+  <TabsContent value="general">…</TabsContent>
+  <TabsContent value="advanced">…</TabsContent>
+</Tabs>
+```
 
-The tablist owns the single roving tab stop. Arrow keys move focus without selection; controlled selection changes preserve the focused stop while focus remains within the list. When focus leaves, the selected enabled tab becomes the stop (or the first enabled tab if none is selected). TabBadge uses `--onyx-text-xs`.
+## API
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `Tabs` | `value` / `defaultValue` / `onValueChange` | `string` | — | |
+| | `variant` | `'editor' \| 'line'` | `'editor'` | |
+| | `asChild` | `boolean` | `false` | |
+| `TabsList` | `aria-label` | `string` | — | Recommended. |
+| `TabsTrigger` | `value` | `string` | — | **Required.** Renders a `<div role="tab">`, so it can hold a close button. |
+| | `disabled`, `asChild` | | | |
+| `TabsContent` | `value` | `string` | — | **Required.** Inactive panels are `hidden`; you can override `hidden`. |
+| | `asChild` | `boolean` | | |
+| `TabClose` | `<button>` props | | | A ghost icon button. It stops click propagation so the tab doesn't activate. Needs `aria-label`. |
+| `TabBadge` | `<span>` props | | | A small pill, for a dirty marker or a count. |
+
+`TabList` and `Tab` are aliases of `TabsList` and `TabsTrigger`. Also exported: `tabsVariants`, `tabTriggerVariants`.
+
+## Behavior contract
+
+**Onyx owns:** connecting tabs and panels (`aria-controls` and `aria-labelledby`), one tab stop for the list, arrow-key focus with manual activation, skipping disabled tabs, and both styles.
+
+**You supply:** which tab is active, closing tabs, and rendering the panels.
+
+## Keyboard
+
+| Key | Result |
+|---|---|
+| ← / → / Home / End | Move focus between tabs (doesn't activate them) |
+| Enter / Space | Activate the focused tab |
+
+When focus leaves the list, the selected tab becomes its tab stop again.
+
+## Anatomy
+
+`tabs` (`data-variant`), `tabs-list`, `tabs-trigger` (`data-state="active|inactive"`, `data-variant`), `tabs-content` (`data-state`), `tab-close`, `tab-badge`.
+
+## Tokens read
+
+Line style: `--onyx-space-{0-5,1-5,2}`, `--onyx-border-default`, `--onyx-text-{sm,description,foreground}`, focus tokens. Editor style: `--onyx-shell-tabs-*`, `--onyx-shell-badge-{bg,fg}`, `--onyx-text-xs`.
+
+## Gotchas
+
+- **Activation is manual.** Arrow keys only move focus, so heavy panels don't render as users move past them. Press Enter or Space to switch.

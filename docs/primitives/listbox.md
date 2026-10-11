@@ -1,21 +1,92 @@
 # Listbox
 
-Use when choosing one or several options in a collection. Not for rows containing independent buttons or links (use a grid or ordinary list).
+A keyboard-navigable list of options for selecting one or many items, with typeahead, Shift and Ctrl/⌘ range selection, optional groups and virtualization for long lists.
 
-Anatomy: `listbox`, `listbox-content`, `listbox-virtual-row`, `listbox-option`, `listbox-group`, `listbox-group-label`. `ListRow` supplies the option visual layer.
+**Use when:** users pick one or several items from a visible list: a file list, a recipient list, the items in a picker panel.
+**Not for:** rows that contain their own buttons or links (use an ordinary list or [Table](table.md)), hierarchies (use [Tree](tree.md)), a compact dropdown (use [Select](select.md) or [Combobox](combobox.md)), or commands (use [Menu](menu.md) or [Command](command.md)).
 
-`Listbox<T>` takes `items`, `getKey`, `getText`, `isDisabled`, `selectionMode="single|multiple|none"`, `selectedKeys` / `defaultSelectedKeys`, `onSelectionChange`, `focusedKey` / `defaultFocusedKey`, `onFocusChange`, `renderItem(item, {selected, focused})`, `getGroup`, `virtualized`, and optional `rowHeight`. Keys are unique strings/numbers. Give the root `aria-label` or `aria-labelledby`. With `asChild`, supply the custom root as `children`; Onyx inserts its generated options into that element. `ListboxGroup` takes a required `label` and labels its ARIA group.
+## Import
 
-Focus stays on the root using **aria-activedescendant**. Focus and selection are distinct; arrows, Home/End and buffered typeahead move focus. Enter selects; Space toggles multi-selection. Click selects, Shift extends from the anchor, Cmd/Ctrl toggles, and Cmd/Ctrl+A selects enabled options. Shift+navigation extends the range. Disabled options are skipped. Virtualization keeps the active descendant mounted even outside the current range and publishes `aria-posinset` / `aria-setsize`. Grouped virtualization includes separate heading rows and named ARIA groups for mounted options; typeahead and selection continue to operate only on options. Virtual heading height uses the row token.
+```tsx
+import { Listbox, ListboxGroup, useListbox, type CollectionKey } from '@onyx/ui/listbox';
+```
 
-State: option `data-selected="true|false"`, `data-focused="true|false"`, `data-disabled`, `data-state="selected|idle"`, `aria-selected`, `aria-disabled`; root `data-orientation="vertical"`.
+## Example
 
-Tokens: `--onyx-row-height`, `--onyx-space-{0-5,1-5}`, `--onyx-radius-{sm,md}`, `--onyx-surface-panel`, `--onyx-border-default`, `--onyx-text-{foreground,muted,description,xs,sm}`, `--onyx-state-{hover,selected,selected-fg}`, `--onyx-control-focus-ring`, `--onyx-focus-ring-{width,offset}`, `--onyx-weight-semibold`.
+```tsx
+<Listbox
+  aria-label="Files"
+  items={files}
+  getKey={(f) => f.path}
+  getText={(f) => f.name}
+  isDisabled={(f) => f.locked}
+  selectionMode="multiple"
+  selectedKeys={selected}
+  onSelectionChange={setSelected}
+  getGroup={(f) => f.folder}
+  virtualized
+  renderItem={(f, { selected }) => (
+    <Inline gap="2"><Icon name="file" /> <Truncate>{f.name}</Truncate> {selected && <Icon name="check" />}</Inline>
+  )}
+/>
+```
 
-Headless: `useListbox<T>(options)` returns the collection, selection/focus state and setters, `select(key, modifiers)`, `itemId`, `onKeyDown`, `getRootProps()`, and `getItemProps(item)`. The caller attaches these bindings and supplies its own row rendering/scrolling. `listboxVariants` and `listRowVariants` are exported.
+## API
 
-[APG listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/).
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `items` | `readonly T[]` | — | **Required.** |
+| `getKey` | `(item) => string \| number` | — | **Required.** Keys must be unique. |
+| `getText` | `(item) => string` | `String(key)` | Used for typeahead. |
+| `isDisabled` | `(item) => boolean` | none disabled | Disabled items are skipped. |
+| `selectionMode` | `'single' \| 'multiple' \| 'none'` | `'single'` | |
+| `selectedKeys` / `defaultSelectedKeys` / `onSelectionChange` | `CollectionKey[]` | `[]` | |
+| `focusedKey` / `defaultFocusedKey` / `onFocusChange` | `CollectionKey \| null` | — | The keyboard focus, which is separate from the selection. |
+| `renderItem` | `(item, { selected, focused }) => ReactNode` | the text | The content of each row. |
+| `getGroup` | `(item) => string` | — | Groups items under headings. |
+| `virtualized` | `boolean` | `false` | Renders only the visible rows. |
+| `rowHeight` | `number` (px) | `--onyx-row-height` | Required to match custom row styling when virtualized. |
+| `aria-label` / `aria-labelledby` | | — | **Required.** |
+| `asChild` | `boolean` | `false` | Pass a custom root as `children`, and Onyx fills it with the options. |
 
-All parts forward refs, merge `className`, and expose their `data-slot`. Single-element parts accept `asChild`; provide a single element that forwards its ref. Theme and density inherit from any ancestor. Styling is in `src/styles/collections.css` in `@layer onyx.components`; exported cva functions allow class composition. Geometry, color, focus and motion use public semantic/component tokens.
+**`ListboxGroup`** (`label` required) is for building groups yourself.
 
-Focus-only navigation resets the range anchor; Shift navigation extends from the previously focused row. Refining a typeahead prefix retains the current match; a new search or repeated-character cycle starts after it. `getItemProps` position lookup uses a memoized key/index map. Custom `rowHeight` sets the viewport `--onyx-row-height` for matching row height and minimum height.
+**`useListbox(options)`** returns the selection and focus state and setters, `select(key, modifiers)`, `itemId`, `onKeyDown`, `getRootProps()` and `getItemProps(item)`. You render the rows and handle scrolling.
+
+Also exported: `listboxVariants`. Rows use `ListRow` and `listRowVariants` from [Panel](panel.md).
+
+## Behavior contract
+
+**Onyx owns:**
+- DOM focus stays on the root (`aria-activedescendant`).
+- Arrow, Home and End navigation, and buffered typeahead.
+- Selection with the modifier keys below.
+- Skipping disabled items.
+- With virtualization, keeping the focused row mounted and publishing `aria-posinset` and `aria-setsize`.
+
+**You supply:** the items, the keys, the row content and the selection state.
+
+## Keyboard and pointer
+
+| Input | Result |
+|---|---|
+| ↑ / ↓ / Home / End | Move focus |
+| Shift + ↑ / ↓ | Extend the selection (multiple) |
+| Type characters | Typeahead to the next match |
+| Enter | Select |
+| Space | Toggle (multiple) |
+| Ctrl/⌘+A | Select all enabled options (multiple) |
+| Click / Shift+click / Ctrl/⌘+click | Select / extend from the anchor / toggle |
+
+## Anatomy
+
+`listbox` (`data-orientation="vertical"`), `listbox-content`, `listbox-virtual-row`, `listbox-option` (`aria-selected`, `data-selected`, `data-focused`, `data-disabled`, `data-state="selected|idle"`), `listbox-group`, `listbox-group-label`.
+
+## Tokens read
+
+`--onyx-row-height`, `--onyx-space-{0-5,1-5}`, `--onyx-radius-{sm,md}`, `--onyx-surface-panel`, `--onyx-border-default`, `--onyx-text-{foreground,muted,description,xs,sm}`, `--onyx-state-{hover,selected,selected-fg}`, `--onyx-control-focus-ring`, `--onyx-focus-ring-{width,offset}`, `--onyx-weight-semibold`.
+
+## Gotchas
+
+- **Options must not contain interactive elements.** Focus stays on the root, so buttons inside rows can't be reached by keyboard.
+- **Focus and selection are separate.** Moving with the arrow keys does not select in `multiple` mode. Listen to `onSelectionChange`, not `onFocusChange`, for the value.

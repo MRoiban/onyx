@@ -1,15 +1,55 @@
 # File Trigger
 
-Public API: FileTrigger.
+A [Button](button.md) that opens the system file picker and passes back the chosen files.
 
-**Use when / Not for:** a button opens a native file dialog; not for drag-and-drop feedback.
+**Use when:** a button such as "Upload", "Import" or "Choose folder" needs to let the user select local files.
+**Not for:** a drag-and-drop target (use [Drop Zone](drop-zone.md), which can also open the picker), or managing an upload queue (that belongs in your app or a Gemstone upload pattern).
 
-**Anatomy (data-slot):** file-trigger, file-trigger-input; composed Button slots.
+## Import
 
-**Props:** Button props (including asChild) plus accept, multiple, directory, onFiles(File[]), name/form. Directory emits webkitdirectory. Native hidden input retains selected files for form submission when named; unnamed selections reset input so the same file can be selected again. Browser accept is a dialog hint; validate files with DropZone or application code.
+```tsx
+import { FileTrigger } from '@onyx/ui/file-trigger';
+```
 
-**Data attributes:** data-slot on every part; data-disabled and data-invalid where relevant. Radix controls expose data-state and data-orientation; native grouped checkboxes use checked/unchecked/indeterminate, Calendar uses selected/in-range/unselected, OTP cells filled/empty, swatches selected/unselected, DropZone idle/over/invalid plus data-drop-target.
+## Example
 
-**Tokens read:** Button tokens; --onyx-button-height/radius; button size variants use --onyx-space-* for padding. Component variables fall back to semantic tokens in forms.css. All rules live in onyx.components.
+```tsx
+<FileTrigger accept=".json,application/json" onFiles={([file]) => importSettings(file)}>
+  Import settings
+</FileTrigger>
 
-**Headless hook:** Native file input provides behavior; forwarded ref targets the trigger button.
+<FileTrigger directory variant="outline" onFiles={addFolder}>
+  <Icon name="folder-opened" /> Choose folder
+</FileTrigger>
+```
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `onFiles` | `(files: File[]) => void` | — | Called after the user picks files. |
+| `accept` | `string` | — | Extensions and MIME types. This is only a hint to the picker, not validation. |
+| `multiple` | `boolean` | `false` | |
+| `directory` | `boolean` | `false` | Lets the user pick a folder (`webkitdirectory`). |
+| `name`, `form` | `string` | — | Keeps the files in a hidden input so a native form submits them. |
+| other | [Button](button.md) props | — | `variant`, `size`, `asChild`, … The ref is the button. |
+
+Also exported: `fileTriggerVariants`.
+
+## Behavior contract
+
+**Onyx owns:** the hidden file input, opening it, and resetting it when it has no `name`, so the same file can be chosen twice in a row.
+
+**You supply:** validating the files (`accept` is not enforced) and uploading them.
+
+## Anatomy
+
+`file-trigger` (a Button), `file-trigger-input` (hidden).
+
+## Tokens read
+
+Button tokens.
+
+## Gotchas
+
+- **Validate the files yourself.** Users can bypass `accept` in the picker. Use `acceptsFile` from [Drop Zone](drop-zone.md) for the same matching rules.

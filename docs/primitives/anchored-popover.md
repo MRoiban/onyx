@@ -1,30 +1,70 @@
 # AnchoredPopover
 
-Use when an existing DOM control opens an interactive floating surface, such as a workbench status item or a host-managed toolbar button. Use ordinary `Popover` when React owns both the trigger and content.
+A [Popover](popover.md) attached to an element that already exists in the page, such as a status bar item or a toolbar button rendered by other code. You pass the element itself instead of wrapping it in a trigger.
 
-## Public API
+**Use when:** you have a reference to the control (a DOM element) but can't or shouldn't wrap it in `PopoverTrigger`, for example a workbench status item or a host-managed toolbar button.
+**Not for:** the usual case where your component renders both the trigger and the content (use [Popover](popover.md)), or a command menu at a point (use [ActionMenu](action-menu.md)).
 
-`AnchoredPopover`, `AnchoredPopoverProps`.
+## Import
 
-`anchor` is an `HTMLElement | null`; null renders nothing. Use a focusable control as the anchor so focus can return on closing. `open` defaults to true for conditionally mounted surfaces. `onOpenChange` is required: dismissals request false and the caller updates its state or unmounts the surface. Content forwards its ref and accepts the same side, align, offsets, collision, container, style, className, HTML attributes and preventable focus/dismissal handlers as `PopoverContent`. The surface exposes `data-slot="anchored-popover"`, `data-state` and `data-side`.
+```tsx
+import { AnchoredPopover } from '@onyx/ui/anchored-popover';
+```
+
+## Example
 
 ```tsx
 const [anchor, setAnchor] = React.useState<HTMLButtonElement | null>(null);
 const [open, setOpen] = React.useState(false);
-return <>
-  <button ref={setAnchor} aria-haspopup="dialog" aria-expanded={open}
-    onClick={() => setOpen(value => !value)}>Connection</button>
-  <AnchoredPopover anchor={anchor} open={open} onOpenChange={setOpen}
-    side="top" align="start" aria-label="Connection settings">
-    <button onClick={() => setOpen(false)}>Disconnect</button>
+
+<>
+  <button ref={setAnchor} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+    Connection
+  </button>
+  <AnchoredPopover anchor={anchor} open={open} onOpenChange={setOpen} side="top" align="start" aria-label="Connection settings">
+    <PopoverBody>
+      <Button onClick={() => setOpen(false)}>Disconnect</Button>
+    </PopoverBody>
   </AnchoredPopover>
-</>;
+</>
 ```
 
-## Behavior and styling
+## API
 
-No trigger or anchor markup is inserted. Radix attaches its floating reference directly to the supplied element, updates on scroll and resize, flips or shifts around viewport collisions, and manages the nonmodal focus scope and dismissable layer. The content reuses Onyx popover styling, its scroll wrapper, semantic tokens and inherited modal portal container; an explicit `container` overrides the inherited host.
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `anchor` | `HTMLElement \| null` | — | **Required.** Nothing renders while it is `null`. Use a focusable element so focus can return to it. |
+| `open` | `boolean` | `true` | Defaults to open, which suits surfaces you mount only when needed. |
+| `onOpenChange` | `(open: boolean) => void` | — | **Required.** Dismissals call it with `false`. Update your state or unmount. |
+| `side`, `align`, `sideOffset`, `collisionPadding`, `container`, `className`, `style`, HTML attributes | as [PopoverContent](popover.md) | | |
+| `onOpenAutoFocus`, `onCloseAutoFocus`, `onEscapeKeyDown`, `onInteractOutside`, `onKeyDown` | Radix events | | Call `preventDefault()` to change the default behavior. |
 
-Opening focuses the first eligible control, falling back to the surface. Escape, a close action or a controlled close returns focus to the external anchor. Pointer or focus interactions outside dismiss without moving focus back from the user's destination. Interactions on the anchor are ignored by outside dismissal so its own toggle handler controls opening and closing.
+## Behavior contract
 
-Tab moves normally between content controls. At the end, Tab closes and moves to the next eligible page control after the anchor; Shift+Tab from the beginning closes and returns to the anchor. Nested portalled controls keep their own keyboard handling. Applications can prevent the focus or dismissal events to implement a specialized workflow.
+**Onyx owns:** positioning against your element without adding any DOM to it (updated on scroll and resize, with collision handling), Popover styling and the inner scroller, focusing the first control on open, and the focus rules below.
+
+**You supply:** the anchor element, the open state, the toggle on the anchor, and its `aria-expanded` and `aria-haspopup`.
+
+## Focus and keyboard
+
+| Action | Result |
+|---|---|
+| Open | Focuses the first focusable control, or the surface itself if there is none. |
+| Escape, a close button, or closing from your code | Closes, and focus returns to the anchor. |
+| Click or focus outside | Closes, and focus stays where the user went. |
+| Click on the anchor | Ignored by outside dismissal, so the anchor's own toggle decides. |
+| Tab past the last control | Closes, and focus moves to the next control in the page after the anchor. |
+| Shift+Tab before the first control | Closes, and focus returns to the anchor. |
+
+## Anatomy
+
+`anchored-popover` (`data-state`, `data-side`), containing `popover-scroll`.
+
+## Tokens read
+
+The same as [Popover](popover.md).
+
+## Gotchas
+
+- **Keep the anchor in state.** Store the element through a callback ref (`ref={setAnchor}`) so the popover updates once the anchor mounts. A plain `useRef` value does not trigger a re-render.
+- **Unlike Popover, Tab does not loop inside it.** It continues through the page, which suits a non-modal panel.

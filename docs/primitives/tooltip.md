@@ -1,33 +1,67 @@
 # Tooltip
 
-Use when: short noninteractive explanations and keyboard shortcuts. Not for: essential content or rich interactive previews.
+A short label that appears when the pointer hovers over a control or the control gets keyboard focus. It can include a keyboard shortcut.
 
-## Public API
+**Use when:** naming an icon-only button, or adding a short hint and its shortcut ("Save ⌘S").
+**Not for:** anything interactive or essential to complete a task, since touch users never see tooltips (put it in the UI or use [Popover](popover.md)), a rich preview of a person or object (use [Hover Card](hover-card.md)), or long text that is truncated (use [Truncate](truncate.md), which adds its own tooltip).
 
-`tooltipVariants`, `TooltipProvider`, `TooltipRoot`, `TooltipPortal`, `TooltipTrigger`, `TooltipContentProps`, `TooltipContent`, `TooltipProps`, `Tooltip`, `TooltipArrow`.
+## Import
+
+```tsx
+import { Tooltip, TooltipProvider } from '@onyx/ui/tooltip';
+import { formatShortcut } from '@onyx/ui/kbd';
+```
+
+## Example
+
+Wrap the app (or a region) once in `TooltipProvider`, then:
+
+```tsx
+<TooltipProvider delayDuration={400}>
+  <Tooltip content="New file" shortcut={formatShortcut('cmd+n')}>
+    <Button size="icon-sm" variant="ghost" aria-label="New file"><Icon name="new-file" /></Button>
+  </Tooltip>
+
+  <Tooltip content="Collapse all" side="bottom">
+    <Button size="icon-sm" variant="ghost" aria-label="Collapse all"><Icon name="collapse-all" /></Button>
+  </Tooltip>
+</TooltipProvider>
+```
+
+For a fully custom tooltip, use `TooltipRoot`, `TooltipTrigger`, `TooltipContent` and `TooltipArrow` (Radix parts).
+
+## API
+
+Built on [Radix Tooltip](https://www.radix-ui.com/primitives/docs/components/tooltip).
+
+| Part | Prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `TooltipProvider` | `delayDuration`, `skipDelayDuration`, `disableHoverableContent` | Radix | `700`, `300` | **Required ancestor.** Shared delays, so moving between tooltips is instant. |
+| `Tooltip` | `content` | `ReactNode` | — | The tooltip text. When it is set, the child becomes the trigger (`asChild`). |
+| | `shortcut` | `ReactNode` | — | Shown in a [Kbd](kbd.md) after the text. |
+| | `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | |
+| | `contentProps` | `TooltipContentProps` | — | Passed to the content: `align`, `className`, `container` and so on. |
+| | `open` / `defaultOpen` / `onOpenChange`, `delayDuration` | Radix | — | |
+| `TooltipContent` | `shortcut`, `container`, `sideOffset` (`8`), `collisionPadding` (`8`) | | | For custom composition. |
+
+Also exported: `tooltipVariants`, `TooltipPortal`.
+
+## Behavior contract
+
+**Onyx owns:** opening on hover and focus with delays, `aria-describedby` on the trigger, closing on Escape, blur or pointer leave, collision handling, and moving into a surrounding Dialog or Sheet automatically.
+
+**You supply:** the provider, the text, and an accessible name on the trigger itself. The tooltip describes the trigger; it does not name it.
 
 ## Anatomy
 
-`tooltip-arrow`, `tooltip-content`, `tooltip-shortcut`, `tooltip-trigger`.
-
-## Props and state
-
-TooltipProvider delayDuration/skipDelayDuration/disableHoverableContent groups delays; Tooltip content, shortcut, side, contentProps plus Radix root open/defaultOpen/onOpenChange. TooltipRoot enables composable Trigger/Content/Arrow; Content shortcut renders Kbd. Wrap a convenience Tooltip in TooltipProvider.
-
-All DOM parts forward refs, merge className and expose data-slot. Single-element Radix parts and structural parts support asChild. Roots/providers/portals are context-only and have no DOM slot. Floating parts expose data-state and data-side from Radix; menu items expose data-highlighted/data-disabled and check/radio data-state. All floating placement uses 8px collision padding; body portals inherit the document theme and density. CSS lives in onyx.components and uses motion tokens with reduced-motion support.
+`tooltip-trigger`, `tooltip-content` (`data-state="closed|delayed-open|instant-open"`, `data-side`, `data-align`), `tooltip-shortcut`, `tooltip-arrow`.
 
 ## Tokens read
 
-`--onyx-space-*`, `--onyx-text-*`, `--onyx-weight-*`, `--onyx-radius-*`, `--onyx-border-*`, `--onyx-duration-*`, `--onyx-ease-*`, `--onyx-focus-ring-*`, `--onyx-control-focus-ring`, `--onyx-tooltip-radius`, `--onyx-surface-tooltip`, `--onyx-control-button-fg`, `--onyx-z-tooltip`, `--onyx-shadow-sm`.
+`--onyx-tooltip-radius`, `--onyx-surface-tooltip`, `--onyx-control-button-fg`, `--onyx-z-tooltip`, `--onyx-shadow-sm`, `--onyx-space-*`, `--onyx-text-*`, motion tokens.
 
-## Headless behavior
+## Gotchas
 
-Radix opens on keyboard focus and pointer hover, links aria-describedby and dismisses on Escape/blur.
-
-Content exposes `data-state="closed|delayed-open|instant-open"`, `data-side`, and `data-align`. Pass `contentProps.container` to direct its portal to another document/container. An `asChild` Content preserves the supplied element and appends the shortcut inside it.
-
-## Nested floating content
-
-DialogContent, SheetContent and AlertDialogContent provide their content element as the default portal container. Combobox, Popover, Menu (including submenus), Menubar, Tooltip, HoverCard, NavigationMenu and DatePicker floating content inherit it, keeping pointer interaction, focus and stacking within the modal. Explicit `container` props override the default; `null` requests the Radix/body fallback.
-
-For a consumer modal, capture its element with a callback ref and wrap floating controls in `PortalContainerProvider` (exported from `@onyx/ui/popover`), or pass that element to each floating content's `container` prop. DatePicker accepts it through `contentProps.container`. Keep the container inside the modal's focus scope.
+- **Without `TooltipProvider`, Radix throws.** Add it once near the root of the app.
+- **The trigger must hold a ref and take focus.** Use a Button or another focusable element. Disabled buttons do not fire hover events, so wrap them in a `<span tabIndex={0}>`.
+- **Icon-only buttons still need `aria-label`.** The tooltip alone is not their accessible name.

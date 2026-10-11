@@ -1,21 +1,54 @@
 # Progress
 
-Use when: determinate or indeterminate task completion. Not for: storage or quota measurements (Meter).
+A bar that fills as a task completes. When the total isn't known it shows an indeterminate sweeping animation.
+
+**Use when:** showing progress through an upload, a build, an import or a multi-step operation.
+**Not for:** measurements such as storage or quota (use [Meter](meter.md)), short waits with no measurable progress inside a control (use [Spinner](spinner.md)), or placeholder content (use [Skeleton](skeleton.md)).
+
+## Import
+
+```tsx
+import { Progress, getProgressPercent } from '@onyx/ui/progress';
+```
+
+## Example
+
+```tsx
+<Progress aria-label="Uploading notes.md" value={loaded} max={total} />
+<Progress aria-label="Preparing build" indeterminate />
+<Progress aria-label="Sync" value={pct} tone="success" />
+```
+
+## API
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `value` | `number` | `0` | |
+| `min`, `max` | `number` | `0`, `100` | |
+| `indeterminate` | `boolean` | `false` | Leaves out `aria-valuenow` and animates. |
+| `tone` | `DisplayTone` | `'info'` | |
+| `indicatorClassName`, `indicatorStyle` | | — | Style the filled part. |
+| `asChild` | `boolean` | `false` | |
+| `aria-label` / `aria-labelledby` | | — | **Required.** |
+
+**`getProgressPercent(value, min, max)`** is the clamped percentage calculation.
+
+Also exported: `progressVariants`, `progressIndicatorVariants`, `progressClassName`, `progressIndicatorClassName`.
+
+## Behavior contract
+
+**Onyx owns:** `role="progressbar"` with min, max and now values, clamping, and the animations.
+
+**You supply:** the value and a label.
 
 ## Anatomy
 
-`progress`, `progress-indicator`.
-
-## Props and data attributes
-
-Preserved value/min/max, indicatorClassName/indicatorStyle and getProgressPercent. Adds indeterminate, tone (info), asChild. `role=progressbar`; indeterminate omits aria-valuenow. Supply accessible label. `data-tone`, `data-state=determinate|indeterminate`.
-
-Every DOM part forwards its ref, merges `className`, and supports `asChild` (unless explicitly noted). Exported `*Variants` cva functions supply base and modifier classes: their options style custom markup without requiring data attributes. Components also emit data attributes for integration hooks. Optional `displayAttributes({tone, variant, size, state, orientation, interactive, pulse})` from `badge` and the specialized `badgeAttributes`/`avatarAttributes` helpers continue to style markup through the same CSS rules. Supply semantic ARIA separately. All styling is in `src/styles/display.css`, inside `onyx.components`. Component variables use semantic fallbacks; override them on an ancestor or with `style`. Theme and density inherit from any ancestor.
+`progress` (`data-tone`, `data-state="determinate|indeterminate"`), `progress-indicator`.
 
 ## Tokens read
 
-`--onyx-track-height`, control-track, tone foreground, radius/motion.
+`--onyx-track-height`, `--onyx-control-track`, `--onyx-tone-*-fg`, radius and motion tokens.
 
-## Headless hook
+## Gotchas
 
-`getProgressPercent(value,min,max)` is the pure calculation helper.
+- **Show the number too.** A text percentage or "3 of 10 files" next to the bar helps everyone, and is essential when the bar is small.
