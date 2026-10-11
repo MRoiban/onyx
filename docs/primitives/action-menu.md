@@ -23,3 +23,5 @@ import { ActionMenu } from "@onyx/ui/action-menu";
 `className`, `aria-label` and the forwarded ref target the root menu content (`data-slot="action-menu"`). `container` overrides the inherited portal container. Child flyouts use `menu-sub-content`; rows, headings and shortcuts use the existing Menu slots and semantic tokens.
 
 Onyx owns collision placement with 8px viewport padding, initial focus, wrapping arrow navigation, Home/End, typeahead, disabled-item skipping, nested flyout navigation, selection and Escape/outside dismissal. Escape and selection restore the invoking focus when it still exists. Outside interaction retains the user's new focus. Applications own visibility state, command execution, item filtering, permissions and prevention of cycles in their menu data.
+
+Closing restores the invoking control only while the menu still owns focus. If a command has focused a new editor, input or dialog, that focus handoff is preserved.

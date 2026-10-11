@@ -28,12 +28,19 @@ browserDescribe("ActionMenu browser interaction", () => {
         const selected = [], changes = [];
         const key = value => document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: value, bubbles: true }));
         const focused = () => document.activeElement.textContent.trim();
+        function RenameInput({ close }) {
+          const input = React.useRef(null);
+          React.useEffect(() => { input.current.focus(); }, []);
+          return <input ref={input} id="rename-input" aria-label="Rename" onBlur={close} />;
+        }
         function Fixture() {
           const [open, setOpen] = React.useState(false);
+          const [renaming, setRenaming] = React.useState(false);
           return <>
             <button id="invoke" onClick={() => setOpen(true)}>Invoke</button>
             <button id="outside">Outside</button>
-            <ActionMenu open={open} point={{ x: innerWidth - 3, y: innerHeight - 3 }}
+            {renaming && <RenameInput close={() => setRenaming(false)} />}
+            {open && <ActionMenu open={open} point={{ x: innerWidth - 3, y: innerHeight - 3 }}
               aria-label="Workspace commands" className="consumer-menu"
               onOpenChange={value => { changes.push(value); setOpen(value); }}
               items={[
@@ -45,8 +52,9 @@ browserDescribe("ActionMenu browser interaction", () => {
                   { id: 'last-child', label: 'Last child', onSelect: () => selected.push('last-child') },
                 ] },
                 { id: 'keep', label: 'Keep open', group: 'Other', onSelect: event => { event.preventDefault(); selected.push('keep'); } },
+                { id: 'rename', label: 'Rename', group: 'Other', onSelect: () => setRenaming(true) },
                 { id: 'last', label: 'Last', group: 'Other', onSelect: () => selected.push('last') },
-              ]} />
+              ]} />}
           </>;
         }
         async function open() {
@@ -84,6 +92,9 @@ browserDescribe("ActionMenu browser interaction", () => {
           outside.focus(); await pause();
           output.outsideClosed = !document.querySelector('[data-slot="action-menu"]');
           output.outsideFocus = document.activeElement.id;
+          await open(); key('r'); await pause(); key('Enter'); await pause();
+          output.renameFocus = document.activeElement.id;
+          output.renameVisible = !!document.getElementById('rename-input');
           output.selected = selected; output.changes = changes;
           document.getElementById('results').textContent = JSON.stringify(output);
         })().catch(error => document.getElementById('results').textContent = JSON.stringify({ error: String(error) }));
@@ -98,13 +109,17 @@ browserDescribe("ActionMenu browser interaction", () => {
       expect(json, stderr).toBeTruthy();
       const output = JSON.parse(json!);
       expect(output.error).toBeUndefined();
+      expect(output.changes.length).toBeGreaterThanOrEqual(4);
+      expect(output.changes.every(value => value === false)).toBe(true);
+      delete output.changes;
       expect(output).toEqual({
         label: "Workspace commands", classForwarded: true, groups: ["Workspace", "Other"], collision: true,
         initial: "First⌘1", skipsDisabled: "More", childFocus: "Child", childMenu: true,
         parentFocus: "More", childClosed: true, end: "Last", wraps: "First⌘1",
         escapeClosed: true, escapeFocus: "invoke", selectedClosed: true, selectedFocus: "invoke",
         typeahead: "Keep open", preventedSelectionOpen: true,
-        outsideClosed: true, outsideFocus: "outside", selected: ["keep", "child"], changes: [false, false, false],
+        outsideClosed: true, outsideFocus: "outside", selected: ["keep", "child"],
+        renameFocus: 'rename-input', renameVisible: true,
       });
     } finally { rmSync(scratch, { recursive: true, force: true }); }
   });

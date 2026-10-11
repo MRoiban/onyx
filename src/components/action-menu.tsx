@@ -74,6 +74,7 @@ function ActionItems({ items, container }: { items: readonly ActionMenuItem[]; c
 export const ActionMenu = React.forwardRef<HTMLDivElement, ActionMenuProps>(
   ({ open, point, onOpenChange, items, "aria-label": label = "Actions", className, container }, forwardedRef) => {
     const content = React.useRef<HTMLDivElement>(null);
+    const lastContent = React.useRef<HTMLDivElement>(null);
     const restoreFocus = React.useRef<HTMLElement | null>(null);
     const outsideInteraction = React.useRef(false);
     const initialized = React.useRef(false);
@@ -91,7 +92,7 @@ export const ActionMenu = React.forwardRef<HTMLDivElement, ActionMenuProps>(
       content.current = node;
       // The portal attaches after its first render. Move focus before Radix's
       // FocusScope effect so it preserves the application control as origin.
-      if (node) focusMenu(node);
+      if (node) { lastContent.current = node; focusMenu(node); }
     }, [focusMenu]);
     const ref = useComposedRefs(forwardedRef, setContent);
     React.useLayoutEffect(() => {
@@ -124,7 +125,12 @@ export const ActionMenu = React.forwardRef<HTMLDivElement, ActionMenuProps>(
           onInteractOutside={() => { outsideInteraction.current = true; }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            if (!outsideInteraction.current && restoreFocus.current?.isConnected) {
+            const active = document.activeElement;
+            // A command may have opened and focused a new control (for example
+            // an inline rename field). Preserve that deliberate focus handoff.
+            const ownsFocus = active === document.body || active === restoreFocus.current ||
+              (active instanceof Node && lastContent.current?.contains(active));
+            if (!outsideInteraction.current && ownsFocus && restoreFocus.current?.isConnected) {
               restoreFocus.current.focus({ preventScroll: true });
             }
           }}
