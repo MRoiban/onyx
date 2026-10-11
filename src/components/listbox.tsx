@@ -404,7 +404,7 @@ function ListboxImpl<T>(
       {...props}
       style={{ ...style, ...(rowHeight === undefined ? {} : { "--onyx-row-height": `${rowHeight}px` }) } as React.CSSProperties}
       {...model.getRootProps()}
-      onKeyDown={(event) => {
+      onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
         onKeyDown?.(event);
         model.onKeyDown(event);
       }}

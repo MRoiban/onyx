@@ -119,11 +119,11 @@ export const TagGroup = React.forwardRef<
         data-slot="tag-group"
         className={cn(tagGroupVariants(), className)}
         {...props}
-        onFocusCapture={(e) => {
+        onFocusCapture={(e: React.FocusEvent<HTMLDivElement>) => {
           onFocusCapture?.(e);
           if (!e.defaultPrevented) model.onFocusCapture(e);
         }}
-        onKeyDown={(e) => {
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           onKeyDown?.(e);
           model.onKeyDown(e);
         }}

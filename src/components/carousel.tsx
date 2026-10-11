@@ -147,7 +147,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           aria-roledescription="carousel"
           aria-label="Slides"
           className={cn(carouselVariants(), className)}
-          onKeyDown={(event) => {
+          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
             onKeyDown?.(event);
             model.onKeyDown(event);
           }}
@@ -180,7 +180,7 @@ export const CarouselContent = React.forwardRef<
       data-slot="carousel-track"
       tabIndex={0}
       className={cn("onyx-carousel-track", className)}
-      onScroll={(event) => {
+      onScroll={(event: React.UIEvent<HTMLDivElement>) => {
         onScroll?.(event);
         model.onScroll();
       }}
@@ -220,7 +220,7 @@ export const CarouselPrevious = React.forwardRef<
       aria-label="Previous slide"
       disabled={!model.canPrevious}
       className={cn("onyx-carousel-control", className)}
-      onClick={(event) => {
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         if (!event.defaultPrevented) model.previous();
       }}
@@ -244,7 +244,7 @@ export const CarouselNext = React.forwardRef<
       aria-label="Next slide"
       disabled={!model.canNext}
       className={cn("onyx-carousel-control", className)}
-      onClick={(event) => {
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         if (!event.defaultPrevented) model.next();
       }}

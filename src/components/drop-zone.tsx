@@ -158,30 +158,30 @@ export const DropZone = React.forwardRef<HTMLDivElement, DropZoneProps>(
           }
           className={cn(dropZoneVariants(), className)}
           {...props}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             onClick?.(e);
             if (!e.defaultPrevented) open();
           }}
-          onKeyDown={(e) => {
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
             onKeyDown?.(e);
             if (!e.defaultPrevented && (e.key === 'Enter' || e.key === ' ')) {
               e.preventDefault();
               open();
             }
           }}
-          onDragEnter={(e) => {
+          onDragEnter={(e: React.DragEvent<HTMLDivElement>) => {
             onDragEnter?.(e);
             if (!e.defaultPrevented) state.dragProps.onDragEnter(e);
           }}
-          onDragOver={(e) => {
+          onDragOver={(e: React.DragEvent<HTMLDivElement>) => {
             onDragOver?.(e);
             if (!e.defaultPrevented) state.dragProps.onDragOver(e);
           }}
-          onDragLeave={(e) => {
+          onDragLeave={(e: React.DragEvent<HTMLDivElement>) => {
             onDragLeave?.(e);
             if (!e.defaultPrevented) state.dragProps.onDragLeave(e);
           }}
-          onDrop={(e) => {
+          onDrop={(e: React.DragEvent<HTMLDivElement>) => {
             onDrop?.(e);
             if (!e.defaultPrevented) state.dragProps.onDrop(e);
           }}

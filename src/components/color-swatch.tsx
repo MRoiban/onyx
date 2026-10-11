@@ -45,7 +45,7 @@ export const ColorSwatch = React.forwardRef<
         className={cn(colorSwatchVariants(), className)}
         style={{ background: color, ...style }}
         {...props}
-        onClick={(e) => {
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           onClick?.(e);
           if (!e.defaultPrevented) context?.setValue(color);
         }}
@@ -113,11 +113,11 @@ export const ColorSwatchGroup = React.forwardRef<
           data-disabled={disabled ? '' : undefined}
           className={cn(colorSwatchGroupVariants(), className)}
           {...props}
-          onFocusCapture={(e) => {
+          onFocusCapture={(e: React.FocusEvent<HTMLDivElement>) => {
             onFocusCapture?.(e);
             if (!e.defaultPrevented) roving.onFocusCapture(e);
           }}
-          onKeyDown={(e) => {
+          onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
             onKeyDown?.(e);
             if (e.defaultPrevented) return;
             roving.onKeyDown(e);

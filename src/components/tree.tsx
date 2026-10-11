@@ -665,7 +665,7 @@ function TreeImpl<T>(
       style={{ ...style, ...(rowHeight === undefined ? {} : { "--onyx-row-height": `${rowHeight}px` }) } as React.CSSProperties}
       {...htmlProps}
       {...model.getRootProps()}
-      onKeyDown={(event) => {
+      onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
         onKeyDown?.(event);
         model.onKeyDown(event);
       }}

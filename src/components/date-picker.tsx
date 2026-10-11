@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
+import { useComposedRefs } from "../lib/compose-refs";
 import { useControllableState } from "../lib/use-controllable-state";
 import {
   Calendar,
@@ -160,10 +161,12 @@ export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       if (options.value !== undefined) state.reconcile();
     }, [componentProps]);
     const id = React.useId();
+    // A plain callback keeps the ref valid when the host app resolves a second copy of React's types.
+    const composedRootRef = useComposedRefs(rootRef);
     return (
       <div
         {...rootProps}
-        ref={rootRef}
+        ref={composedRootRef}
         style={{ ...rootProps?.style, ...style }}
         data-slot="date-picker"
         data-state={state.open ? "open" : "closed"}
