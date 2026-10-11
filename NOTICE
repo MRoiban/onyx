@@ -1,0 +1,6 @@
+Onyx is MIT licensed; see LICENSE.
+
+dist/styles.css embeds the Codicon font, unchanged.
+Codicons by Microsoft (https://github.com/microsoft/vscode-codicons).
+Font and icons: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+Code: MIT.

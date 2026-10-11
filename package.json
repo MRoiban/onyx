@@ -1,7 +1,8 @@
 {
   "name": "@mroiban/onyx",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reusable React UI components and semantic themes for Pebbles and other projects.",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MRoiban/onyx.git"
@@ -15,7 +16,8 @@
     "docs",
     "!docs/primitives/reports",
     "registry.json",
-    "tailwind.preset.cjs"
+    "tailwind.preset.cjs",
+    "NOTICE"
   ],
   "type": "module",
   "sideEffects": [

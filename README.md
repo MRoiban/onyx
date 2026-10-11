@@ -9,7 +9,7 @@ The package ships compiled ES modules, type definitions, and a ready-made styles
 Onyx requires React 19. Each [GitHub release](https://github.com/MRoiban/onyx/releases) attaches a package tarball; install it by URL with any package manager:
 
 ```sh
-bun add https://github.com/MRoiban/onyx/releases/download/v0.2.0/mroiban-onyx-0.2.0.tgz
+bun add https://github.com/MRoiban/onyx/releases/download/v0.2.1/mroiban-onyx-0.2.1.tgz
 # npm install … / pnpm add … take the same URL
 ```
 
@@ -110,7 +110,11 @@ Run `bun run gallery` to explore the components at `http://localhost:4816`. `bun
 Bump `version` in `package.json`, commit, then push a matching tag:
 
 ```sh
-git tag v0.2.0 && git push origin v0.2.0
+git tag v0.2.1 && git push origin v0.2.1
 ```
 
 The release workflow type-checks, tests, builds, and attaches `mroiban-onyx-<version>.tgz` to a GitHub release for that tag. It fails if the tag and `package.json` version differ.
+
+## License
+
+MIT © MRoiban. See [LICENSE](LICENSE). The prebuilt stylesheet embeds Microsoft's Codicon font (CC BY 4.0); see [NOTICE](NOTICE).
