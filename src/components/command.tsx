@@ -46,7 +46,7 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div data-slot="command-input-shell" className="focus-within:ring-2 focus-within:ring-inset focus-within:ring-[var(--onyx-control-focus-ring)] flex items-center border-b border-[var(--onyx-border-default)] px-[calc(16px*var(--onyx-scale-ui))]">
+  <div data-slot="command-input-shell" className="flex items-center border-b border-[var(--onyx-border-default)] px-[calc(16px*var(--onyx-scale-ui))]">
     <Icon name="search" size="sm" className="text-[var(--onyx-text-description)]" />
     <CommandPrimitive.Input
       ref={ref}

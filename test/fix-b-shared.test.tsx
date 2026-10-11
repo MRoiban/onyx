@@ -102,10 +102,10 @@ describe('fix B shared regressions', () => {
       expect(classes).toContain('after:left-1/2');
     }
   });
-  it('SectionSelect and CommandInput expose token focus rings without doubling the command border', () => {
+  it('SectionSelect exposes a token focus ring and CommandInput keeps its search row borderless on focus', () => {
     const view = render(<><SectionSelect ariaLabel="Section" onValueChange={() => {}} value="a" items={[{ value: 'a', label: 'Alpha', icon: 'check' }]} /><Command><CommandInput /></Command></>);
     expect(view.container.querySelector('[data-slot=section-select-trigger]')!.className).toContain('focus-visible:ring-[var(--onyx-control-focus-ring)]');
     expect(view.container.querySelector('[data-slot=command-input]')!.className).not.toContain('focus-visible:ring-');
-    expect(view.container.querySelector('[data-slot=command-input-shell]')!.className).toContain('focus-within:ring-[var(--onyx-control-focus-ring)]');
+    expect(view.container.querySelector('[data-slot=command-input-shell]')!.className).not.toContain('focus-within:ring-');
   });
 });
