@@ -25,6 +25,8 @@ const js = await Bun.build({
   format: 'esm',
   target: 'browser',
   splitting: true,
+  // Without this Bun emits react/jsx-dev-runtime, which production React apps don't serve.
+  jsx: { development: false },
   packages: 'external',
   // Every component touches React state or effects; frameworks with server components need the marker.
   banner: '"use client";',
@@ -33,6 +35,11 @@ const js = await Bun.build({
 if (!js.success) {
   for (const log of js.logs) console.error(log);
   throw new Error('JavaScript build failed');
+}
+
+for await (const path of new Bun.Glob('**/*.js').scan(dist)) {
+  const text = await Bun.file(resolve(dist, path)).text();
+  if (/jsx-dev-runtime|jsxDEV/.test(text)) throw new Error(`dist/${path} uses the development JSX runtime`);
 }
 
 run(['bunx', 'tsc', '-p', 'tsconfig.build.json']);
